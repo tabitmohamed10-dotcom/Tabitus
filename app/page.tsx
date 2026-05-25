@@ -308,7 +308,7 @@ function HowItWorksSection() {
                 <div className="text-5xl mb-6">{step.icon}</div>
                 {'n' in step && (
                   <span className="text-xs font-bold text-muted-foreground/50 tracking-widest uppercase mb-2 block">
-                    Étape {step.n}
+                    Étape {(step as any).n}
                   </span>
                 )}
                 <h3 className="font-display text-xl font-bold mb-3">{step.title}</h3>
