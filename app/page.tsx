@@ -1,14 +1,43 @@
 'use client'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
 import {
   ArrowRight, CheckCircle2, Star, Zap, Shield, TrendingDown,
-  Users, ShoppingBag, Store, ChevronDown, Play, Globe2,
-  MessageSquare, Trophy, Clock, Sparkles, Search, Bell,
+  Users, ShoppingBag, Store, ChevronDown, Globe2,
+  MessageSquare, Trophy, Clock, Sparkles, Bell,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/index'
 import { cn } from '@/lib/utils'
+
+function AnimatedNumber({ value, suffix = '' }: { value: number; suffix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  const inViewRef = useRef<HTMLDivElement>(null)
+  const isInView = useInView(inViewRef, { once: true })
+
+  useEffect(() => {
+    if (!isInView || !ref.current) return
+    let frame = 0
+    const total = 60
+    const node = ref.current
+    const update = () => {
+      frame++
+      const eased = 1 - Math.pow(1 - frame / total, 3)
+      const current = Math.round(value * eased)
+      node.textContent = current >= 1000 ? (current / 1000).toFixed(current % 1000 === 0 ? 0 : 0) + 'k' : String(current)
+      if (frame < total) requestAnimationFrame(update)
+      else node.textContent = value >= 1000 ? (value / 1000) + 'k' : String(value)
+    }
+    requestAnimationFrame(update)
+  }, [isInView, value])
+
+  return (
+    <div ref={inViewRef} className="inline">
+      <span ref={ref}>0</span>{suffix}
+    </div>
+  )
+}
 
 // ── Data ──────────────────────────────────────────────────────
 const STEPS_BUYER = [
@@ -175,17 +204,20 @@ function HeroSection() {
           </Link>
         </div>
 
-        {/* Social proof */}
-        <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-muted-foreground animate-slide-up" style={{ animationDelay: '240ms' }}>
+        {/* Social proof — animated counters */}
+        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-sm text-muted-foreground animate-slide-up" style={{ animationDelay: '240ms' }}>
           {[
-            { icon: <Users className="h-4 w-4" />, label: '50 000+ utilisateurs' },
-            { icon: <Store className="h-4 w-4" />, label: '8 000+ commerçants' },
-            { icon: <ShoppingBag className="h-4 w-4" />, label: '200 000+ demandes' },
-            { icon: <Star className="h-4 w-4 fill-amber-400 text-amber-400" />, label: '4.8/5 satisfaction' },
-          ].map(({ icon, label }) => (
+            { icon: <Users className="h-4 w-4" />, value: 50000, suffix: '+', label: 'utilisateurs' },
+            { icon: <Store className="h-4 w-4" />, value: 8000, suffix: '+', label: 'commerçants' },
+            { icon: <ShoppingBag className="h-4 w-4" />, value: 200000, suffix: '+', label: 'demandes' },
+            { icon: <Star className="h-4 w-4 fill-amber-400 text-amber-400" />, value: 4.8, suffix: '/5', label: 'satisfaction' },
+          ].map(({ icon, value, suffix, label }) => (
             <div key={label} className="flex items-center gap-2">
               {icon}
-              <span className="font-medium text-foreground">{label}</span>
+              <span className="font-bold text-foreground">
+                {value < 10 ? value + suffix : <AnimatedNumber value={value} suffix={suffix} />}
+              </span>
+              <span>{label}</span>
             </div>
           ))}
         </div>

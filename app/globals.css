@@ -135,6 +135,13 @@
     background: hsl(var(--border));
     border-radius: 100px;
   }
+
+  /* Hide horizontal scrollbar (category chips) */
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Safe area inset bottom for notched phones */
+  .safe-area-pb { padding-bottom: env(safe-area-inset-bottom); }
 }
 
 /* Animations */
