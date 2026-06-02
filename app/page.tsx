@@ -570,7 +570,7 @@ function Footer() {
               <span className="font-display font-bold text-xl">tabitus</span>
             </div>
             <p className="text-sm text-background/50 leading-relaxed">
-              Le InDrive du commerce. La marketplace intelligente du Maroc et de l'Afrique.
+              La marketplace intelligente. La marketplace intelligente du Maroc et de l'Afrique.
             </p>
           </div>
           {[

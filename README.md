@@ -1,4 +1,4 @@
-# 🔥 TABITUS — Le InDrive du Commerce
+# 🔥 TABITUS — Le marché qui travaille pour vous
 
 > **La marketplace inversée intelligente du Maroc et de l'Afrique**
 > 
