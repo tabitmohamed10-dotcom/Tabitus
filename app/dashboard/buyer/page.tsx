@@ -27,7 +27,7 @@ export default async function BuyerDashboard() {
         </div>
         <div className="flex items-center gap-4">
           <Link href="/dashboard/buyer/requests/new" className="bg-orange-500 text-white font-semibold px-4 py-2 rounded-xl text-sm">+ Nouvelle demande</Link>
-          <Link href="/auth/login" className="text-sm text-gray-500">Déconnexion</Link>
+          <Link href="/auth/logout" className="text-sm text-gray-500">Déconnexion</Link>
         </div>
       </nav>
 
