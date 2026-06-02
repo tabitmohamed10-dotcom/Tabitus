@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   keywords: ['marketplace', 'Maroc', 'achats', 'commerçants', 'demande', 'offres', 'prix'],
   authors: [{ name: 'Tabitus' }],
   creator: 'Tabitus',
+  manifest: '/manifest.json',
   openGraph: {
     type: 'website',
     locale: 'fr_MA',
