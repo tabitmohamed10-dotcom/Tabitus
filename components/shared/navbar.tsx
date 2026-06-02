@@ -126,7 +126,7 @@ export function DashboardNavbar({ profile, links }: NavbarProps) {
                   </div>
                   {[
                     { icon: <User className="h-4 w-4" />, label: 'Profil', href: pathname.startsWith('/dashboard/merchant') ? '/dashboard/merchant/profile' : '/dashboard/buyer/profile' },
-                    { icon: <Settings className="h-4 w-4" />, label: 'Paramètres', href: '#' },
+                    { icon: <Settings className="h-4 w-4" />, label: 'Paramètres', href: pathname.startsWith('/dashboard/merchant') ? '/dashboard/merchant/settings' : '/dashboard/buyer/settings' },
                   ].map(item => (
                     <Link
                       key={item.label}

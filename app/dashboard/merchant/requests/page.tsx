@@ -1,7 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import Link from 'next/link'
 
 export default function MerchantRequestsPage() {
   const supabase = createClient()
@@ -44,55 +43,45 @@ export default function MerchantRequestsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white border-b px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-xl bg-orange-500 flex items-center justify-center text-white font-bold text-sm">T</div>
-          <span className="font-bold text-xl">tabitus</span>
+    <div className="max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold mb-2">Demandes disponibles</h1>
+      <p className="text-gray-500 mb-8">Répondez aux demandes qui correspondent à votre activité</p>
+
+      {loading ? (
+        <div className="text-center py-12 text-gray-500">Chargement...</div>
+      ) : requests.length === 0 ? (
+        <div className="text-center py-12">
+          <div className="text-5xl mb-4">🔍</div>
+          <p className="font-semibold">Aucune demande disponible</p>
         </div>
-        <Link href="/dashboard/merchant" className="text-sm text-gray-500">← Retour</Link>
-      </nav>
-
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-2">Demandes disponibles</h1>
-        <p className="text-gray-500 mb-8">Répondez aux demandes qui correspondent à votre activité</p>
-
-        {loading ? (
-          <div className="text-center py-12 text-gray-500">Chargement...</div>
-        ) : requests.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-5xl mb-4">🔍</div>
-            <p className="font-semibold">Aucune demande disponible</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {requests.map(req => (
-              <div key={req.id} className="bg-white rounded-2xl p-6 shadow-sm">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-start gap-3">
-                    <span className="text-3xl">{req.category_icon || '📦'}</span>
-                    <div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="font-semibold">{req.title}</h3>
-                        {req.urgent && <span className="text-xs bg-red-500 text-white px-2 py-0.5 rounded-full">⚡ Urgent</span>}
-                      </div>
-                      <p className="text-sm text-gray-500 mt-1">{req.category_name} · 📍 {req.city}</p>
-                      {req.description && <p className="text-sm text-gray-600 mt-2">{req.description}</p>}
-                      <div className="flex gap-4 mt-3 text-sm">
-                        {req.budget_max && <span className="font-semibold text-orange-500">Budget max: {req.budget_max} MAD</span>}
-                        <span className="text-gray-400">{req.offers_count || 0} offre(s)</span>
-                      </div>
+      ) : (
+        <div className="space-y-4">
+          {requests.map(req => (
+            <div key={req.id} className="bg-white rounded-2xl p-6 shadow-sm">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <span className="text-3xl">{req.category_icon || '📦'}</span>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="font-semibold">{req.title}</h3>
+                      {req.urgent && <span className="text-xs bg-red-500 text-white px-2 py-0.5 rounded-full">⚡ Urgent</span>}
+                    </div>
+                    <p className="text-sm text-gray-500 mt-1">{req.category_name} · 📍 {req.city}</p>
+                    {req.description && <p className="text-sm text-gray-600 mt-2">{req.description}</p>}
+                    <div className="flex gap-4 mt-3 text-sm">
+                      {req.budget_max && <span className="font-semibold text-orange-500">Budget max: {req.budget_max} MAD</span>}
+                      <span className="text-gray-400">{req.offers_count || 0} offre(s)</span>
                     </div>
                   </div>
-                  <button onClick={() => setSelectedRequest(req)} className="bg-orange-500 text-white font-semibold px-4 py-2 rounded-xl text-sm whitespace-nowrap">
-                    Faire une offre
-                  </button>
                 </div>
+                <button onClick={() => setSelectedRequest(req)} className="bg-orange-500 text-white font-semibold px-4 py-2 rounded-xl text-sm whitespace-nowrap">
+                  Faire une offre
+                </button>
               </div>
-            ))}
-          </div>
-        )}
-      </main>
+            </div>
+          ))}
+        </div>
+      )}
 
       {selectedRequest && (
         <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center p-4 z-50">

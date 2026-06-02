@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardNavbar } from '@/components/shared/navbar'
-import { LayoutDashboard, ShoppingBag, Package, User } from 'lucide-react'
+import { LayoutDashboard, Settings, ShoppingBag, Package, User } from 'lucide-react'
 
 export default async function MerchantLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -15,6 +15,7 @@ export default async function MerchantLayout({ children }: { children: React.Rea
     { href: '/dashboard/merchant/requests', label: 'Demandes', icon: <ShoppingBag className="h-4 w-4" /> },
     { href: '/dashboard/merchant/offers', label: 'Mes offres', icon: <Package className="h-4 w-4" /> },
     { href: '/dashboard/merchant/profile', label: 'Profil boutique', icon: <User className="h-4 w-4" /> },
+    { href: '/dashboard/merchant/settings', label: 'Paramètres', icon: <Settings className="h-4 w-4" /> },
   ]
 
   return (

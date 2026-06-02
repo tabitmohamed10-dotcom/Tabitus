@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardNavbar } from '@/components/shared/navbar'
-import { LayoutDashboard, PlusCircle, ShoppingBag, User } from 'lucide-react'
+import { LayoutDashboard, PlusCircle, Settings, ShoppingBag, User } from 'lucide-react'
 
 export default async function BuyerLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -16,6 +16,7 @@ export default async function BuyerLayout({ children }: { children: React.ReactN
     { href: '/dashboard/buyer/requests', label: 'Mes demandes', icon: <ShoppingBag className="h-4 w-4" /> },
     { href: '/dashboard/buyer/requests/new', label: 'Nouvelle demande', icon: <PlusCircle className="h-4 w-4" /> },
     { href: '/dashboard/buyer/profile', label: 'Profil', icon: <User className="h-4 w-4" /> },
+    { href: '/dashboard/buyer/settings', label: 'Paramètres', icon: <Settings className="h-4 w-4" /> },
   ]
 
   return (

@@ -29,7 +29,6 @@ export const metadata: Metadata = {
     description: 'Publiez votre besoin. Recevez les meilleures offres.',
   },
   robots: { index: true, follow: true },
-  manifest: '/manifest.json',
 }
 
 export const viewport: Viewport = {

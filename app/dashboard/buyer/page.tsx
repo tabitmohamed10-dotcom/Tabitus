@@ -19,72 +19,59 @@ export default async function BuyerDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <nav className="bg-white border-b px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-xl bg-orange-500 flex items-center justify-center text-white font-bold text-sm">T</div>
-          <span className="font-bold text-xl">tabitus</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link href="/dashboard/buyer/requests/new" className="bg-orange-500 text-white font-semibold px-4 py-2 rounded-xl text-sm">+ Nouvelle demande</Link>
-          <Link href="/auth/logout" className="text-sm text-gray-500">Déconnexion</Link>
-        </div>
-      </nav>
+    <div className="max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold mb-2">Bonjour, {profile?.full_name?.split(' ')[0]} 👋</h1>
+      <p className="text-gray-500 mb-8">Bienvenue sur votre tableau de bord</p>
 
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-2">Bonjour, {profile?.full_name?.split(' ')[0]} 👋</h1>
-        <p className="text-gray-500 mb-8">Bienvenue sur votre tableau de bord</p>
-
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          {[
-            { label: 'Demandes totales', value: stats.total },
-            { label: 'Demandes ouvertes', value: stats.open },
-            { label: 'Offres reçues', value: stats.offers },
-          ].map(s => (
-            <div key={s.label} className="bg-white rounded-2xl p-6 shadow-sm">
-              <p className="text-3xl font-bold text-orange-500">{s.value}</p>
-              <p className="text-sm text-gray-500 mt-1">{s.label}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-sm p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-bold text-lg">Mes demandes récentes</h2>
-            <Link href="/dashboard/buyer/requests" className="text-orange-500 text-sm">Voir tout</Link>
+      <div className="grid grid-cols-3 gap-4 mb-8">
+        {[
+          { label: 'Demandes totales', value: stats.total },
+          { label: 'Demandes ouvertes', value: stats.open },
+          { label: 'Offres reçues', value: stats.offers },
+        ].map(s => (
+          <div key={s.label} className="bg-white rounded-2xl p-6 shadow-sm">
+            <p className="text-3xl font-bold text-orange-500">{s.value}</p>
+            <p className="text-sm text-gray-500 mt-1">{s.label}</p>
           </div>
-          {!requests?.length ? (
-            <div className="text-center py-12">
-              <div className="text-5xl mb-4">🛍️</div>
-              <p className="font-semibold mb-2">Aucune demande pour l'instant</p>
-              <p className="text-gray-500 text-sm mb-6">Publiez votre première demande et recevez des offres</p>
-              <Link href="/dashboard/buyer/requests/new" className="bg-orange-500 text-white font-bold px-6 py-3 rounded-xl">Publier ma première demande</Link>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {requests.map(req => (
-                <Link key={req.id} href={`/dashboard/buyer/requests/${req.id}`}>
-                  <div className="flex items-center justify-between p-4 border rounded-xl hover:border-orange-300 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{(req as any).category?.icon || '📦'}</span>
-                      <div>
-                        <p className="font-semibold">{req.title}</p>
-                        <p className="text-sm text-gray-500">{(req as any).category?.name} · {req.city}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <span className={`text-xs font-semibold px-2 py-1 rounded-full ${req.status === 'open' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
-                        {req.status === 'open' ? 'Ouverte' : req.status}
-                      </span>
-                      {req.offers_count > 0 && <p className="text-xs text-orange-500 mt-1">{req.offers_count} offre{req.offers_count > 1 ? 's' : ''}</p>}
+        ))}
+      </div>
+
+      <div className="bg-white rounded-2xl shadow-sm p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-bold text-lg">Mes demandes récentes</h2>
+          <Link href="/dashboard/buyer/requests" className="text-orange-500 text-sm">Voir tout</Link>
+        </div>
+        {!requests?.length ? (
+          <div className="text-center py-12">
+            <div className="text-5xl mb-4">🛍️</div>
+            <p className="font-semibold mb-2">Aucune demande pour l'instant</p>
+            <p className="text-gray-500 text-sm mb-6">Publiez votre première demande et recevez des offres</p>
+            <Link href="/dashboard/buyer/requests/new" className="bg-orange-500 text-white font-bold px-6 py-3 rounded-xl">Publier ma première demande</Link>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {requests.map(req => (
+              <Link key={req.id} href={`/dashboard/buyer/requests/${req.id}`}>
+                <div className="flex items-center justify-between p-4 border rounded-xl hover:border-orange-300 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{(req as any).category?.icon || '📦'}</span>
+                    <div>
+                      <p className="font-semibold">{req.title}</p>
+                      <p className="text-sm text-gray-500">{(req as any).category?.name} · {req.city}</p>
                     </div>
                   </div>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-      </main>
+                  <div className="text-right">
+                    <span className={`text-xs font-semibold px-2 py-1 rounded-full ${req.status === 'open' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                      {req.status === 'open' ? 'Ouverte' : req.status}
+                    </span>
+                    {req.offers_count > 0 && <p className="text-xs text-orange-500 mt-1">{req.offers_count} offre{req.offers_count > 1 ? 's' : ''}</p>}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
