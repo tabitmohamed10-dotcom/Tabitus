@@ -1,10 +1,6 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { PlusCircle, ArrowRight, Clock, CheckCircle2, Package, TrendingUp } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle, StatCard, Badge, Skeleton, Avatar } from '@/components/ui/index'
-import { formatPrice, formatTimeAgo, getStatusColor, getStatusLabel } from '@/lib/utils'
+import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
@@ -13,173 +9,82 @@ export default async function BuyerDashboard() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  // Fetch stats + recent requests in parallel
-  const [{ data: profile }, { data: requests }] = await Promise.all([
-    supabase.from('profiles').select('*').eq('id', user.id).single(),
-    supabase
-      .from('requests')
-      .select('*, category:categories(name,icon,color)')
-      .eq('buyer_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(5),
-  ])
+  const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+  const { data: requests } = await supabase.from('requests').select('*, category:categories(name,icon)').eq('buyer_id', user.id).order('created_at', { ascending: false }).limit(5)
 
   const stats = {
     total: requests?.length || 0,
     open: requests?.filter(r => r.status === 'open').length || 0,
     offers: requests?.reduce((s, r) => s + (r.offers_count || 0), 0) || 0,
-    completed: requests?.filter(r => r.status === 'completed').length || 0,
   }
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="font-display text-2xl font-bold">
-            Bonjour, {profile?.full_name?.split(' ')[0]} 👋
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            {stats.open > 0
-              ? `Vous avez ${stats.open} demande${stats.open > 1 ? 's' : ''} active${stats.open > 1 ? 's' : ''}`
-              : 'Publiez votre première demande'
-            }
-          </p>
+    <div className="min-h-screen bg-gray-50">
+      <nav className="bg-white border-b px-6 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-xl bg-orange-500 flex items-center justify-center text-white font-bold text-sm">T</div>
+          <span className="font-bold text-xl">tabitus</span>
         </div>
-        <Link href="/dashboard/buyer/requests/new">
-          <Button variant="gradient">
-            <PlusCircle className="h-4 w-4" />
-            Nouvelle demande
-          </Button>
-        </Link>
-      </div>
+        <div className="flex items-center gap-4">
+          <Link href="/dashboard/buyer/requests/new" className="bg-orange-500 text-white font-semibold px-4 py-2 rounded-xl text-sm">+ Nouvelle demande</Link>
+          <Link href="/auth/login" className="text-sm text-gray-500">Déconnexion</Link>
+        </div>
+      </nav>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 stagger-children">
-        <StatCard
-          title="Demandes totales"
-          value={stats.total}
-          icon={<Package className="h-5 w-5 text-primary" />}
-        />
-        <StatCard
-          title="Demandes ouvertes"
-          value={stats.open}
-          icon={<Clock className="h-5 w-5 text-blue-500" />}
-        />
-        <StatCard
-          title="Offres reçues"
-          value={stats.offers}
-          subtitle="Sur toutes vos demandes"
-          icon={<TrendingUp className="h-5 w-5 text-green-500" />}
-        />
-        <StatCard
-          title="Deals conclus"
-          value={stats.completed}
-          icon={<CheckCircle2 className="h-5 w-5 text-emerald-500" />}
-        />
-      </div>
+      <main className="max-w-4xl mx-auto px-4 py-8">
+        <h1 className="text-2xl font-bold mb-2">Bonjour, {profile?.full_name?.split(' ')[0]} 👋</h1>
+        <p className="text-gray-500 mb-8">Bienvenue sur votre tableau de bord</p>
 
-      {/* Recent requests */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display text-lg font-bold">Demandes récentes</h2>
-          <Link href="/dashboard/buyer/requests" className="text-sm text-primary hover:underline flex items-center gap-1">
-            Voir tout <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
+        <div className="grid grid-cols-3 gap-4 mb-8">
+          {[
+            { label: 'Demandes totales', value: stats.total },
+            { label: 'Demandes ouvertes', value: stats.open },
+            { label: 'Offres reçues', value: stats.offers },
+          ].map(s => (
+            <div key={s.label} className="bg-white rounded-2xl p-6 shadow-sm">
+              <p className="text-3xl font-bold text-orange-500">{s.value}</p>
+              <p className="text-sm text-gray-500 mt-1">{s.label}</p>
+            </div>
+          ))}
         </div>
 
-        {!requests?.length ? (
-          <Card className="p-12 text-center">
-            <div className="text-5xl mb-4">🛍️</div>
-            <h3 className="font-display font-bold text-lg mb-2">Aucune demande pour l'instant</h3>
-            <p className="text-muted-foreground text-sm mb-6">
-              Publiez votre première demande et recevez des offres de commerçants en quelques minutes.
-            </p>
-            <Link href="/dashboard/buyer/requests/new">
-              <Button variant="gradient">
-                <PlusCircle className="h-4 w-4" />
-                Publier ma première demande
-              </Button>
-            </Link>
-          </Card>
-        ) : (
-          <div className="space-y-3 stagger-children">
-            {requests.map(req => (
-              <Link key={req.id} href={`/dashboard/buyer/requests/${req.id}`}>
-                <Card hover className="p-5">
-                  <div className="flex items-start gap-4">
-                    <div
-                      className="h-10 w-10 rounded-xl flex items-center justify-center text-xl shrink-0"
-                      style={{ background: req.category?.color + '20' }}
-                    >
-                      {req.category?.icon || '📦'}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <h3 className="font-semibold truncate">{req.title}</h3>
-                          <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-                            <span>{req.category?.name}</span>
-                            <span>·</span>
-                            <span>📍 {req.city}</span>
-                            <span>·</span>
-                            <span>{formatTimeAgo(req.created_at)}</span>
-                          </div>
-                        </div>
-                        <Badge className={getStatusColor(req.status)}>
-                          {getStatusLabel(req.status)}
-                        </Badge>
-                      </div>
-
-                      <div className="flex items-center gap-4 mt-3">
-                        {req.budget_max && (
-                          <span className="text-sm font-semibold text-primary">
-                            Budget: {formatPrice(req.budget_max)}
-                          </span>
-                        )}
-                        {req.offers_count > 0 && (
-                          <span className="text-sm font-medium text-green-600">
-                            💬 {req.offers_count} offre{req.offers_count > 1 ? 's' : ''}
-                          </span>
-                        )}
-                        {req.best_offer_price && (
-                          <span className="text-sm text-muted-foreground">
-                            Meilleure: {formatPrice(req.best_offer_price)}
-                          </span>
-                        )}
-                        {req.urgent && <Badge variant="urgent">Urgent</Badge>}
-                      </div>
-                    </div>
-
-                    <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0 mt-1" />
-                  </div>
-                </Card>
-              </Link>
-            ))}
+        <div className="bg-white rounded-2xl shadow-sm p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-bold text-lg">Mes demandes récentes</h2>
+            <Link href="/dashboard/buyer/requests" className="text-orange-500 text-sm">Voir tout</Link>
           </div>
-        )}
-      </div>
-
-      {/* Tips */}
-      {stats.total === 0 && (
-        <Card className="p-6 bg-accent/50 border-accent">
-          <h3 className="font-display font-bold mb-3">💡 Conseils pour recevoir plus d'offres</h3>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            {[
-              'Ajoutez une photo du produit pour plus de précision',
-              'Indiquez votre budget pour des offres adaptées',
-              'Précisez votre délai pour des propositions rapides',
-              'Soyez précis dans votre description',
-            ].map(tip => (
-              <li key={tip} className="flex items-start gap-2">
-                <span className="text-green-500 mt-0.5">✓</span>
-                {tip}
-              </li>
-            ))}
-          </ul>
-        </Card>
-      )}
+          {!requests?.length ? (
+            <div className="text-center py-12">
+              <div className="text-5xl mb-4">🛍️</div>
+              <p className="font-semibold mb-2">Aucune demande pour l'instant</p>
+              <p className="text-gray-500 text-sm mb-6">Publiez votre première demande et recevez des offres</p>
+              <Link href="/dashboard/buyer/requests/new" className="bg-orange-500 text-white font-bold px-6 py-3 rounded-xl">Publier ma première demande</Link>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {requests.map(req => (
+                <Link key={req.id} href={`/dashboard/buyer/requests/${req.id}`}>
+                  <div className="flex items-center justify-between p-4 border rounded-xl hover:border-orange-300 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{(req as any).category?.icon || '📦'}</span>
+                      <div>
+                        <p className="font-semibold">{req.title}</p>
+                        <p className="text-sm text-gray-500">{(req as any).category?.name} · {req.city}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className={`text-xs font-semibold px-2 py-1 rounded-full ${req.status === 'open' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                        {req.status === 'open' ? 'Ouverte' : req.status}
+                      </span>
+                      {req.offers_count > 0 && <p className="text-xs text-orange-500 mt-1">{req.offers_count} offre{req.offers_count > 1 ? 's' : ''}</p>}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   )
 }
