@@ -54,7 +54,7 @@ export function DashboardNavbar({ profile, links }: NavbarProps) {
   const settingsHref = isMerchant ? '/dashboard/merchant/settings' : '/dashboard/buyer/settings'
 
   const notifTypeColors: Record<string, string> = {
-    offer_received: 'text-blue-500',
+    offer_received: 'text-gold-500',
     offer_accepted: 'text-green-500',
     offer_rejected: 'text-red-500',
     new_message: 'text-primary',

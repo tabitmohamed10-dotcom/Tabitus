@@ -182,7 +182,7 @@ export default function ChatPage() {
           </div>
         </div>
 
-        <div className="h-8 w-8 rounded-xl bg-brand-gradient flex items-center justify-center text-white font-bold text-sm">
+        <div className="h-8 w-8 rounded-xl flex items-center justify-center font-bold text-sm" style={{background:'linear-gradient(135deg,#8B6914,#C9922A)',color:'#0C0B09'}}>
           T
         </div>
       </motion.nav>
@@ -191,7 +191,7 @@ export default function ChatPage() {
       {offer && (
         <div className="px-4 py-3 bg-accent/50 border-b border-primary/10">
           <div className="max-w-2xl mx-auto flex items-center gap-3">
-            <div className="h-8 w-8 bg-indigo-950/60 rounded-xl flex items-center justify-center text-sm">📦</div>
+            <div className="h-8 w-8 rounded-xl flex items-center justify-center text-sm" style={{background:'rgba(201,146,42,0.1)'}}>📦</div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-semibold text-foreground truncate">{offer.request?.title}</p>
               <p className="text-xs text-primary font-medium">Offre acceptée · <span className="font-bold">{offer.price} MAD</span></p>

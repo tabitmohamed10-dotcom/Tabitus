@@ -7,7 +7,7 @@ export default function NotFound() {
     <div className="min-h-screen flex items-center justify-center bg-background p-6">
       {/* Background */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-indigo-600/[0.08] blur-[100px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-[100px]" style={{background:'rgba(201,146,42,0.08)'}} />
         <div className="absolute inset-0 bg-dot opacity-30 dark:opacity-10" />
       </div>
 
@@ -34,7 +34,7 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             href="/"
-            className="inline-flex items-center justify-center gap-2 h-11 px-6 bg-brand-gradient text-white font-semibold rounded-xl shadow-brand hover:opacity-92 hover:-translate-y-px transition-all duration-150 text-sm"
+            className="btn-gold inline-flex items-center justify-center gap-2 h-11 px-6 text-sm"
           >
             <Home className="h-4 w-4" />
             Retour à l'accueil

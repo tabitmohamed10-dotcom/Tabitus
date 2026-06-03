@@ -1,6 +1,10 @@
 import Navbar from '@/app/components/Navbar'
 import Hero from '@/app/components/Hero'
-import { MarqueeBand, HowItWorks, Features, Testimonial, CTA, Footer } from '@/app/components/sections'
+import {
+  MarqueeBand, StatsBar, Categories, HowItWorks,
+  TrustBadges, FeaturedRequests, Features, MoroccoMap,
+  Testimonial, CTA, Footer,
+} from '@/app/components/sections'
 
 export default function HomePage() {
   return (
@@ -9,8 +13,13 @@ export default function HomePage() {
       <main>
         <Hero />
         <MarqueeBand />
+        <StatsBar />
+        <Categories />
         <HowItWorks />
+        <TrustBadges />
+        <FeaturedRequests />
         <Features />
+        <MoroccoMap />
         <Testimonial />
         <CTA />
       </main>

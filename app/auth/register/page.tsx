@@ -3,30 +3,27 @@ import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
-import { Eye, EyeOff, ArrowRight, Mail, Lock, User, CheckCircle2, ShoppingBag, Store } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/index'
-import { cn } from '@/lib/utils'
+import { Eye, EyeOff, ArrowRight, Mail, Lock, User } from 'lucide-react'
+import Logo from '@/app/components/Logo'
 
 const BENEFITS = {
   buyer: [
-    { icon: '💰', text: 'Économisez en moyenne 25%' },
-    { icon: '⚡', text: 'Réponses en moins de 2h' },
-    { icon: '🛡️', text: 'Commerçants vérifiés' },
-    { icon: '🆓', text: '100% gratuit pour les acheteurs' },
+    { text: 'Économisez en moyenne 25%' },
+    { text: 'Réponses en moins de 5 min' },
+    { text: 'Commerçants certifiés' },
+    { text: '100% gratuit pour les acheteurs' },
   ],
   merchant: [
-    { icon: '🎯', text: 'Clients qualifiés & prêts à acheter' },
-    { icon: '📣', text: 'Aucune dépense publicitaire' },
-    { icon: '⭐', text: 'Construisez votre réputation' },
-    { icon: '🚀', text: 'Démarrez gratuitement' },
+    { text: 'Clients qualifiés & prêts à acheter' },
+    { text: 'Aucune dépense publicitaire' },
+    { text: 'Construisez votre réputation' },
+    { text: '5% uniquement sur transaction confirmée' },
   ],
 }
 
 function RegisterForm() {
   const searchParams = useSearchParams()
   const initialRole = (searchParams.get('role') as 'buyer' | 'merchant') || 'buyer'
-
   const router = useRouter()
   const [role, setRole] = useState<'buyer' | 'merchant'>(initialRole)
   const [fullName, setFullName] = useState('')
@@ -43,128 +40,81 @@ function RegisterForm() {
     setLoading(true)
     setError('')
     const supabase = createClient()
-    const { error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: fullName, role } }
-    })
-    if (authError) {
-      setError(authError.message)
-      setLoading(false)
-      return
-    }
+    const { error: authError } = await supabase.auth.signUp({ email, password, options: { data: { full_name: fullName, role } } })
+    if (authError) { setError(authError.message); setLoading(false); return }
     router.push(role === 'merchant' ? '/dashboard/merchant' : '/dashboard/buyer')
   }
 
+  const inputCls = 'flex h-11 w-full border border-border/70 bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 hover:border-border rounded-none'
+
   return (
-    <div className="min-h-screen flex">
-      {/* ── Left panel (brand) ── */}
-      <div className="hidden lg:flex lg:w-[46%] xl:w-[42%] relative bg-foreground flex-col justify-between p-12 overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-brand-gradient opacity-95" />
-          <div className="absolute inset-0 bg-grid opacity-[0.06]" />
-          <div className="absolute top-24 right-0 w-96 h-96 rounded-full bg-violet-500/20 blur-[80px]" />
-          <div className="absolute bottom-32 left-0 w-80 h-80 rounded-full bg-indigo-800/25 blur-[60px]" />
-          <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-black/30 to-transparent" />
+    <div style={{minHeight:'100vh',display:'flex'}}>
+      {/* Left panel */}
+      <div style={{width:'42%',background:'#0C0B09',display:'flex',flexDirection:'column',justifyContent:'space-between',padding:48,position:'relative',overflow:'hidden'}} className="hidden lg:flex">
+        <div style={{position:'absolute',bottom:-20,right:-20,fontFamily:'var(--font-arabic)',fontSize:200,color:'rgba(191,160,106,0.04)',pointerEvents:'none',lineHeight:1}}>ثابت</div>
+
+        <div style={{position:'relative',zIndex:1}}>
+          <Link href="/"><Logo dark size="md" /></Link>
         </div>
 
-        <div className="relative z-10">
-          <Link href="/" className="flex items-center group">
-            <img src="/logo.svg" alt="Tabit" className="h-9 w-auto brightness-200 transition-opacity group-hover:opacity-85" />
-          </Link>
-        </div>
-
-        <div className="relative z-10 space-y-8">
-          <div>
-            <p className="text-white/60 text-sm font-semibold uppercase tracking-widest mb-3">
-              {role === 'buyer' ? 'Pour les acheteurs' : 'Pour les commerçants'}
-            </p>
-            <h2 className="font-display text-4xl xl:text-5xl font-bold text-white leading-[1.1] mb-5">
-              {role === 'buyer' ? (
-                <>Arrêtez de chercher.<br />Laissez-les<br />venir à vous.</>
-              ) : (
-                <>Des clients.<br />Sans<br />publicité.</>
-              )}
-            </h2>
+        <div style={{position:'relative',zIndex:1}}>
+          <div style={{fontSize:10,letterSpacing:'0.4em',textTransform:'uppercase',color:'#C9922A',marginBottom:8,fontFamily:'var(--font-inter)'}}>
+            {role === 'buyer' ? 'Pour les acheteurs' : 'Pour les commerçants'}
           </div>
-
-          <div className="space-y-3">
+          <h2 style={{fontFamily:'var(--font-playfair)',fontSize:40,fontWeight:400,color:'#F0E8D4',lineHeight:1.1,marginBottom:24}}>
+            {role === 'buyer' ? <>Arrêtez de<br/>chercher.<br/><em style={{color:'#C9922A'}}>Laissez-les</em><br/>venir à vous.</> : <>Des clients.<br/>Sans<br/><em style={{color:'#C9922A'}}>publicité.</em></>}
+          </h2>
+          <div style={{display:'flex',flexDirection:'column',gap:12}}>
             {BENEFITS[role].map((item, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-3 text-white/80"
-                style={{ animationDelay: `${i * 80}ms` }}
-              >
-                <div className="h-8 w-8 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
-                  <span className="text-base">{item.icon}</span>
-                </div>
-                <span className="text-sm font-medium">{item.text}</span>
+              <div key={i} style={{display:'flex',alignItems:'center',gap:12}}>
+                <span style={{width:4,height:4,borderRadius:'50%',background:'#C9922A',flexShrink:0}} />
+                <span style={{fontSize:13,color:'rgba(255,255,255,0.7)',fontWeight:300}}>{item.text}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="relative z-10">
-          <p className="text-white/40 text-xs">
-            Déjà {role === 'buyer' ? '50 000+ acheteurs' : '8 000+ commerçants'} nous font confiance
-          </p>
+        <div style={{position:'relative',zIndex:1}}>
+          <p style={{fontSize:11,color:'rgba(255,255,255,0.25)',letterSpacing:'0.2em',fontFamily:'var(--font-inter)'}}>© 2025 TABIT · Maroc</p>
         </div>
       </div>
 
-      {/* ── Right panel (form) ── */}
-      <div className="flex-1 flex items-center justify-center p-6 sm:p-10 bg-background">
-        <div className="w-full max-w-[420px]">
+      {/* Right panel */}
+      <div style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',padding:'40px 24px',background:'#FAFAF7'}}>
+        <div style={{width:'100%',maxWidth:420}}>
           <div className="lg:hidden mb-10">
-            <Link href="/">
-              <img src="/logo.svg" alt="Tabit" className="h-9 w-auto" />
-            </Link>
+            <Link href="/"><Logo size="md" /></Link>
           </div>
 
-          <div className="mb-8">
-            <h1 className="font-display text-3xl font-bold tracking-tight mb-2">
-              Créer un compte
-            </h1>
-            <p className="text-muted-foreground">
+          <div style={{marginBottom:28}}>
+            <div className="s-label" style={{marginBottom:16}}>Inscription</div>
+            <h1 style={{fontFamily:'var(--font-playfair)',fontSize:32,fontWeight:400,color:'#0C0B09',marginBottom:8}}>Créer un compte</h1>
+            <p style={{fontSize:14,color:'#8A856E',fontWeight:300}}>
               Déjà inscrit ?{' '}
-              <Link href="/auth/login" className="text-primary font-semibold hover:underline underline-offset-4">
-                Se connecter
-              </Link>
+              <Link href="/auth/login" style={{color:'#C9922A',textDecoration:'none',fontWeight:400}}>Se connecter →</Link>
             </p>
           </div>
 
           {/* Role selector */}
-          <div className="grid grid-cols-2 gap-3 mb-6">
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:20}}>
             {(['buyer', 'merchant'] as const).map(r => (
               <button
                 key={r}
                 type="button"
                 onClick={() => setRole(r)}
-                className={cn(
-                  'relative p-4 rounded-2xl border-2 text-left transition-all duration-200',
-                  'hover:border-primary/40',
-                  role === r
-                    ? 'border-primary bg-accent/60 shadow-brand/20'
-                    : 'border-border/60 bg-card hover:bg-muted/30'
-                )}
+                style={{
+                  padding:'16px 12px',
+                  border: role === r ? '2px solid #C9922A' : '2px solid #E8E0CC',
+                  background: role === r ? 'rgba(201,146,42,0.06)' : '#FFFFFF',
+                  cursor:'pointer',
+                  textAlign:'left',
+                  transition:'all 0.2s',
+                }}
               >
-                {role === r && (
-                  <div className="absolute top-2.5 right-2.5">
-                    <CheckCircle2 className="h-4 w-4 text-primary" />
-                  </div>
-                )}
-                <div className={cn(
-                  'h-9 w-9 rounded-xl flex items-center justify-center mb-3',
-                  role === r ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
-                )}>
-                  {r === 'buyer'
-                    ? <ShoppingBag className="h-4.5 w-4.5" />
-                    : <Store className="h-4.5 w-4.5" />
-                  }
-                </div>
-                <div className="font-semibold text-sm text-foreground mb-0.5">
+                <div style={{fontSize:10,letterSpacing:'0.3em',textTransform:'uppercase',color: role === r ? '#C9922A' : '#8A856E',marginBottom:6,fontFamily:'var(--font-inter)'}}>
                   {r === 'buyer' ? 'Acheteur' : 'Commerçant'}
                 </div>
-                <div className="text-xs text-muted-foreground leading-snug">
+                <div style={{fontSize:12,color:'#0C0B09',fontWeight:300}}>
                   {r === 'buyer' ? 'Publier des demandes' : 'Répondre aux demandes'}
                 </div>
               </button>
@@ -172,83 +122,41 @@ function RegisterForm() {
           </div>
 
           {error && (
-            <div className="mb-5 bg-destructive/8 border border-destructive/20 text-destructive px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-2 animate-fade-up">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 1a7 7 0 100 14A7 7 0 008 1zm-.75 3.5a.75.75 0 011.5 0v4a.75.75 0 01-1.5 0v-4zm.75 7.25a.875.875 0 110-1.75.875.875 0 010 1.75z"/>
-              </svg>
+            <div style={{marginBottom:16,background:'#FEF2F2',border:'1px solid #FECACA',color:'#DC2626',padding:'12px 16px',fontSize:13}}>
               {error}
             </div>
           )}
 
-          <form onSubmit={handleRegister} className="space-y-4">
-            <Input
-              type="text"
-              placeholder="Votre nom complet"
-              label="Nom complet"
-              value={fullName}
-              onChange={e => setFullName(e.target.value)}
-              icon={<User className="h-4 w-4" />}
-              autoComplete="name"
-              autoFocus
-            />
-
-            <Input
-              type="email"
-              placeholder="votre@email.com"
-              label="Email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              icon={<Mail className="h-4 w-4" />}
-              autoComplete="email"
-            />
-
-            <div className="space-y-1.5">
-              <label className="block text-sm font-medium text-foreground/80">Mot de passe</label>
-              <div className="relative">
-                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
-                  <Lock className="h-4 w-4" />
-                </div>
-                <input
-                  type={showPwd ? 'text' : 'password'}
-                  placeholder="8 caractères minimum"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  autoComplete="new-password"
-                  className={cn(
-                    'flex h-11 w-full rounded-xl border border-border/70 bg-background px-4 py-2.5 text-sm pl-10 pr-11',
-                    'placeholder:text-muted-foreground/60 transition-all duration-150',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:border-primary/50',
-                    'hover:border-border',
-                  )}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPwd(!showPwd)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          <form onSubmit={handleRegister} style={{display:'flex',flexDirection:'column',gap:14}}>
+            <div>
+              <label style={{display:'block',fontSize:10,letterSpacing:'0.3em',textTransform:'uppercase',color:'#8A856E',marginBottom:8,fontFamily:'var(--font-inter)'}}>Nom complet</label>
+              <div style={{position:'relative'}}>
+                <User style={{position:'absolute',left:14,top:'50%',transform:'translateY(-50%)',width:16,height:16,color:'#8A856E',pointerEvents:'none'}} />
+                <input type="text" placeholder="Votre nom complet" value={fullName} onChange={e => setFullName(e.target.value)} autoComplete="name" autoFocus className={inputCls} style={{paddingLeft:44}} />
+              </div>
+            </div>
+            <div>
+              <label style={{display:'block',fontSize:10,letterSpacing:'0.3em',textTransform:'uppercase',color:'#8A856E',marginBottom:8,fontFamily:'var(--font-inter)'}}>Email</label>
+              <div style={{position:'relative'}}>
+                <Mail style={{position:'absolute',left:14,top:'50%',transform:'translateY(-50%)',width:16,height:16,color:'#8A856E',pointerEvents:'none'}} />
+                <input type="email" placeholder="votre@email.com" value={email} onChange={e => setEmail(e.target.value)} autoComplete="email" className={inputCls} style={{paddingLeft:44}} />
+              </div>
+            </div>
+            <div>
+              <label style={{display:'block',fontSize:10,letterSpacing:'0.3em',textTransform:'uppercase',color:'#8A856E',marginBottom:8,fontFamily:'var(--font-inter)'}}>Mot de passe</label>
+              <div style={{position:'relative'}}>
+                <Lock style={{position:'absolute',left:14,top:'50%',transform:'translateY(-50%)',width:16,height:16,color:'#8A856E',pointerEvents:'none'}} />
+                <input type={showPwd ? 'text' : 'password'} placeholder="8 caractères minimum" value={password} onChange={e => setPassword(e.target.value)} autoComplete="new-password" className={inputCls} style={{paddingLeft:44,paddingRight:44}} />
+                <button type="button" onClick={() => setShowPwd(!showPwd)} style={{position:'absolute',right:14,top:'50%',transform:'translateY(-50%)',background:'none',border:'none',cursor:'pointer',color:'#8A856E',padding:0}}>
+                  {showPwd ? <EyeOff style={{width:16,height:16}} /> : <Eye style={{width:16,height:16}} />}
                 </button>
               </div>
             </div>
 
-            <Button
-              type="submit"
-              variant="gradient"
-              size="lg"
-              loading={loading}
-              className="w-full mt-2"
-            >
-              {!loading && `Créer mon compte ${role === 'buyer' ? 'acheteur' : 'commerçant'}`}
-              {!loading && <ArrowRight className="h-4 w-4" />}
-            </Button>
+            <button type="submit" disabled={loading} className="btn-gold" style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,padding:'14px 32px',marginTop:4,opacity:loading?0.7:1,cursor:loading?'not-allowed':'pointer',fontSize:11,letterSpacing:'0.25em'}}>
+              {loading ? 'Création...' : <>Créer mon compte {role === 'buyer' ? 'acheteur' : 'commerçant'} <ArrowRight style={{width:16,height:16}} /></>}
+            </button>
           </form>
-
-          <p className="mt-6 text-center text-xs text-muted-foreground leading-relaxed">
-            En créant un compte, vous acceptez nos{' '}
-            <Link href="#" className="underline underline-offset-4 hover:text-foreground">CGU</Link>
-            {' '}et notre{' '}
-            <Link href="#" className="underline underline-offset-4 hover:text-foreground">Politique de confidentialité</Link>
-          </p>
         </div>
       </div>
     </div>
@@ -257,11 +165,7 @@ function RegisterForm() {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
-      </div>
-    }>
+    <Suspense fallback={<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#FAFAF7'}}><div style={{width:32,height:32,borderRadius:'50%',border:'2px solid #C9922A',borderTopColor:'transparent',animation:'spin 1s linear infinite'}} /></div>}>
       <RegisterForm />
     </Suspense>
   )

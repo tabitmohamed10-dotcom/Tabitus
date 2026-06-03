@@ -2,10 +2,7 @@
 import { useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import {
-  Package, TrendingUp, Star, ArrowRight, ChevronRight,
-  Bell, BarChart3,
-} from 'lucide-react'
+import { Package, TrendingUp, Star, ArrowRight, ChevronRight, Bell } from 'lucide-react'
 import { useMerchantStats, useMerchantOffers } from '@/lib/hooks'
 import { formatPrice, formatTimeAgo, getStatusColor, getStatusLabel } from '@/lib/utils'
 import { Skeleton, EmptyState } from '@/components/ui/index'
@@ -66,38 +63,33 @@ export default function MerchantDashboard() {
       label: 'Offres envoyées',
       value: stats.total_offers,
       suffix: '',
-      icon: <Package className="h-4.5 w-4.5" />,
-      iconBg: 'bg-indigo-950/50 text-indigo-400',
-      valueColor: 'text-indigo-400',
+      icon: <Package className="h-4 w-4" />,
+      iconBg: 'bg-gold-100 text-gold-700',
+      valueColor: 'text-gold-700',
     },
     {
       label: 'Offres acceptées',
       value: stats.accepted_offers,
       suffix: '',
-      icon: <TrendingUp className="h-4.5 w-4.5" />,
-      iconBg: 'bg-green-100 dark:bg-green-950/50 text-green-600 dark:text-green-400',
-      valueColor: 'text-green-600 dark:text-green-400',
+      icon: <TrendingUp className="h-4 w-4" />,
+      iconBg: 'bg-green-100 text-green-700',
+      valueColor: 'text-green-700',
     },
     {
       label: 'Note moyenne',
       value: stats.rating,
       suffix: '/5',
-      icon: <Star className="h-4.5 w-4.5" />,
-      iconBg: 'bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400',
-      valueColor: 'text-amber-600 dark:text-amber-400',
+      icon: <Star className="h-4 w-4" />,
+      iconBg: 'bg-amber-100 text-amber-700',
+      valueColor: 'text-amber-700',
     },
   ]
 
   return (
-    <motion.div
-      variants={stagger}
-      initial="hidden"
-      animate="show"
-      className="max-w-4xl mx-auto"
-    >
+    <motion.div variants={stagger} initial="hidden" animate="show" className="max-w-4xl mx-auto">
       {/* Header */}
       <motion.div variants={fadeUp} className="mb-7">
-        <h1 className="font-display text-2xl sm:text-[1.75rem] font-bold tracking-tight">
+        <h1 className="font-display text-2xl sm:text-[1.75rem] font-bold tracking-tight" style={{fontFamily:'var(--font-playfair)'}}>
           Tableau de bord
         </h1>
         <p className="text-muted-foreground text-sm mt-1">Suivez vos performances en temps réel</p>
@@ -109,12 +101,12 @@ export default function MerchantDashboard() {
           <motion.div
             key={s.label}
             whileHover={{ y: -2, transition: { duration: 0.15 } }}
-            className="bg-card border border-border/60 rounded-2xl p-4 sm:p-5 shadow-premium cursor-default"
+            className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-premium cursor-default"
           >
             <div className={cn('h-9 w-9 rounded-xl flex items-center justify-center mb-3', s.iconBg)}>
               {s.icon}
             </div>
-            <p className={cn('text-2xl sm:text-3xl font-display font-bold leading-none', s.valueColor)}>
+            <p className={cn('text-2xl sm:text-3xl font-display font-bold leading-none', s.valueColor)} style={{fontFamily:'var(--font-playfair)'}}>
               <CountUp to={s.value} suffix={s.suffix} />
             </p>
             <p className="text-[11px] sm:text-xs text-muted-foreground mt-1.5 leading-tight font-medium">{s.label}</p>
@@ -122,38 +114,33 @@ export default function MerchantDashboard() {
         ))}
       </motion.div>
 
-      {/* CTA Banner — browse requests */}
+      {/* CTA Banner */}
       <motion.div variants={fadeUp} className="mb-5">
         <Link href="/dashboard/merchant/requests">
           <motion.div
             whileHover={{ scale: 1.008 }}
             whileTap={{ scale: 0.995 }}
-            className="group relative bg-foreground rounded-2xl p-5 sm:p-6 flex items-center justify-between text-background shadow-elevated cursor-pointer overflow-hidden"
+            className="group relative rounded-2xl p-5 sm:p-6 flex items-center justify-between text-white shadow-brand cursor-pointer overflow-hidden"
+            style={{background:'#0C0B09'}}
           >
+            <div className="absolute top-0 left-0 right-0 h-px" style={{background:'linear-gradient(90deg,transparent,#C9922A,transparent)'}} />
             <div className="absolute -right-6 -top-6 h-28 w-28 rounded-full bg-white/5 pointer-events-none" />
-            <div className="absolute -right-2 bottom-0 h-16 w-16 rounded-full bg-white/3 pointer-events-none" />
             <div className="relative z-10">
-              <p className="font-display font-bold text-base sm:text-lg leading-tight">Voir les demandes</p>
-              <p className="text-background/55 text-sm mt-0.5">Des acheteurs attendent votre offre maintenant</p>
+              <p className="font-bold text-base sm:text-lg leading-tight" style={{fontFamily:'var(--font-playfair)',color:'#F0E8D4'}}>Voir les demandes</p>
+              <p className="text-sm mt-0.5" style={{color:'rgba(255,255,255,0.5)'}}>Des acheteurs attendent votre offre maintenant</p>
             </div>
-            <div className="h-11 w-11 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 relative z-10 transition-transform group-hover:scale-105">
-              <Bell className="h-5 w-5 text-background" />
+            <div className="h-11 w-11 rounded-2xl flex items-center justify-center shrink-0 relative z-10 transition-transform group-hover:scale-105" style={{background:'rgba(201,146,42,0.2)',border:'1px solid rgba(201,146,42,0.3)'}}>
+              <Bell className="h-5 w-5" style={{color:'#C9922A'}} />
             </div>
           </motion.div>
         </Link>
       </motion.div>
 
       {/* Recent offers */}
-      <motion.div
-        variants={fadeUp}
-        className="bg-card rounded-2xl border border-border/60 shadow-premium overflow-hidden"
-      >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-border/60">
-          <h2 className="font-display font-bold text-[15px]">Mes offres récentes</h2>
-          <Link
-            href="/dashboard/merchant/offers"
-            className="flex items-center gap-1 text-sm text-primary font-semibold hover:gap-1.5 transition-all"
-          >
+      <motion.div variants={fadeUp} className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+          <h2 className="font-display font-bold text-[15px]" style={{fontFamily:'var(--font-playfair)'}}>Mes offres récentes</h2>
+          <Link href="/dashboard/merchant/offers" className="flex items-center gap-1 text-sm text-primary font-semibold hover:gap-1.5 transition-all">
             Voir tout <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
@@ -192,16 +179,13 @@ export default function MerchantDashboard() {
                         <p className="font-semibold text-sm truncate">{req?.title}</p>
                         <div className="flex items-center gap-1.5 mt-0.5 text-xs text-muted-foreground">
                           <span className="shrink-0">📍 {req?.city}</span>
-                          <span className="text-border">·</span>
+                          <span>·</span>
                           <span className="shrink-0">{formatTimeAgo(offer.created_at)}</span>
                         </div>
                       </div>
                       <div className="flex flex-col items-end gap-1.5 shrink-0">
                         <span className="text-sm font-bold text-primary">{formatPrice(offer.price)}</span>
-                        <span className={cn(
-                          'text-[10px] font-semibold px-2 py-0.5 rounded-full',
-                          getStatusColor(offer.status)
-                        )}>
+                        <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full', getStatusColor(offer.status))}>
                           {getStatusLabel(offer.status)}
                         </span>
                       </div>
