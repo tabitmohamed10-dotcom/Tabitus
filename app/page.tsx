@@ -1,523 +1,877 @@
 'use client'
 import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { motion, useInView, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import {
   ArrowRight, CheckCircle2, Star, Zap, Shield, TrendingDown,
   Users, ShoppingBag, Store, ChevronDown, Globe2,
-  MessageSquare, Trophy, Clock, Sparkles, Bell,
+  MessageSquare, Trophy, Clock, Sparkles, Bell, Package,
+  BarChart3, Lock, Truck, Check,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/index'
 import { cn } from '@/lib/utils'
 
-function AnimatedNumber({ value, suffix = '' }: { value: number; suffix?: string }) {
+// ── Animated counter ──────────────────────────────────────────
+function Counter({ value, suffix = '', prefix = '' }: { value: number; suffix?: string; prefix?: string }) {
   const ref = useRef<HTMLSpanElement>(null)
-  const inViewRef = useRef<HTMLDivElement>(null)
-  const isInView = useInView(inViewRef, { once: true })
+  const containerRef = useRef<HTMLDivElement>(null)
+  const isInView = useInView(containerRef, { once: true })
 
   useEffect(() => {
     if (!isInView || !ref.current) return
-    let frame = 0
-    const total = 60
     const node = ref.current
+    let frame = 0
+    const total = 70
     const update = () => {
       frame++
-      const eased = 1 - Math.pow(1 - frame / total, 3)
-      const current = Math.round(value * eased)
-      node.textContent = current >= 1000 ? (current / 1000).toFixed(current % 1000 === 0 ? 0 : 0) + 'k' : String(current)
+      const eased = 1 - Math.pow(1 - frame / total, 4)
+      const v = value * eased
+      node.textContent = prefix + (v >= 1000 ? (v / 1000).toFixed(v >= 10000 ? 0 : 0) + 'k' : Math.round(v).toString()) + suffix
       if (frame < total) requestAnimationFrame(update)
-      else node.textContent = value >= 1000 ? (value / 1000) + 'k' : String(value)
+      else node.textContent = prefix + (value >= 1000 ? (value / 1000) + 'k' : String(value)) + suffix
     }
     requestAnimationFrame(update)
-  }, [isInView, value])
+  }, [isInView, value, suffix, prefix])
 
-  return (
-    <div ref={inViewRef} className="inline">
-      <span ref={ref}>0</span>{suffix}
-    </div>
-  )
+  return <div ref={containerRef} className="inline"><span ref={ref}>{prefix}0{suffix}</span></div>
 }
 
 // ── Data ──────────────────────────────────────────────────────
 const STEPS_BUYER = [
   {
-    n: '01', icon: '📝',
+    n: '01',
+    icon: <ShoppingBag className="h-6 w-6" />,
+    color: 'from-orange-500 to-orange-600',
+    bg: 'bg-orange-50 dark:bg-orange-950/30',
     title: 'Publiez votre besoin',
-    desc: 'Décrivez ce que vous cherchez, votre budget et votre ville. En moins de 2 minutes.',
+    desc: 'Décrivez ce que vous cherchez, votre budget et votre ville. En moins de 2 minutes, sans inscription obligatoire.',
+    detail: 'Photos, vidéos, délai, livraison — tout est pris en charge.',
   },
   {
-    n: '02', icon: '💬',
+    n: '02',
+    icon: <Bell className="h-6 w-6" />,
+    color: 'from-blue-500 to-blue-600',
+    bg: 'bg-blue-50 dark:bg-blue-950/30',
     title: 'Recevez des offres',
-    desc: 'Les commerçants de votre région vous envoient leurs meilleures propositions.',
+    desc: 'Notre algorithme alerte les commerçants vérifiés de votre région. Ils vous répondent en temps réel.',
+    detail: 'En moyenne 8 offres reçues en moins d\'1h30.',
   },
   {
-    n: '03', icon: '✅',
+    n: '03',
+    icon: <CheckCircle2 className="h-6 w-6" />,
+    color: 'from-green-500 to-green-600',
+    bg: 'bg-green-50 dark:bg-green-950/30',
     title: 'Choisissez la meilleure',
-    desc: 'Comparez les prix, délais et notes. Choisissez en toute confiance.',
+    desc: 'Comparez prix, délais, notes et avis. Échangez en direct et finalisez votre achat en toute sécurité.',
+    detail: 'Économisez en moyenne 25% par rapport au prix marché.',
   },
 ]
 
 const STEPS_MERCHANT = [
-  { icon: '🔔', title: 'Recevez les demandes', desc: 'Soyez alerté des demandes correspondant à votre secteur et votre zone.' },
-  { icon: '💰', title: 'Proposez votre offre', desc: 'Prix, délai, livraison — tout en 30 secondes.' },
-  { icon: '🚀', title: 'Développez votre activité', desc: 'Acquérez de nouveaux clients sans dépenses publicitaires.' },
+  {
+    n: '01',
+    icon: <Bell className="h-6 w-6" />,
+    color: 'from-orange-500 to-orange-600',
+    bg: 'bg-orange-50 dark:bg-orange-950/30',
+    title: 'Recevez les demandes',
+    desc: 'Soyez alerté instantanément des demandes qui correspondent à votre secteur et votre zone géographique.',
+    detail: 'Notifications en temps réel, filtrées pour vous.',
+  },
+  {
+    n: '02',
+    icon: <Package className="h-6 w-6" />,
+    color: 'from-purple-500 to-purple-600',
+    bg: 'bg-purple-50 dark:bg-purple-950/30',
+    title: 'Proposez votre offre',
+    desc: 'Prix, délai, livraison — formulaire ultra simple pour répondre en moins de 30 secondes.',
+    detail: 'Interface mobile-first, conçue pour aller vite.',
+  },
+  {
+    n: '03',
+    icon: <Trophy className="h-6 w-6" />,
+    color: 'from-green-500 to-green-600',
+    bg: 'bg-green-50 dark:bg-green-950/30',
+    title: 'Développez votre activité',
+    desc: 'Acquérez de nouveaux clients sans budget pub. Construisez votre réputation grâce aux avis certifiés.',
+    detail: 'En moyenne +35% de CA pour nos commerçants actifs.',
+  },
 ]
 
-const CATEGORIES_PREVIEW = [
-  { icon: '💻', name: 'High-Tech', slug: 'smartphones', count: '2.4k demandes' },
-  { icon: '🏠', name: 'Maison', slug: 'electromenager', count: '1.8k demandes' },
-  { icon: '👗', name: 'Mode', slug: 'mode-femme', count: '3.1k demandes' },
-  { icon: '🚗', name: 'Auto', slug: 'voitures', count: '980 demandes' },
-  { icon: '🏗️', name: 'BTP', slug: 'artisans', count: '1.2k demandes' },
-  { icon: '💊', name: 'Santé', slug: 'pharmacie', count: '650 demandes' },
-  { icon: '🍎', name: 'Alimentaire', slug: 'alimentation', count: '2.8k demandes' },
-  { icon: '✈️', name: 'Voyage', slug: 'hotels', count: '540 demandes' },
-  { icon: '👶', name: 'Enfants', slug: 'jouets', count: '890 demandes' },
-  { icon: '🎓', name: 'Formation', slug: 'formation', count: '720 demandes' },
-  { icon: '🔧', name: 'Services', slug: 'reparation', count: '1.5k demandes' },
-  { icon: '💄', name: 'Beauté', slug: 'parfums', count: '1.1k demandes' },
+const CATEGORIES = [
+  { icon: '💻', name: 'High-Tech', count: '2 400+' },
+  { icon: '🏠', name: 'Maison', count: '1 800+' },
+  { icon: '👗', name: 'Mode', count: '3 100+' },
+  { icon: '🚗', name: 'Auto', count: '980+' },
+  { icon: '🏗️', name: 'BTP', count: '1 200+' },
+  { icon: '💊', name: 'Santé', count: '650+' },
+  { icon: '🍎', name: 'Alimentaire', count: '2 800+' },
+  { icon: '✈️', name: 'Voyage', count: '540+' },
+  { icon: '👶', name: 'Enfants', count: '890+' },
+  { icon: '🎓', name: 'Formation', count: '720+' },
+  { icon: '🔧', name: 'Services', count: '1 500+' },
+  { icon: '💄', name: 'Beauté', count: '1 100+' },
 ]
 
 const TESTIMONIALS = [
   {
     name: 'Fatima Zohra',
-    role: 'Enseignante, Casablanca',
+    role: 'Enseignante',
+    city: 'Casablanca',
     avatar: 'F',
-    text: 'J\'ai trouvé un iPhone 15 Pro à 2200 DH de moins que dans les magasins. Incroyable!',
+    avatarColor: 'from-pink-500 to-rose-600',
+    text: 'J\'ai trouvé un iPhone 15 Pro à 2 200 DH de moins que dans les magasins. En 1h30 j\'avais 11 offres. Je ne ferai plus jamais mes achats autrement.',
     stars: 5,
-    saving: '2 200 DH économisés',
+    badge: '2 200 DH économisés',
+    badgeColor: 'bg-green-50 text-green-700 border border-green-200/60',
   },
   {
     name: 'Ahmed Bennani',
-    role: 'Gérant, Marrakech',
+    role: 'Gérant de boutique',
+    city: 'Marrakech',
     avatar: 'A',
-    text: 'En un mois j\'ai reçu 43 demandes de clients. Mon chiffre d\'affaires a augmenté de 35%.',
+    avatarColor: 'from-blue-500 to-indigo-600',
+    text: 'En un mois j\'ai reçu 43 demandes de clients qualifiés. Mon chiffre d\'affaires a augmenté de 35% sans dépenser un centime en publicité.',
     stars: 5,
-    saving: '+35% de CA',
+    badge: '+35% de CA',
+    badgeColor: 'bg-blue-50 text-blue-700 border border-blue-200/60',
   },
   {
     name: 'Karim Idrissi',
-    role: 'Entrepreneur, Rabat',
+    role: 'Entrepreneur',
+    city: 'Rabat',
     avatar: 'K',
-    text: 'J\'avais besoin d\'une machine à laver urgente. En 2h j\'avais 8 offres. C\'est magique.',
+    avatarColor: 'from-violet-500 to-purple-600',
+    text: 'Machine à laver en urgence un samedi soir. En 2h j\'avais 8 offres avec livraison le lendemain. Le meilleur prix était 800 DH sous le tarif habituel.',
     stars: 5,
-    saving: '6h gagnées',
+    badge: '800 DH économisés',
+    badgeColor: 'bg-violet-50 text-violet-700 border border-violet-200/60',
   },
 ]
 
 const FAQS = [
   {
     q: 'Est-ce gratuit pour les acheteurs ?',
-    a: 'Oui, Tabitus est 100% gratuit pour les acheteurs. Publiez autant de demandes que vous voulez sans frais.',
+    a: 'Oui, Tabitus est 100% gratuit pour les acheteurs. Publiez autant de demandes que vous voulez, recevez autant d\'offres que vous souhaitez, sans aucun frais.',
   },
   {
     q: 'Comment les commerçants sont-ils vérifiés ?',
-    a: 'Nous vérifions chaque commerçant (identité, SIRET/RC, numéro de téléphone). Le badge ✅ Vérifié garantit la fiabilité.',
+    a: 'Chaque commerçant passe une vérification : identité, registre de commerce, numéro de téléphone. Le badge ✅ Vérifié est attribué après contrôle de notre équipe et engagement de qualité de service.',
   },
   {
-    q: 'Dans quelles villes Tabitus est-il disponible ?',
-    a: 'Casablanca, Rabat, Marrakech, Fès, Tanger, Agadir et plus de 20 autres villes marocaines. Expansion internationale en 2025.',
+    q: 'Dans quelles villes est-il disponible ?',
+    a: 'Casablanca, Rabat, Marrakech, Fès, Tanger, Agadir, Meknès, Oujda, Kénitra, Tétouan et plus de 12 autres villes marocaines. L\'expansion à l\'international (Sénégal, Côte d\'Ivoire) est prévue pour 2025.',
   },
   {
-    q: 'Que se passe-t-il si je ne reçois pas d\'offre ?',
-    a: 'Vos demandes restent actives 7 jours. Notre équipe peut vous aider à reformuler pour attirer plus de commerçants.',
+    q: 'Que faire si je ne reçois pas d\'offre ?',
+    a: 'Vos demandes restent actives 7 jours. En cas d\'absence d\'offre, notre équipe vous contacte pour vous aider à reformuler votre demande et la rendre plus attractive pour les commerçants.',
   },
   {
-    q: 'Comment Tabitus gagne-t-il de l\'argent ?',
-    a: 'Tabitus prend une petite commission uniquement sur les transactions finalisées. Les commerçants peuvent aussi acheter des boosts de visibilité.',
+    q: 'Comment Tabitus génère-t-il ses revenus ?',
+    a: 'Tabitus prend une petite commission uniquement sur les transactions finalisées. Les commerçants peuvent aussi booster leur visibilité avec des fonctionnalités premium. Les acheteurs, eux, ne paient jamais.',
+  },
+  {
+    q: 'Puis-je négocier avec les commerçants ?',
+    a: 'Absolument. Après avoir reçu une offre, vous pouvez discuter directement avec le commerçant via notre chat sécurisé. La transparence et la communication directe sont au cœur de Tabitus.',
   },
 ]
 
-// ── Components ──────────────────────────────────────────────────
+const LOGOS = ['Casablanca', 'Marrakech', 'Rabat', 'Fès', 'Tanger', 'Agadir', 'Meknès', 'Oujda']
 
+// ── Navbar ────────────────────────────────────────────────────
 function NavBar() {
+  const [scrolled, setScrolled] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 16)
+    window.addEventListener('scroll', handler, { passive: true })
+    return () => window.removeEventListener('scroll', handler)
+  }, [])
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-white/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-xl bg-brand-gradient flex items-center justify-center text-white font-display font-bold text-sm">T</div>
-          <span className="font-display font-bold text-xl tracking-tight">tabitus</span>
-        </Link>
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-          <Link href="#comment-ca-marche" className="hover:text-foreground transition-colors">Comment ça marche</Link>
-          <Link href="#categories" className="hover:text-foreground transition-colors">Catégories</Link>
-          <Link href="#pour-commercants" className="hover:text-foreground transition-colors">Commerçants</Link>
-          <Link href="#faq" className="hover:text-foreground transition-colors">FAQ</Link>
-        </div>
-        <div className="flex items-center gap-3">
-          <Link href="/auth/login">
-            <Button variant="ghost" size="sm">Connexion</Button>
+    <>
+      <nav className={cn(
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+        scrolled
+          ? 'glass border-b border-white/30 dark:border-white/10 shadow-floating'
+          : 'bg-transparent'
+      )}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="h-8 w-8 rounded-xl bg-brand-gradient flex items-center justify-center shadow-brand transition-transform group-hover:scale-105">
+              <span className="font-display font-bold text-white text-sm">T</span>
+            </div>
+            <span className="font-display font-bold text-xl tracking-tight">tabitus</span>
           </Link>
-          <Link href="/auth/register">
-            <Button variant="gradient" size="sm">
-              Commencer — c'est gratuit
-            </Button>
-          </Link>
+
+          <div className="hidden md:flex items-center gap-1 text-sm font-medium">
+            {[
+              { href: '#comment-ca-marche', label: 'Comment ça marche' },
+              { href: '#categories', label: 'Catégories' },
+              { href: '#pour-commercants', label: 'Commerçants' },
+              { href: '#temoignages', label: 'Avis' },
+            ].map(link => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="px-3.5 py-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-all duration-150"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Link href="/auth/login" className="hidden sm:block">
+              <Button variant="ghost" size="sm">Connexion</Button>
+            </Link>
+            <Link href="/auth/register">
+              <Button variant="gradient" size="sm" className="gap-1.5">
+                <span className="hidden sm:inline">Commencer</span>
+                <span className="sm:hidden">S'inscrire</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Button>
+            </Link>
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="md:hidden h-9 w-9 rounded-xl bg-muted/60 flex items-center justify-center"
+            >
+              <div className="space-y-1.5">
+                <div className={cn('h-0.5 w-5 bg-foreground transition-all', mobileOpen && 'rotate-45 translate-y-2')} />
+                <div className={cn('h-0.5 w-5 bg-foreground transition-all', mobileOpen && 'opacity-0')} />
+                <div className={cn('h-0.5 w-5 bg-foreground transition-all', mobileOpen && '-rotate-45 -translate-y-2')} />
+              </div>
+            </button>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="fixed top-16 left-0 right-0 z-40 bg-background/95 backdrop-blur-xl border-b border-border shadow-floating md:hidden"
+          >
+            <div className="p-4 space-y-1">
+              {[
+                { href: '#comment-ca-marche', label: 'Comment ça marche' },
+                { href: '#categories', label: 'Catégories' },
+                { href: '#pour-commercants', label: 'Commerçants' },
+                { href: '#temoignages', label: 'Témoignages' },
+              ].map(link => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center px-4 py-3 rounded-xl text-sm font-medium hover:bg-muted/60 transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <div className="pt-2 border-t border-border/60 grid grid-cols-2 gap-2">
+                <Link href="/auth/login">
+                  <Button variant="outline" size="sm" className="w-full">Connexion</Button>
+                </Link>
+                <Link href="/auth/register">
+                  <Button variant="gradient" size="sm" className="w-full">S'inscrire</Button>
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   )
 }
 
+// ── Hero ──────────────────────────────────────────────────────
 function HeroSection() {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const { scrollY } = useScroll()
+  const y = useTransform(scrollY, [0, 400], [0, 60])
+  const opacity = useTransform(scrollY, [0, 300], [1, 0.3])
+
   return (
-    <section className="relative pt-32 pb-24 overflow-hidden">
-      {/* Background */}
+    <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
+      {/* Mesh background */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full bg-orange-100/60 blur-[120px]" />
-        <div className="absolute top-40 right-10 w-72 h-72 rounded-full bg-amber-100/40 blur-[80px]" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full bg-red-100/30 blur-[100px]" />
+        <div className="absolute inset-0 bg-background" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[700px] rounded-full bg-orange-200/30 dark:bg-orange-900/15 blur-[120px]" />
+        <div className="absolute top-20 right-0 w-[500px] h-[500px] rounded-full bg-amber-100/40 dark:bg-amber-900/10 blur-[100px]" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-red-100/25 dark:bg-red-900/08 blur-[80px]" />
+        <div className="absolute inset-0 bg-dot opacity-[0.4] dark:opacity-[0.15]" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-full px-4 py-2 mb-8 animate-fade-in">
-          <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-sm font-medium text-orange-700">Disponible au Maroc — 22 villes</span>
-          <Sparkles className="h-3.5 w-3.5 text-orange-500" />
-        </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 sm:py-28 w-full">
+        <motion.div style={{ y, opacity }} ref={containerRef}>
 
-        {/* Headline */}
-        <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-8 animate-slide-up">
-          Le marché qui<br />
-          <span className="text-gradient">travaille pour vous</span>
-        </h1>
-
-        <p className="max-w-2xl mx-auto text-xl text-muted-foreground leading-relaxed mb-12 animate-slide-up" style={{ animationDelay: '80ms' }}>
-          Publiez ce que vous cherchez. Des centaines de commerçants vous envoient leurs meilleures offres.
-          Vous comparez, vous choisissez. <strong className="text-foreground">Vous économisez.</strong>
-        </p>
-
-        {/* CTA */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 animate-slide-up" style={{ animationDelay: '160ms' }}>
-          <Link href="/auth/register?role=buyer">
-            <Button variant="gradient" size="xl" className="group w-full sm:w-auto">
-              Publier ma première demande
-              <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </Link>
-          <Link href="/auth/register?role=merchant">
-            <Button variant="premium" size="xl" className="w-full sm:w-auto">
-              Je suis commerçant
-            </Button>
-          </Link>
-        </div>
-
-        {/* Social proof — animated counters */}
-        <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-sm text-muted-foreground animate-slide-up" style={{ animationDelay: '240ms' }}>
-          {[
-            { icon: <Users className="h-4 w-4" />, value: 50000, suffix: '+', label: 'utilisateurs' },
-            { icon: <Store className="h-4 w-4" />, value: 8000, suffix: '+', label: 'commerçants' },
-            { icon: <ShoppingBag className="h-4 w-4" />, value: 200000, suffix: '+', label: 'demandes' },
-            { icon: <Star className="h-4 w-4 fill-amber-400 text-amber-400" />, value: 4.8, suffix: '/5', label: 'satisfaction' },
-          ].map(({ icon, value, suffix, label }) => (
-            <div key={label} className="flex items-center gap-2">
-              {icon}
-              <span className="font-bold text-foreground">
-                {value < 10 ? value + suffix : <AnimatedNumber value={value} suffix={suffix} />}
+          {/* Pill badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="flex justify-center mb-8"
+          >
+            <div className="inline-flex items-center gap-2 bg-white/80 dark:bg-card/80 backdrop-blur-sm border border-border/60 rounded-full px-4 py-2 shadow-premium">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
               </span>
-              <span>{label}</span>
+              <span className="text-sm font-medium text-foreground/80">Disponible au Maroc · 22 villes</span>
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
             </div>
-          ))}
-        </div>
+          </motion.div>
 
-        {/* Hero image / mockup */}
-        <div className="mt-20 relative max-w-4xl mx-auto animate-slide-up" style={{ animationDelay: '320ms' }}>
-          <div className="relative bg-white rounded-3xl shadow-2xl shadow-black/10 border border-gray-100 overflow-hidden p-8">
-            {/* Mock request card */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Request */}
-              <div className="bg-orange-50 rounded-2xl p-5 border border-orange-100 text-left">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-2xl">📱</span>
-                  <Badge variant="urgent">Urgent</Badge>
+          {/* Headline */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="text-center mb-7"
+          >
+            <h1 className="font-display text-[clamp(2.75rem,8vw,5.5rem)] font-bold leading-[1.04] tracking-[-0.04em] text-balance">
+              Le marché qui{' '}
+              <span className="relative inline-block">
+                <span className="text-gradient">travaille pour vous</span>
+                <motion.span
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ duration: 0.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute bottom-1 left-0 right-0 h-[3px] bg-brand-gradient rounded-full origin-left"
+                />
+              </span>
+            </h1>
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="text-center text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-10"
+          >
+            Publiez ce que vous cherchez. Des commerçants vérifiés vous envoient leurs meilleures offres.
+            Comparez, choisissez, et{' '}
+            <span className="font-semibold text-foreground">économisez jusqu'à 25%</span>.
+          </motion.p>
+
+          {/* CTA buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col sm:flex-row gap-3 justify-center mb-14"
+          >
+            <Link href="/auth/register?role=buyer">
+              <Button variant="gradient" size="xl" className="group w-full sm:w-auto shadow-brand">
+                Publier ma première demande
+                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-0.5" />
+              </Button>
+            </Link>
+            <Link href="/auth/register?role=merchant">
+              <Button variant="outline" size="xl" className="w-full sm:w-auto">
+                Je suis commerçant
+              </Button>
+            </Link>
+          </motion.div>
+
+          {/* Stats row */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 mb-16"
+          >
+            {[
+              { value: 50000, suffix: '+', label: 'utilisateurs', icon: <Users className="h-4 w-4" /> },
+              { value: 8000, suffix: '+', label: 'commerçants', icon: <Store className="h-4 w-4" /> },
+              { value: 200000, suffix: '+', label: 'demandes', icon: <ShoppingBag className="h-4 w-4" /> },
+              { value: 4.8, suffix: '/5', label: 'satisfaction', icon: <Star className="h-4 w-4 fill-amber-400 text-amber-400" /> },
+            ].map(({ value, suffix, label, icon }) => (
+              <div key={label} className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span className="text-foreground">{icon}</span>
+                <span className="font-bold text-foreground text-base">
+                  {value < 10 ? `${value}${suffix}` : <Counter value={value} suffix={suffix} />}
+                </span>
+                <span>{label}</span>
+              </div>
+            ))}
+          </motion.div>
+        </motion.div>
+
+        {/* Product preview */}
+        <motion.div
+          initial={{ opacity: 0, y: 32 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="relative max-w-4xl mx-auto"
+        >
+          {/* Glow behind card */}
+          <div className="absolute -inset-4 bg-brand-gradient opacity-[0.06] blur-2xl rounded-[2.5rem]" />
+
+          <div className="relative bg-card border border-border/60 rounded-3xl shadow-dramatic overflow-hidden">
+            {/* Card header */}
+            <div className="flex items-center gap-2 px-5 py-3.5 border-b border-border/60 bg-muted/30">
+              <div className="flex gap-1.5">
+                <div className="h-3 w-3 rounded-full bg-red-400/80" />
+                <div className="h-3 w-3 rounded-full bg-amber-400/80" />
+                <div className="h-3 w-3 rounded-full bg-green-400/80" />
+              </div>
+              <div className="flex-1 flex items-center justify-center">
+                <div className="bg-background/60 border border-border/60 rounded-lg px-4 py-1 text-xs text-muted-foreground font-medium">
+                  tabitus.com/ma-demande
                 </div>
-                <h3 className="font-display font-semibold text-base mb-1">iPhone 15 Pro 256GB</h3>
-                <p className="text-sm text-muted-foreground mb-3">Budget : 12 000 – 14 000 DH · Casablanca</p>
-                <div className="flex items-center gap-1.5 text-xs text-orange-600 font-medium">
-                  <Bell className="h-3.5 w-3.5" />
-                  <span>12 commerçants alertés</span>
+              </div>
+            </div>
+
+            <div className="p-6 md:p-8 grid md:grid-cols-2 gap-5">
+              {/* Request card */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-display font-bold text-sm text-muted-foreground uppercase tracking-wider">Votre demande</h3>
+                  <Badge variant="urgent" size="sm">Urgent</Badge>
+                </div>
+                <div className="bg-accent/40 border border-primary/15 rounded-2xl p-5">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="h-11 w-11 rounded-xl bg-orange-100 dark:bg-orange-950/50 flex items-center justify-center text-2xl">📱</div>
+                    <div>
+                      <h4 className="font-display font-bold">iPhone 15 Pro 256GB</h4>
+                      <p className="text-xs text-muted-foreground">Titanium Black · Neuf</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="bg-background/70 rounded-xl p-2.5">
+                      <p className="text-muted-foreground mb-0.5">Budget</p>
+                      <p className="font-bold text-foreground">12 – 14 000 DH</p>
+                    </div>
+                    <div className="bg-background/70 rounded-xl p-2.5">
+                      <p className="text-muted-foreground mb-0.5">Ville</p>
+                      <p className="font-bold text-foreground">Casablanca</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex items-center gap-1.5 text-xs text-primary font-semibold">
+                    <Bell className="h-3.5 w-3.5" />
+                    <span>12 commerçants alertés · Réponses en cours</span>
+                  </div>
                 </div>
               </div>
 
-              {/* Offers preview */}
-              <div className="space-y-2.5 text-left">
-                {[
-                  { name: 'TechShop Anfa', price: '12 400 DH', delay: '2j', rating: 4.9, badge: '✅' },
-                  { name: 'MobileCity', price: '12 800 DH', delay: '1j', rating: 4.7, badge: '✅' },
-                  { name: 'ElectroPro', price: '13 100 DH', delay: '3j', rating: 4.5, badge: null },
-                ].map((offer, i) => (
-                  <div key={offer.name}
-                    className={cn(
-                      'flex items-center justify-between bg-white rounded-xl p-3.5 border',
-                      i === 0 && 'border-green-300 ring-1 ring-green-200'
-                    )}
-                  >
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-sm font-semibold">{offer.name}</span>
-                        {offer.badge && <span className="text-xs">{offer.badge}</span>}
-                        {i === 0 && <Badge variant="success" className="text-[10px] py-0">Meilleure offre</Badge>}
+              {/* Offers */}
+              <div className="space-y-4">
+                <h3 className="font-display font-bold text-sm text-muted-foreground uppercase tracking-wider">
+                  Offres reçues <span className="text-foreground">3</span>
+                </h3>
+                <div className="space-y-2.5">
+                  {[
+                    { name: 'TechShop Anfa', price: '12 400 DH', delay: '2j', rating: '4.9', verified: true, best: true, savings: '1 600 DH' },
+                    { name: 'MobileCity', price: '12 800 DH', delay: '1j', rating: '4.7', verified: true, best: false, savings: '' },
+                    { name: 'ElectroPro', price: '13 100 DH', delay: '3j', rating: '4.5', verified: false, best: false, savings: '' },
+                  ].map((offer, i) => (
+                    <motion.div
+                      key={offer.name}
+                      initial={{ opacity: 0, x: 12 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.7 + i * 0.12, duration: 0.4 }}
+                      className={cn(
+                        'flex items-center justify-between rounded-2xl p-3.5 border transition-all',
+                        offer.best
+                          ? 'border-green-300/60 dark:border-green-700/40 bg-green-50/60 dark:bg-green-950/30 ring-1 ring-green-200/50 dark:ring-green-800/30'
+                          : 'border-border/60 bg-card hover:bg-muted/30'
+                      )}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 mb-0.5">
+                          <span className="text-sm font-bold truncate">{offer.name}</span>
+                          {offer.verified && <CheckCircle2 className="h-3.5 w-3.5 text-blue-500 shrink-0" />}
+                          {offer.best && <Badge variant="success" size="sm">Meilleure</Badge>}
+                        </div>
+                        <p className="text-xs text-muted-foreground">⭐ {offer.rating} · {offer.delay} livraison</p>
                       </div>
-                      <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground">
-                        <span>⭐ {offer.rating}</span>
-                        <span>· {offer.delay} livraison</span>
+                      <div className="text-right shrink-0">
+                        <p className="font-bold text-sm">{offer.price}</p>
+                        {offer.savings && <p className="text-[10px] text-green-600 font-semibold">-{offer.savings}</p>}
                       </div>
-                    </div>
-                    <span className="text-sm font-bold text-foreground">{offer.price}</span>
-                  </div>
-                ))}
+                    </motion.div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
 
           {/* Floating badges */}
-          <div className="absolute -top-4 -left-4 bg-white rounded-2xl shadow-lg px-4 py-2.5 border border-gray-100 animate-float">
-            <div className="flex items-center gap-2 text-sm font-medium">
-              <span>💰</span>
-              <span>1 600 DH économisés</span>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ delay: 1.0, duration: 0.5 }}
+            className="absolute -top-5 -left-5 hidden sm:block"
+          >
+            <div className="bg-card border border-border/60 rounded-2xl shadow-floating px-4 py-3 animate-float">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <span className="h-7 w-7 rounded-xl bg-green-100 dark:bg-green-950/50 flex items-center justify-center text-base">💰</span>
+                <div>
+                  <p className="text-xs text-muted-foreground leading-none mb-0.5">Économie</p>
+                  <p className="font-bold leading-none">1 600 DH</p>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="absolute -bottom-4 -right-4 bg-white rounded-2xl shadow-lg px-4 py-2.5 border border-gray-100 animate-float" style={{ animationDelay: '1.5s' }}>
-            <div className="flex items-center gap-2 text-sm font-medium">
-              <span>⚡</span>
-              <span>Réponse en 47 min</span>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.5 }}
+            className="absolute -bottom-5 -right-5 hidden sm:block"
+          >
+            <div className="bg-card border border-border/60 rounded-2xl shadow-floating px-4 py-3 animate-float-slow">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <span className="h-7 w-7 rounded-xl bg-orange-100 dark:bg-orange-950/50 flex items-center justify-center text-base">⚡</span>
+                <div>
+                  <p className="text-xs text-muted-foreground leading-none mb-0.5">Réponse en</p>
+                  <p className="font-bold leading-none">47 min</p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   )
 }
 
+// ── City Marquee ──────────────────────────────────────────────
+function CityMarquee() {
+  const cities = [...LOGOS, ...LOGOS]
+  return (
+    <div className="py-10 border-y border-border/40 overflow-hidden bg-muted/20">
+      <p className="text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-6">
+        Disponible dans 22 villes marocaines
+      </p>
+      <div className="flex animate-marquee whitespace-nowrap gap-8">
+        {cities.map((city, i) => (
+          <div key={i} className="inline-flex items-center gap-2.5 shrink-0 px-4">
+            <div className="h-1.5 w-1.5 rounded-full bg-primary/50" />
+            <span className="text-sm font-semibold text-muted-foreground">{city}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ── How it works ──────────────────────────────────────────────
 function HowItWorksSection() {
-  const [activeTab, setActiveTab] = useState<'buyer' | 'merchant'>('buyer')
+  const [tab, setTab] = useState<'buyer' | 'merchant'>('buyer')
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-80px' })
+
+  const steps = tab === 'buyer' ? STEPS_BUYER : STEPS_MERCHANT
 
   return (
-    <section id="comment-ca-marche" className="py-24 bg-muted/30">
+    <section id="comment-ca-marche" className="py-28 bg-muted/20" ref={ref}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
           <Badge variant="orange" className="mb-4">Comment ça marche</Badge>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
+          <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 tracking-tight">
             Simple comme bonjour
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-xl mx-auto leading-relaxed mb-10">
             Que vous soyez acheteur ou commerçant, Tabitus s'adapte à vous.
           </p>
 
-          {/* Tab switcher */}
-          <div className="inline-flex mt-8 bg-background rounded-2xl p-1.5 border shadow-sm">
-            <button
-              onClick={() => setActiveTab('buyer')}
-              className={cn(
-                'px-6 py-2.5 rounded-xl text-sm font-semibold transition-all',
-                activeTab === 'buyer'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
-              👤 Acheteurs
-            </button>
-            <button
-              onClick={() => setActiveTab('merchant')}
-              className={cn(
-                'px-6 py-2.5 rounded-xl text-sm font-semibold transition-all',
-                activeTab === 'merchant'
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
-              🏪 Commerçants
-            </button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-children">
-          {(activeTab === 'buyer' ? STEPS_BUYER : STEPS_MERCHANT).map((step, i) => (
-            <div key={i} className="relative">
-              <div className="bg-background rounded-3xl p-8 border shadow-premium h-full">
-                <div className="text-5xl mb-6">{step.icon}</div>
-                {'n' in step && (
-                  <span className="text-xs font-bold text-muted-foreground/50 tracking-widest uppercase mb-2 block">
-                    Étape {(step as any).n}
-                  </span>
+          <div className="inline-flex bg-card border border-border/60 rounded-2xl p-1.5 shadow-premium">
+            {[
+              { key: 'buyer', label: '👤 Acheteurs' },
+              { key: 'merchant', label: '🏪 Commerçants' },
+            ].map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => setTab(key as 'buyer' | 'merchant')}
+                className={cn(
+                  'px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200',
+                  tab === key
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
                 )}
-                <h3 className="font-display text-xl font-bold mb-3">{step.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{step.desc}</p>
-              </div>
-              {i < 2 && (
-                <div className="hidden md:block absolute top-1/2 -right-3 z-10 text-muted-foreground/30 text-2xl">→</div>
-              )}
-            </div>
-          ))}
-        </div>
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </motion.div>
 
-        {activeTab === 'buyer' && (
-          <div className="mt-12 text-center">
-            <Link href="/auth/register?role=buyer">
-              <Button variant="gradient" size="lg">
-                Publier ma demande maintenant
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-        )}
-        {activeTab === 'merchant' && (
-          <div className="mt-12 text-center">
-            <Link href="/auth/register?role=merchant">
-              <Button variant="premium" size="lg">
-                Rejoindre comme commerçant
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-        )}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={tab}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+          >
+            {steps.map((step, i) => (
+              <div key={i} className="relative">
+                <div className="bg-card border border-border/60 rounded-3xl p-8 shadow-premium h-full hover:shadow-elevated hover:-translate-y-0.5 transition-all duration-200">
+                  {/* Step number */}
+                  <div className="flex items-start justify-between mb-6">
+                    <div className={cn('h-12 w-12 rounded-2xl flex items-center justify-center text-white', `bg-gradient-to-br ${step.color}`)}>
+                      {step.icon}
+                    </div>
+                    <span className="text-3xl font-display font-bold text-muted-foreground/20 leading-none">
+                      {step.n}
+                    </span>
+                  </div>
+                  <h3 className="font-display text-xl font-bold mb-3">{step.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed mb-4">{step.desc}</p>
+                  <div className={cn('rounded-xl px-3 py-2 text-xs font-medium', step.bg)}>
+                    {step.detail}
+                  </div>
+                </div>
+                {i < 2 && (
+                  <div className="hidden md:flex absolute top-1/2 -right-3 z-10 items-center justify-center h-6 w-6 rounded-full bg-muted border border-border text-muted-foreground/60">
+                    <ArrowRight className="h-3 w-3" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="mt-12 text-center">
+          <Link href={`/auth/register?role=${tab}`}>
+            <Button variant={tab === 'buyer' ? 'gradient' : 'premium'} size="lg">
+              {tab === 'buyer' ? 'Publier ma demande maintenant' : 'Rejoindre comme commerçant'}
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
       </div>
     </section>
   )
 }
 
+// ── Categories ────────────────────────────────────────────────
 function CategoriesSection() {
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-80px' })
+
   return (
-    <section id="categories" className="py-24">
+    <section id="categories" className="py-28" ref={ref}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
           <Badge variant="orange" className="mb-4">Tous les secteurs</Badge>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
+          <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 tracking-tight">
             Tout. Absolument tout.
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            De l'iPhone au mouton de l'Aïd, de la formation professionnelle au déménagement —
-            Tabitus couvre tous vos besoins.
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            De l'iPhone au mouton de l'Aïd, de la formation professionnelle au déménagement — Tabitus couvre 60+ catégories.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 stagger-children">
-          {CATEGORIES_PREVIEW.map(cat => (
-            <Link
-              key={cat.slug}
-              href={`/auth/register?category=${cat.slug}`}
-              className="group bg-background border rounded-2xl p-5 text-center hover:border-primary/40 hover:shadow-premium-hover transition-all duration-200 hover:-translate-y-0.5"
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          {CATEGORIES.map((cat, i) => (
+            <motion.div
+              key={cat.name}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.35, delay: i * 0.04, ease: [0.16, 1, 0.3, 1] }}
             >
-              <div className="text-4xl mb-3">{cat.icon}</div>
-              <h3 className="font-display font-semibold text-sm mb-1">{cat.name}</h3>
-              <p className="text-xs text-muted-foreground">{cat.count}</p>
-            </Link>
+              <Link
+                href="/auth/register"
+                className="group block bg-card border border-border/60 rounded-2xl p-4 text-center hover:border-primary/40 hover:shadow-elevated hover:-translate-y-0.5 transition-all duration-200"
+              >
+                <div className="text-3xl mb-2.5 transition-transform duration-200 group-hover:scale-110">
+                  {cat.icon}
+                </div>
+                <h3 className="font-display font-semibold text-sm mb-1 group-hover:text-primary transition-colors">
+                  {cat.name}
+                </h3>
+                <p className="text-[11px] text-muted-foreground">{cat.count} demandes</p>
+              </Link>
+            </motion.div>
           ))}
         </div>
 
-        <div className="mt-8 text-center">
-          <p className="text-muted-foreground text-sm">
-            + 60 autres catégories disponibles
-          </p>
-        </div>
+        <p className="text-center text-sm text-muted-foreground mt-8">
+          + 48 autres catégories disponibles
+        </p>
       </div>
     </section>
   )
 }
 
+// ── Advantages (dark section) ─────────────────────────────────
 function AdvantagesSection() {
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-80px' })
+
   return (
-    <section className="py-24 bg-foreground text-background overflow-hidden relative">
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-10 left-10 text-[200px] leading-none select-none">T</div>
+    <section id="pour-commercants" className="py-28 bg-foreground text-background relative overflow-hidden" ref={ref}>
+      {/* Background effects */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-orange-600/10 blur-[80px]" />
+        <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-red-700/8 blur-[80px]" />
+        <div className="absolute inset-0 bg-dot opacity-[0.04]" />
       </div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-          <div>
-            <Badge className="mb-6 bg-orange-500/20 text-orange-300 border-orange-500/30">
-              Pour les acheteurs
-            </Badge>
-            <h2 className="font-display text-4xl md:text-5xl font-bold mb-8 leading-tight">
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+          {/* Buyers column */}
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="inline-flex items-center gap-2 bg-orange-500/15 border border-orange-500/25 rounded-full px-3.5 py-1.5 mb-8">
+              <ShoppingBag className="h-3.5 w-3.5 text-orange-400" />
+              <span className="text-sm font-semibold text-orange-300">Pour les acheteurs</span>
+            </div>
+            <h2 className="font-display text-4xl md:text-5xl font-bold mb-10 leading-[1.1] tracking-tight">
               Arrêtez de chercher.<br />
-              <span className="text-gradient">Laissez-les venir à vous.</span>
+              <span className="text-gradient">Laissez-les venir.</span>
             </h2>
             <div className="space-y-5">
               {[
-                { icon: <TrendingDown className="h-5 w-5" />, title: 'Économisez en moyenne 25%', desc: 'La concurrence entre commerçants fait baisser les prix naturellement.' },
-                { icon: <Zap className="h-5 w-5" />, title: 'Réponses en moins de 2h', desc: 'Les commerçants sont alertés immédiatement et répondent rapidement.' },
-                { icon: <Shield className="h-5 w-5" />, title: 'Commerçants vérifiés', desc: 'Chaque vendeur est vérifié. Votre sécurité est notre priorité.' },
-                { icon: <Globe2 className="h-5 w-5" />, title: 'Livraison partout', desc: 'Des offres avec livraison à domicile dans toutes les villes.' },
-              ].map(item => (
-                <div key={item.title} className="flex gap-4">
-                  <div className="h-10 w-10 rounded-xl bg-orange-500/20 flex items-center justify-center text-orange-400 shrink-0">
+                { icon: <TrendingDown className="h-5 w-5" />, title: 'Économisez en moyenne 25%', desc: 'La concurrence entre commerçants fait baisser les prix naturellement. Vous gagnez sans négocier.' },
+                { icon: <Zap className="h-5 w-5" />, title: 'Réponses en moins de 2h', desc: 'Les commerçants sont alertés instantanément et ont tout intérêt à répondre vite.' },
+                { icon: <Shield className="h-5 w-5" />, title: 'Commerçants vérifiés', desc: 'Chaque vendeur est authentifié. Identité, RC, téléphone. Votre sécurité est notre priorité.' },
+                { icon: <Globe2 className="h-5 w-5" />, title: 'Livraison partout', desc: 'Des offres avec livraison dans toutes les villes. Comparez aussi les frais de port.' },
+              ].map((item, i) => (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, x: -16 }}
+                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.4, delay: 0.1 + i * 0.08 }}
+                  className="flex gap-4"
+                >
+                  <div className="h-11 w-11 rounded-2xl bg-orange-500/15 border border-orange-500/20 flex items-center justify-center text-orange-400 shrink-0">
                     {item.icon}
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">{item.title}</h3>
-                    <p className="text-sm text-background/60">{item.desc}</p>
+                    <h3 className="font-semibold mb-1.5">{item.title}</h3>
+                    <p className="text-sm text-background/55 leading-relaxed">{item.desc}</p>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
-          <div id="pour-commercants">
-            <Badge className="mb-6 bg-white/10 text-white/80 border-white/20">
-              Pour les commerçants
-            </Badge>
-            <h2 className="font-display text-4xl md:text-5xl font-bold mb-8 leading-tight">
+          {/* Merchants column */}
+          <motion.div
+            initial={{ opacity: 0, x: 24 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 rounded-full px-3.5 py-1.5 mb-8">
+              <Store className="h-3.5 w-3.5 text-white/70" />
+              <span className="text-sm font-semibold text-white/80">Pour les commerçants</span>
+            </div>
+            <h2 className="font-display text-4xl md:text-5xl font-bold mb-10 leading-[1.1] tracking-tight">
               Des clients.<br />
               Sans publicité.
             </h2>
             <div className="space-y-5">
               {[
-                { icon: <Users className="h-5 w-5" />, title: 'Clients qualifiés', desc: 'Chaque demande est un client qui veut acheter maintenant.' },
-                { icon: <MessageSquare className="h-5 w-5" />, title: 'Répondez en 30 secondes', desc: 'Interface ultra simple pour soumettre une offre rapidement.' },
-                { icon: <Trophy className="h-5 w-5" />, title: 'Construisez votre réputation', desc: 'Les avis clients vous distinguent de la concurrence.' },
-                { icon: <Clock className="h-5 w-5" />, title: '0 DH de commission à l\'inscription', desc: 'Commencez gratuitement, évoluez selon vos besoins.' },
-              ].map(item => (
-                <div key={item.title} className="flex gap-4">
-                  <div className="h-10 w-10 rounded-xl bg-white/10 flex items-center justify-center text-white/60 shrink-0">
+                { icon: <Users className="h-5 w-5" />, title: 'Clients qualifiés', desc: 'Chaque demande est un client qui veut acheter maintenant, avec budget et délai précisés.' },
+                { icon: <MessageSquare className="h-5 w-5" />, title: 'Répondez en 30 secondes', desc: 'Interface ultra simple pour soumettre une offre depuis votre mobile en quelques touches.' },
+                { icon: <Trophy className="h-5 w-5" />, title: 'Construisez votre réputation', desc: 'Les avis certifiés vous distinguent de la concurrence et boostent votre conversion.' },
+                { icon: <BarChart3 className="h-5 w-5" />, title: '0 DH à l\'inscription', desc: 'Commencez gratuitement, payez uniquement sur les ventes conclues. Zéro risque.' },
+              ].map((item, i) => (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, x: 16 }}
+                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.4, delay: 0.25 + i * 0.08 }}
+                  className="flex gap-4"
+                >
+                  <div className="h-11 w-11 rounded-2xl bg-white/8 border border-white/12 flex items-center justify-center text-white/60 shrink-0">
                     {item.icon}
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1">{item.title}</h3>
-                    <p className="text-sm text-background/60">{item.desc}</p>
+                    <h3 className="font-semibold mb-1.5">{item.title}</h3>
+                    <p className="text-sm text-background/55 leading-relaxed">{item.desc}</p>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
   )
 }
 
+// ── Testimonials ──────────────────────────────────────────────
 function TestimonialsSection() {
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-80px' })
+
   return (
-    <section className="py-24 bg-muted/30">
+    <section id="temoignages" className="py-28 bg-muted/20" ref={ref}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
           <Badge variant="orange" className="mb-4">Témoignages</Badge>
-          <h2 className="font-display text-4xl md:text-5xl font-bold">
+          <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 tracking-tight">
             Ils nous font confiance
           </h2>
-        </div>
+          <p className="text-xl text-muted-foreground max-w-xl mx-auto">
+            Plus de 50 000 utilisateurs partagent leurs expériences
+          </p>
+        </motion.div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {TESTIMONIALS.map(t => (
-            <div key={t.name} className="bg-background rounded-3xl p-8 border shadow-premium">
-              <div className="flex gap-1 mb-4">
+          {TESTIMONIALS.map((t, i) => (
+            <motion.div
+              key={t.name}
+              initial={{ opacity: 0, y: 24 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="bg-card border border-border/60 rounded-3xl p-8 shadow-premium hover:shadow-elevated hover:-translate-y-0.5 transition-all duration-200"
+            >
+              {/* Stars */}
+              <div className="flex gap-1 mb-5">
                 {Array.from({ length: t.stars }).map((_, i) => (
                   <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
                 ))}
               </div>
-              <p className="text-foreground/80 leading-relaxed mb-6">"{t.text}"</p>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-brand-gradient flex items-center justify-center text-white font-bold text-sm">
+
+              <p className="text-foreground/80 leading-relaxed mb-6 text-[15px]">"{t.text}"</p>
+
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className={cn(
+                    'h-10 w-10 rounded-full flex items-center justify-center text-white font-bold text-sm bg-gradient-to-br shrink-0',
+                    t.avatarColor
+                  )}>
                     {t.avatar}
                   </div>
-                  <div>
-                    <p className="font-semibold text-sm">{t.name}</p>
-                    <p className="text-xs text-muted-foreground">{t.role}</p>
+                  <div className="min-w-0">
+                    <p className="font-semibold text-sm leading-none mb-1 truncate">{t.name}</p>
+                    <p className="text-xs text-muted-foreground truncate">{t.role} · {t.city}</p>
                   </div>
                 </div>
-                <Badge variant="success" className="text-xs">{t.saving}</Badge>
+                <div className={cn('shrink-0 px-2.5 py-1 rounded-full text-xs font-bold', t.badgeColor)}>
+                  {t.badge}
+                </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -525,34 +879,70 @@ function TestimonialsSection() {
   )
 }
 
+// ── FAQ ───────────────────────────────────────────────────────
 function FAQSection() {
   const [open, setOpen] = useState<number | null>(null)
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-80px' })
+
   return (
-    <section id="faq" className="py-24">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6">
-        <div className="text-center mb-16">
+    <section id="faq" className="py-28" ref={ref}>
+      <div className="max-w-2xl mx-auto px-4 sm:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-16"
+        >
           <Badge variant="orange" className="mb-4">FAQ</Badge>
-          <h2 className="font-display text-4xl md:text-5xl font-bold">Questions fréquentes</h2>
-        </div>
-        <div className="space-y-3">
+          <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight">
+            Questions fréquentes
+          </h2>
+        </motion.div>
+
+        <div className="space-y-2">
           {FAQS.map((faq, i) => (
-            <div key={i} className="border rounded-2xl overflow-hidden bg-background shadow-premium">
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 16 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.4, delay: i * 0.06 }}
+              className={cn(
+                'border rounded-2xl overflow-hidden bg-card transition-all duration-200',
+                open === i ? 'shadow-elevated border-border' : 'shadow-premium border-border/60'
+              )}
+            >
               <button
                 onClick={() => setOpen(open === i ? null : i)}
-                className="w-full flex items-center justify-between p-6 text-left hover:bg-muted/30 transition-colors"
+                className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-muted/30 transition-colors gap-4"
               >
-                <span className="font-semibold pr-4">{faq.q}</span>
-                <ChevronDown className={cn(
-                  'h-5 w-5 text-muted-foreground shrink-0 transition-transform',
-                  open === i && 'rotate-180'
-                )} />
-              </button>
-              {open === i && (
-                <div className="px-6 pb-6 text-muted-foreground leading-relaxed border-t pt-4 animate-fade-in">
-                  {faq.a}
+                <span className="font-semibold text-[15px] leading-snug">{faq.q}</span>
+                <div className={cn(
+                  'h-7 w-7 rounded-xl bg-muted/60 flex items-center justify-center shrink-0 transition-all duration-200',
+                  open === i && 'bg-primary/10 text-primary'
+                )}>
+                  <ChevronDown className={cn(
+                    'h-4 w-4 text-muted-foreground transition-transform duration-200',
+                    open === i && 'rotate-180 text-primary'
+                  )} />
                 </div>
-              )}
-            </div>
+              </button>
+              <AnimatePresence>
+                {open === i && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-6 pb-5 text-muted-foreground text-sm leading-relaxed border-t border-border/40 pt-4">
+                      {faq.a}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -560,82 +950,126 @@ function FAQSection() {
   )
 }
 
+// ── CTA ───────────────────────────────────────────────────────
 function CTASection() {
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-80px' })
+
   return (
-    <section className="py-24 relative overflow-hidden">
-      <div className="absolute inset-0 -z-10 bg-brand-gradient opacity-95" />
-      <div className="absolute inset-0 -z-10 noise" />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center text-white">
-        <h2 className="font-display text-4xl md:text-6xl font-bold mb-6 leading-tight">
-          Prêt à économiser<br />sur vos prochains achats ?
-        </h2>
-        <p className="text-xl text-white/80 mb-12 max-w-2xl mx-auto">
-          Rejoignez 50 000+ utilisateurs qui laissent Tabitus faire le travail à leur place.
-          Inscription gratuite, sans carte bancaire.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/auth/register?role=buyer">
-            <Button size="xl" className="bg-white text-orange-600 hover:bg-white/90 shadow-xl w-full sm:w-auto font-bold">
-              Je publie ma demande
-              <ArrowRight className="h-5 w-5" />
-            </Button>
-          </Link>
-          <Link href="/auth/register?role=merchant">
-            <Button size="xl" variant="outline" className="border-white/40 text-white hover:bg-white/10 w-full sm:w-auto">
-              Je suis commerçant
-            </Button>
-          </Link>
+    <section className="py-28 px-4 sm:px-6 relative overflow-hidden" ref={ref}>
+      <motion.div
+        initial={{ opacity: 0, y: 32, scale: 0.98 }}
+        animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="relative max-w-4xl mx-auto rounded-[2rem] overflow-hidden"
+      >
+        {/* Background */}
+        <div className="absolute inset-0 bg-brand-gradient" />
+        <div className="absolute inset-0 noise" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-white/5 blur-[60px] -translate-y-1/2 translate-x-1/4" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-black/10 blur-[60px] translate-y-1/2 -translate-x-1/4" />
+
+        <div className="relative z-10 text-center text-white px-8 py-16 sm:py-20">
+          <div className="inline-flex items-center gap-2 bg-white/15 border border-white/20 rounded-full px-4 py-2 mb-8 text-sm font-medium">
+            <Sparkles className="h-4 w-4" />
+            Inscription gratuite · Sans carte bancaire
+          </div>
+
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-[1.08] tracking-tight text-balance">
+            Prêt à économiser sur vos prochains achats ?
+          </h2>
+          <p className="text-xl text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed">
+            Rejoignez 50 000+ utilisateurs qui laissent Tabitus faire le travail à leur place.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/auth/register?role=buyer">
+              <Button
+                size="xl"
+                className="bg-white text-orange-600 hover:bg-white/92 shadow-dramatic w-full sm:w-auto font-bold"
+              >
+                Je publie ma demande
+                <ArrowRight className="h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/auth/register?role=merchant">
+              <Button
+                size="xl"
+                variant="outline"
+                className="border-white/30 text-white hover:bg-white/10 hover:border-white/50 w-full sm:w-auto"
+              >
+                Je suis commerçant
+              </Button>
+            </Link>
+          </div>
+
+          {/* Trust signals below CTA */}
+          <div className="flex flex-wrap justify-center gap-6 mt-12 text-sm text-white/60">
+            {[
+              { icon: <Lock className="h-3.5 w-3.5" />, text: 'Données sécurisées' },
+              { icon: <Check className="h-3.5 w-3.5" />, text: 'Sans engagement' },
+              { icon: <Globe2 className="h-3.5 w-3.5" />, text: '22 villes au Maroc' },
+            ].map(item => (
+              <div key={item.text} className="flex items-center gap-1.5">
+                {item.icon}
+                <span>{item.text}</span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   )
 }
 
+// ── Footer ────────────────────────────────────────────────────
 function Footer() {
   return (
-    <footer className="bg-foreground text-background py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
-          <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="h-8 w-8 rounded-xl bg-brand-gradient flex items-center justify-center text-white font-display font-bold text-sm">T</div>
-              <span className="font-display font-bold text-xl">tabitus</span>
-            </div>
-            <p className="text-sm text-background/50 leading-relaxed">
-              La marketplace intelligente. La marketplace intelligente du Maroc et de l'Afrique.
+    <footer className="bg-foreground text-background">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-10">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-14">
+          <div className="col-span-2">
+            <Link href="/" className="flex items-center gap-2.5 mb-5 group">
+              <div className="h-9 w-9 rounded-xl bg-brand-gradient flex items-center justify-center shadow-brand">
+                <span className="font-display font-bold text-white text-base">T</span>
+              </div>
+              <span className="font-display font-bold text-xl tracking-tight">tabitus</span>
+            </Link>
+            <p className="text-sm text-background/50 leading-relaxed max-w-xs">
+              La marketplace intelligente du Maroc. Publiez vos besoins, recevez les meilleures offres.
             </p>
+            <div className="flex items-center gap-2 mt-5">
+              <span className="text-background/30 text-xs">🇲🇦</span>
+              <span className="text-xs text-background/40">Conçu avec ❤️ au Maroc</span>
+            </div>
           </div>
+
           {[
-            {
-              title: 'Produit',
-              links: ['Comment ça marche', 'Catégories', 'Pour les commerçants', 'Témoignages'],
-            },
-            {
-              title: 'Support',
-              links: ['Centre d\'aide', 'Nous contacter', 'Signaler un problème', 'Blog'],
-            },
-            {
-              title: 'Légal',
-              links: ['Mentions légales', 'Confidentialité', 'CGU', 'Cookies'],
-            },
+            { title: 'Produit', links: ['Comment ça marche', 'Catégories', 'Pour les commerçants', 'Témoignages'] },
+            { title: 'Support', links: ['Centre d\'aide', 'Nous contacter', 'Blog', 'Signaler un problème'] },
+            { title: 'Légal', links: ['Mentions légales', 'Confidentialité', 'CGU', 'Cookies'] },
           ].map(col => (
             <div key={col.title}>
-              <h4 className="font-semibold text-sm mb-4 text-background/80">{col.title}</h4>
-              <ul className="space-y-2.5">
+              <h4 className="font-semibold text-sm mb-5 text-background/70">{col.title}</h4>
+              <ul className="space-y-3">
                 {col.links.map(l => (
                   <li key={l}>
-                    <Link href="#" className="text-sm text-background/50 hover:text-background/80 transition-colors">{l}</Link>
+                    <Link href="#" className="text-sm text-background/40 hover:text-background/70 transition-colors">
+                      {l}
+                    </Link>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-        <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-background/40">
-          <p>© 2024 Tabitus. Tous droits réservés.</p>
-          <div className="flex items-center gap-2">
-            <span>🇲🇦</span>
-            <span>Casablanca, Maroc</span>
+
+        <div className="border-t border-white/8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-background/30">
+          <p>© 2025 Tabitus. Tous droits réservés.</p>
+          <div className="flex items-center gap-4">
+            <Link href="#" className="hover:text-background/50 transition-colors">Confidentialité</Link>
+            <Link href="#" className="hover:text-background/50 transition-colors">CGU</Link>
+            <Link href="#" className="hover:text-background/50 transition-colors">Cookies</Link>
           </div>
         </div>
       </div>
@@ -643,12 +1077,13 @@ function Footer() {
   )
 }
 
-// ── Main Page ───────────────────────────────────────────────────
+// ── Page ──────────────────────────────────────────────────────
 export default function LandingPage() {
   return (
-    <main>
+    <main className="antialiased">
       <NavBar />
       <HeroSection />
+      <CityMarquee />
       <HowItWorksSection />
       <CategoriesSection />
       <AdvantagesSection />

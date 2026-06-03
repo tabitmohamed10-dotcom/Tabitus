@@ -20,10 +20,12 @@ export default async function MerchantLayout({ children }: { children: React.Rea
   ]
 
   return (
-    <div className="min-h-screen bg-muted/20">
+    <div className="min-h-screen bg-muted/30">
       <DashboardNavbar profile={profile} links={links} />
-      <main className="pt-16 pb-20 md:pb-8 max-w-7xl mx-auto px-4 sm:px-6 py-8">
-        {children}
+      <main className="pt-14 pb-24 md:pb-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-7">
+          {children}
+        </div>
       </main>
       <BottomNav role="merchant" />
     </div>
