@@ -8,7 +8,7 @@
 
 ## 🚀 Vision
 
-Tabitus révolutionne le commerce en inversant la logique des marketplaces traditionnelles. Au lieu que les clients cherchent dans des catalogues, **ils publient leurs besoins** et les commerçants viennent à eux avec leurs meilleures offres.
+Tabit révolutionne le commerce en inversant la logique des marketplaces traditionnelles. Au lieu que les clients cherchent dans des catalogues, **ils publient leurs besoins** et les commerçants viennent à eux avec leurs meilleures offres.
 
 **Modèle inspiré de :** InDrive (pour le covoiturage) → appliqué à TOUS les secteurs commerciaux.
 
@@ -42,7 +42,7 @@ Tabitus révolutionne le commerce en inversant la logique des marketplaces tradi
 ## 📁 Structure du projet
 
 ```
-tabitus/
+tabit/
 ├── app/
 │   ├── page.tsx                    # Landing page premium
 │   ├── layout.tsx                  # Root layout
@@ -110,8 +110,8 @@ tabitus/
 ### 1. Cloner et installer
 
 ```bash
-git clone https://github.com/tabitus/tabitus-app.git
-cd tabitus-app
+git clone https://github.com/tabit/tabit-app.git
+cd tabit-app
 npm install
 ```
 
@@ -143,7 +143,7 @@ supabase db push
 ### 4. Configurer le storage Supabase
 
 Dans votre dashboard Supabase → Storage → Créer bucket :
-- Nom : `tabitus-uploads`
+- Nom : `tabit-uploads`
 - Public : `true`
 
 ### 5. Lancer en développement
@@ -297,7 +297,7 @@ NEXT_PUBLIC_APP_URL
 - [ ] Multi-devises
 - [ ] Expansion Afrique
 - [ ] Programme d'affiliation
-- [ ] Tabitus Pro (B2B)
+- [ ] Tabit Pro (B2B)
 - [ ] IA avancée (LLM)
 
 ---
@@ -356,7 +356,7 @@ git push origin feature/ma-feature
 
 ## 📄 Licence
 
-Propriétaire — Tabitus SAS © 2024
+Propriétaire — Tabit SAS © 2024
 
 ---
 

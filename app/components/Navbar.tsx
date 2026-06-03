@@ -24,18 +24,12 @@ export default function Navbar() {
       <ul style={{display:'flex',gap:40,listStyle:'none',alignItems:'center'}}>
         {links.map(l=>(
           <li key={l.href}>
-            <Link href={l.href} style={{fontSize:10,letterSpacing:'0.3em',textTransform:'uppercase',color:'#8A856E',textDecoration:'none',fontFamily:'var(--font-inter)',transition:'color 0.2s'}}
-              onMouseEnter={e=>(e.currentTarget.style.color='#0C0B09')}
-              onMouseLeave={e=>(e.currentTarget.style.color='#8A856E')}>
-              {l.label}
-            </Link>
+            <Link href={l.href} className="nav-link">{l.label}</Link>
           </li>
         ))}
       </ul>
       <div style={{display:'flex',alignItems:'center',gap:24}}>
-        <Link href="/auth/login" style={{fontSize:10,letterSpacing:'0.25em',textTransform:'uppercase',color:'#8A856E',textDecoration:'none',fontFamily:'var(--font-inter)'}}>
-          Connexion
-        </Link>
+        <Link href="/auth/login" className="nav-link">Connexion</Link>
         <Link href="/auth/register" className="btn-primary" style={{padding:'10px 22px',fontSize:10}}>
           Commencer
         </Link>

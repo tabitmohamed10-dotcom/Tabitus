@@ -19,6 +19,8 @@ body{background:var(--cream);color:var(--noir);font-family:'Inter',sans-serif;fo
 .h-divider{height:1px;background:linear-gradient(to right,transparent,var(--border),transparent);}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .marquee-inner{display:inline-flex;animation:marquee 30s linear infinite;white-space:nowrap;}
+.nav-link{font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:#8A856E;text-decoration:none;font-family:var(--font-inter);transition:color 0.2s;}
+.nav-link:hover{color:#0C0B09;}
 .card-hover{transition:border-color 0.3s;}
 .card-hover:hover{border-color:rgba(191,160,106,0.5)!important;}
 ::selection{background:#F0D080;color:var(--noir);}
