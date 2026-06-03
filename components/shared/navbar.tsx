@@ -71,7 +71,7 @@ export function DashboardNavbar({ profile, links }: NavbarProps) {
             <Link href="/" className="flex items-center group">
               <img
                 src="/logo.svg"
-                alt="Tabitus"
+                alt="Tabit"
                 className="h-8 w-auto transition-opacity group-hover:opacity-85"
               />
             </Link>

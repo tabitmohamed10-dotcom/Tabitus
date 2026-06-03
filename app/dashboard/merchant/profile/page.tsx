@@ -92,9 +92,9 @@ export default function MerchantProfilePage() {
     if (logoFile) {
       const path = `logos/${user.id}/${Date.now()}.${logoFile.name.split('.').pop()}`
       const { error } = await supabase.storage
-        .from('tabitus-uploads').upload(path, logoFile, { upsert: true })
+        .from('tabit-uploads').upload(path, logoFile, { upsert: true })
       if (!error) {
-        const { data: urlData } = supabase.storage.from('tabitus-uploads').getPublicUrl(path)
+        const { data: urlData } = supabase.storage.from('tabit-uploads').getPublicUrl(path)
         logoUrl = urlData.publicUrl
       }
     }

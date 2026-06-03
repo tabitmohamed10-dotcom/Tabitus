@@ -1,5 +1,5 @@
 /**
- * Tabitus Matching Engine
+ * Tabit Matching Engine
  * Algorithme de scoring pour matcher demandes ↔ commerçants
  */
 

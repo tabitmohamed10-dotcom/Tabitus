@@ -34,7 +34,7 @@ export default function ForgotPasswordPage() {
           <div className="h-9 w-9 rounded-xl bg-brand-gradient flex items-center justify-center shadow-brand">
             <span className="font-display font-bold text-white text-base">T</span>
           </div>
-          <span className="font-display font-bold text-xl tracking-tight">tabitus</span>
+          <span className="font-display font-bold text-xl tracking-tight">tabit</span>
         </Link>
 
         {sent ? (

@@ -205,8 +205,8 @@ export default function ChatPage() {
         <div className="bg-card border border-border/60 rounded-2xl px-4 py-3 flex items-start gap-2.5">
           <Shield className="h-4 w-4 text-primary mt-0.5 shrink-0" />
           <p className="text-xs text-muted-foreground leading-relaxed">
-            <strong className="text-foreground">Tabitus protège votre transaction.</strong>{' '}
-            Ne partagez jamais votre numéro ou email. Effectuez le paiement uniquement via Tabitus.
+            <strong className="text-foreground">Tabit protège votre transaction.</strong>{' '}
+            Ne partagez jamais votre numéro ou email. Effectuez le paiement uniquement via Tabit.
           </p>
         </div>
       </div>

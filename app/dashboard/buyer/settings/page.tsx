@@ -101,7 +101,7 @@ export default function BuyerSettingsPage() {
     <div className="max-w-2xl mx-auto space-y-5">
       <div>
         <h1 className="font-display text-2xl font-bold tracking-tight">Paramètres</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">Personnalisez votre expérience Tabitus</p>
+        <p className="text-sm text-muted-foreground mt-0.5">Personnalisez votre expérience Tabit</p>
       </div>
 
       {/* Account settings */}

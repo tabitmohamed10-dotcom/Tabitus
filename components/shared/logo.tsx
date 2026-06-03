@@ -7,7 +7,7 @@ export function Logo({ size = 'md' }: { size?: keyof typeof heights }) {
   return (
     <Image
       src="/logo.svg"
-      alt="Tabitus"
+      alt="Tabit"
       width={h * 3.6}
       height={h}
       priority

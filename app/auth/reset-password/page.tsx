@@ -39,7 +39,7 @@ function ResetPasswordForm() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="bg-card border border-border/60 rounded-3xl shadow-dramatic w-full max-w-[400px] p-8 animate-scale-in">
         <Link href="/" className="flex items-center mb-8 group">
-          <img src="/logo.svg" alt="Tabitus" className="h-8 w-auto transition-opacity group-hover:opacity-85" />
+          <img src="/logo.svg" alt="Tabit" className="h-8 w-auto transition-opacity group-hover:opacity-85" />
         </Link>
 
         {success ? (

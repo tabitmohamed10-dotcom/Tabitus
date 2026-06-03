@@ -54,7 +54,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="relative z-10">
           <Link href="/" className="flex items-center group">
-            <img src="/logo.svg" alt="Tabitus" className="h-9 w-auto brightness-200 transition-opacity group-hover:opacity-85" />
+            <img src="/logo.svg" alt="Tabit" className="h-9 w-auto brightness-200 transition-opacity group-hover:opacity-85" />
           </Link>
         </div>
 
@@ -109,7 +109,7 @@ export default function LoginPage() {
         <div className="w-full max-w-[400px]">
           <div className="lg:hidden mb-10">
             <Link href="/">
-              <img src="/logo.svg" alt="Tabitus" className="h-9 w-auto" />
+              <img src="/logo.svg" alt="Tabit" className="h-9 w-auto" />
             </Link>
           </div>
 

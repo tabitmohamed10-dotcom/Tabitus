@@ -29,7 +29,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <Shield className="h-5 w-5 text-primary" />
             <span className="font-display font-bold">Admin Panel</span>
           </div>
-          <p className="text-xs text-background/40 mt-0.5">Tabitus</p>
+          <p className="text-xs text-background/40 mt-0.5">Tabit</p>
         </div>
         <nav className="p-4 space-y-1">
           {navItems.map(item => (

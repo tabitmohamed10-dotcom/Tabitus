@@ -37,7 +37,7 @@ export default async function AdminDashboard() {
     <div className="space-y-8">
       <div>
         <h1 className="font-display text-2xl font-bold">Vue d'ensemble</h1>
-        <p className="text-muted-foreground mt-1">Données en temps réel — Tabitus</p>
+        <p className="text-muted-foreground mt-1">Données en temps réel — Tabit</p>
       </div>
 
       {/* Stats */}

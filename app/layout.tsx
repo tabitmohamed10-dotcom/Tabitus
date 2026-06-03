@@ -1,87 +1,21 @@
-import type { Metadata, Viewport } from 'next'
-import { GeistSans } from 'geist/font/sans'
-import { GeistMono } from 'geist/font/mono'
-import { Cinzel, Cormorant_Garamond } from 'next/font/google'
-import { Toaster } from 'sonner'
+import type { Metadata } from 'next'
+import { Playfair_Display, Inter, Noto_Naskh_Arabic } from 'next/font/google'
 import './globals.css'
 
-const cinzel = Cinzel({
-  subsets: ['latin'],
-  weight: ['400', '500'],
-  variable: '--font-cinzel',
-})
-
-const cormorant = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['300', '400'],
-  variable: '--font-cormorant',
-})
+const playfair = Playfair_Display({ subsets:['latin'], weight:['400','500'], style:['normal','italic'], variable:'--font-playfair', display:'swap' })
+const inter = Inter({ subsets:['latin'], weight:['300','400','500'], variable:'--font-inter', display:'swap' })
+const arabic = Noto_Naskh_Arabic({ subsets:['arabic'], weight:['400','500','600'], variable:'--font-arabic', display:'swap' })
 
 export const metadata: Metadata = {
-  title: {
-    template: '%s | Tabitus',
-    default: 'Tabitus — Le marché qui travaille pour vous',
-  },
-  description:
-    'Publiez votre demande, recevez les meilleures offres de commerçants vérifiés. ' +
-    'Comparez, choisissez, économisez. La marketplace intelligente du Maroc et de l\'Afrique.',
-  keywords: ['marketplace', 'Maroc', 'achats', 'commerçants', 'demande', 'offres', 'prix'],
-  authors: [{ name: 'Tabitus' }],
-  creator: 'Tabitus',
-  manifest: '/manifest.json',
-  openGraph: {
-    type: 'website',
-    locale: 'fr_MA',
-    url: 'https://tabitus.com',
-    siteName: 'Tabitus',
-    title: 'Tabitus — Le marché qui travaille pour vous',
-    description: 'Publiez votre besoin. Recevez les meilleures offres. Économisez.',
-    images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: 'Tabitus' }],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Tabitus — Le marché qui travaille pour vous',
-    description: 'Publiez votre besoin. Recevez les meilleures offres.',
-  },
-  robots: { index: true, follow: true },
+  title: 'TABIT — Le marché travaille pour vous',
+  description: 'Publiez votre besoin. Les meilleurs commerçants du Maroc vous font leurs offres. Prix fixe, confiance garantie.',
+  keywords: ['marketplace maroc','prix fixe','tabit','ثابت'],
 }
 
-export const viewport: Viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#080808' },
-  ],
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1,
-}
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="fr"
-      className={`dark ${GeistSans.variable} ${GeistMono.variable} ${cinzel.variable} ${cormorant.variable}`}
-      suppressHydrationWarning
-    >
-      <body>
-        {children}
-        <Toaster
-          position="bottom-right"
-          toastOptions={{
-            style: {
-              background: 'hsl(240 5% 7%)',
-              border: '1px solid hsl(240 4% 13%)',
-              color: 'hsl(0 0% 98%)',
-              borderRadius: '0.875rem',
-              fontSize: '0.875rem',
-            },
-          }}
-        />
-      </body>
+    <html lang="fr" className={`${playfair.variable} ${inter.variable} ${arabic.variable}`}>
+      <body style={{background:'#FAFAF7',color:'#0C0B09'}}>{children}</body>
     </html>
   )
 }
