@@ -43,13 +43,12 @@ export default function LoginPage() {
     <div className="min-h-screen flex">
       {/* ── Left panel (brand) ── */}
       <div className="hidden lg:flex lg:w-[46%] xl:w-[42%] relative bg-foreground flex-col justify-between p-12 overflow-hidden">
-        {/* Background mesh */}
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 right-0 h-2/3 bg-brand-gradient opacity-90" />
-          <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-foreground" />
-          <div className="absolute inset-0 noise" />
-          <div className="absolute top-24 right-0 w-96 h-96 rounded-full bg-amber-400/20 blur-[80px]" />
-          <div className="absolute bottom-32 left-0 w-80 h-80 rounded-full bg-red-600/20 blur-[60px]" />
+          <div className="absolute inset-0 bg-brand-gradient opacity-95" />
+          <div className="absolute inset-0 bg-grid opacity-[0.06]" />
+          <div className="absolute top-24 right-0 w-96 h-96 rounded-full bg-violet-500/20 blur-[80px]" />
+          <div className="absolute bottom-32 left-0 w-80 h-80 rounded-full bg-indigo-800/25 blur-[60px]" />
+          <div className="absolute bottom-0 left-0 right-0 h-1/4 bg-gradient-to-t from-black/30 to-transparent" />
         </div>
 
         {/* Logo */}

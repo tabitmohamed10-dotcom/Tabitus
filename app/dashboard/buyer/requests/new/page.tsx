@@ -301,7 +301,7 @@ export default function NewRequestPage() {
                   <div className="flex items-center gap-3">
                     <div className={cn(
                       'h-9 w-9 rounded-xl flex items-center justify-center',
-                      form.delivery_needed ? 'bg-orange-100 dark:bg-orange-950/50 text-primary' : 'bg-muted text-muted-foreground'
+                      form.delivery_needed ? 'bg-indigo-950/50 text-primary' : 'bg-muted text-muted-foreground'
                     )}>
                       <Truck className="h-4.5 w-4.5" />
                     </div>

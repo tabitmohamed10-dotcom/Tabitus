@@ -66,8 +66,8 @@ export default function BuyerDashboard() {
       label: 'Demandes',
       value: stats.total_requests,
       icon: <ShoppingBag className="h-4.5 w-4.5" />,
-      iconBg: 'bg-orange-100 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400',
-      valueColor: 'text-orange-600 dark:text-orange-400',
+      iconBg: 'bg-indigo-950/50 text-indigo-400',
+      valueColor: 'text-indigo-400',
     },
     {
       label: 'En cours',
@@ -125,7 +125,7 @@ export default function BuyerDashboard() {
           <motion.div
             whileHover={{ scale: 1.008 }}
             whileTap={{ scale: 0.995 }}
-            className="group relative bg-brand-gradient rounded-2xl p-5 sm:p-6 flex items-center justify-between text-white shadow-brand cursor-pointer overflow-hidden"
+            className="group relative bg-brand-gradient rounded-2xl p-5 sm:p-6 flex items-center justify-between text-white shadow-brand cursor-pointer overflow-hidden glow-brand"
           >
             {/* Decorative orbs */}
             <div className="absolute -right-6 -top-6 h-28 w-28 rounded-full bg-white/10 pointer-events-none" />

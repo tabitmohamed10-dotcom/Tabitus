@@ -3,6 +3,9 @@ import { Suspense, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import { ArrowLeft, Lock, CheckCircle2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 function ResetPasswordForm() {
   const router = useRouter()
@@ -16,74 +19,101 @@ function ResetPasswordForm() {
     if (!password || !passwordConfirm) return setError('Remplissez tous les champs')
     if (password !== passwordConfirm) return setError('Les mots de passe ne correspondent pas')
     if (password.length < 8) return setError('Le mot de passe doit contenir au moins 8 caractères')
-
     setLoading(true)
     setError('')
     const supabase = createClient()
     const { error: err } = await supabase.auth.updateUser({ password })
-    if (err) {
-      setError(err.message)
-      setLoading(false)
-      return
-    }
+    if (err) { setError(err.message); setLoading(false); return }
     setSuccess(true)
-    setTimeout(() => router.push('/auth/login'), 2000)
+    setTimeout(() => router.push('/auth/login'), 2500)
   }
 
+  const inputClass = cn(
+    'flex h-11 w-full rounded-xl border border-border/70 bg-background px-4 py-2.5 text-sm pl-10',
+    'text-foreground placeholder:text-muted-foreground/60 transition-all duration-150',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:border-primary/50',
+    'hover:border-border'
+  )
+
   return (
-    <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
-      <div className="flex items-center gap-2 mb-8">
-        <div className="h-8 w-8 rounded-xl bg-orange-500 flex items-center justify-center text-white font-bold text-sm">T</div>
-        <span className="font-bold text-xl">tabitus</span>
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="bg-card border border-border/60 rounded-3xl shadow-dramatic w-full max-w-[400px] p-8 animate-scale-in">
+        <Link href="/" className="flex items-center gap-2.5 mb-8">
+          <div className="h-8 w-8 rounded-xl bg-brand-gradient flex items-center justify-center shadow-brand">
+            <span className="font-display font-bold text-white text-sm">T</span>
+          </div>
+          <span className="font-display font-bold text-xl tracking-tight">tabitus</span>
+        </Link>
+
+        {success ? (
+          <div className="text-center py-4">
+            <div className="h-16 w-16 rounded-full bg-emerald-950/60 border border-emerald-800/40 flex items-center justify-center mx-auto mb-5">
+              <CheckCircle2 className="h-8 w-8 text-emerald-400" />
+            </div>
+            <h1 className="font-display text-xl font-bold mb-2">Mot de passe réinitialisé !</h1>
+            <p className="text-muted-foreground text-sm">Redirection vers la connexion...</p>
+          </div>
+        ) : (
+          <>
+            <h1 className="font-display text-2xl font-bold tracking-tight mb-1.5">Nouveau mot de passe</h1>
+            <p className="text-muted-foreground text-sm mb-7">Entrez et confirmez votre nouveau mot de passe.</p>
+
+            {error && (
+              <div className="mb-5 bg-destructive/8 border border-destructive/20 text-destructive px-4 py-3 rounded-xl text-sm font-medium animate-fade-up">
+                {error}
+              </div>
+            )}
+
+            <div className="space-y-4 mb-6">
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <input
+                  type="password"
+                  placeholder="Nouveau mot de passe"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  className={inputClass}
+                />
+              </div>
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <input
+                  type="password"
+                  placeholder="Confirmer le mot de passe"
+                  value={passwordConfirm}
+                  onChange={e => setPasswordConfirm(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && handleReset()}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+
+            <Button variant="gradient" size="lg" loading={loading} className="w-full mb-5" onClick={handleReset}>
+              {!loading && 'Réinitialiser le mot de passe'}
+            </Button>
+
+            <Link
+              href="/auth/login"
+              className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Retour à la connexion
+            </Link>
+          </>
+        )}
       </div>
-      {success ? (
-        <div className="text-center">
-          <div className="text-5xl mb-4">✅</div>
-          <h1 className="text-xl font-bold mb-2">Mot de passe réinitialisé !</h1>
-          <p className="text-gray-500 text-sm mb-6">Redirection vers la connexion...</p>
-        </div>
-      ) : (
-        <>
-          <h1 className="text-2xl font-bold mb-2">Nouveau mot de passe</h1>
-          <p className="text-gray-500 mb-6">Entrez votre nouveau mot de passe.</p>
-          {error && <div className="bg-red-50 text-red-600 p-3 rounded-xl mb-4 text-sm">{error}</div>}
-          <input
-            type="password"
-            placeholder="Nouveau mot de passe"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            className="w-full border rounded-xl p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-orange-500"
-          />
-          <input
-            type="password"
-            placeholder="Confirmer le mot de passe"
-            value={passwordConfirm}
-            onChange={e => setPasswordConfirm(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleReset()}
-            className="w-full border rounded-xl p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-orange-500"
-          />
-          <button
-            onClick={handleReset}
-            disabled={loading}
-            className="w-full bg-orange-500 text-white font-bold py-3 rounded-xl hover:bg-orange-600 disabled:opacity-50"
-          >
-            {loading ? 'Réinitialisation...' : 'Réinitialiser le mot de passe'}
-          </button>
-          <p className="text-center mt-4 text-sm">
-            <Link href="/auth/login" className="text-orange-500">← Retour à la connexion</Link>
-          </p>
-        </>
-      )}
     </div>
   )
 }
 
 export default function ResetPasswordPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <Suspense fallback={<div className="text-gray-400">Chargement...</div>}>
-        <ResetPasswordForm />
-      </Suspense>
-    </div>
+    <Suspense fallback={
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+      </div>
+    }>
+      <ResetPasswordForm />
+    </Suspense>
   )
 }

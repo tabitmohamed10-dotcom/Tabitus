@@ -18,7 +18,7 @@ function NewOfferBanner({ show }: { show: boolean }) {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -24, scale: 0.92 }}
           transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-          className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-primary text-primary-foreground rounded-2xl px-5 py-3 shadow-2xl shadow-orange-500/30 flex items-center gap-3 whitespace-nowrap"
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-primary text-primary-foreground rounded-2xl px-5 py-3 shadow-2xl shadow-indigo-500/30 flex items-center gap-3 whitespace-nowrap"
         >
           <motion.div animate={{ rotate: [0, -15, 15, -10, 10, 0] }} transition={{ duration: 0.6 }}>
             <Bell className="h-5 w-5" />
@@ -110,7 +110,7 @@ export default function RequestDetailPage() {
         className="bg-card rounded-2xl p-6 border border-border/60 shadow-premium mb-6"
       >
         <div className="flex items-start gap-3">
-          <div className="h-12 w-12 rounded-2xl bg-orange-50 flex items-center justify-center text-2xl shrink-0">
+          <div className="h-12 w-12 rounded-2xl bg-muted flex items-center justify-center text-2xl shrink-0">
             {(request as any)?.category?.icon || '📦'}
           </div>
           <div className="flex-1 min-w-0">
@@ -131,7 +131,7 @@ export default function RequestDetailPage() {
               <p className="text-sm text-foreground/70 mt-3 leading-relaxed">{request.description}</p>
             )}
             {request?.budget_max && (
-              <div className="mt-3 inline-flex items-center gap-1.5 bg-orange-50 border border-orange-100 text-orange-600 font-semibold text-sm px-3 py-1.5 rounded-xl">
+              <div className="mt-3 inline-flex items-center gap-1.5 bg-accent border border-primary/15 text-primary font-semibold text-sm px-3 py-1.5 rounded-xl">
                 💰 Budget max : {request.budget_max} MAD
               </div>
             )}
@@ -183,7 +183,7 @@ export default function RequestDetailPage() {
               transition={{ delay: index * 0.06, type: 'spring', stiffness: 280, damping: 24 }}
               className={`bg-card rounded-2xl p-5 sm:p-6 border shadow-premium transition-shadow ${
                 index === 0 && !isClosed
-                  ? 'border-orange-300 ring-2 ring-orange-400/20'
+                  ? 'border-primary/60 ring-2 ring-primary/20'
                   : offer.status === 'accepted'
                   ? 'border-green-300 ring-2 ring-green-400/20'
                   : 'border-border/60'
@@ -192,7 +192,7 @@ export default function RequestDetailPage() {
               {/* Badges */}
               <div className="flex items-center gap-2 flex-wrap mb-3">
                 {index === 0 && !isClosed && (
-                  <span className="flex items-center gap-1 text-[11px] font-bold text-orange-500 bg-orange-50 px-2.5 py-1 rounded-full">
+                  <span className="flex items-center gap-1 text-[11px] font-bold text-primary bg-accent px-2.5 py-1 rounded-full">
                     <Trophy className="h-3.5 w-3.5" /> MEILLEURE OFFRE
                   </span>
                 )}
@@ -259,7 +259,7 @@ export default function RequestDetailPage() {
                   whileTap={{ scale: 0.97 }}
                   onClick={() => acceptOffer(offer.id)}
                   disabled={!!accepting}
-                  className="mt-4 w-full bg-brand-gradient text-white font-bold py-3.5 rounded-xl disabled:opacity-60 shadow-md shadow-orange-500/20 text-sm"
+                  className="mt-4 w-full bg-brand-gradient text-white font-bold py-3.5 rounded-xl disabled:opacity-60 shadow-md shadow-indigo-500/20 text-sm"
                 >
                   {accepting === offer.id ? (
                     <span className="flex items-center justify-center gap-2">

@@ -26,7 +26,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <aside className="w-64 shrink-0 bg-foreground text-background min-h-screen fixed top-0 left-0 z-40">
         <div className="p-6 border-b border-white/10">
           <div className="flex items-center gap-2">
-            <Shield className="h-5 w-5 text-orange-400" />
+            <Shield className="h-5 w-5 text-primary" />
             <span className="font-display font-bold">Admin Panel</span>
           </div>
           <p className="text-xs text-background/40 mt-0.5">Tabitus</p>

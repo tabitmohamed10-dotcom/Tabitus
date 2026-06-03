@@ -67,8 +67,8 @@ export default function MerchantDashboard() {
       value: stats.total_offers,
       suffix: '',
       icon: <Package className="h-4.5 w-4.5" />,
-      iconBg: 'bg-orange-100 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400',
-      valueColor: 'text-orange-600 dark:text-orange-400',
+      iconBg: 'bg-indigo-950/50 text-indigo-400',
+      valueColor: 'text-indigo-400',
     },
     {
       label: 'Offres acceptées',

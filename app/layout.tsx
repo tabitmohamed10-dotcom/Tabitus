@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from 'next'
+import { GeistSans } from 'geist/font/sans'
+import { GeistMono } from 'geist/font/mono'
 import { Toaster } from 'sonner'
 import './globals.css'
 
@@ -34,7 +36,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#0f0a07' },
+    { media: '(prefers-color-scheme: dark)', color: '#080808' },
   ],
   width: 'device-width',
   initialScale: 1,
@@ -47,16 +49,22 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html
+      lang="fr"
+      className={`dark ${GeistSans.variable} ${GeistMono.variable}`}
+      suppressHydrationWarning
+    >
       <body>
         {children}
         <Toaster
-          position="top-right"
+          position="bottom-right"
           toastOptions={{
             style: {
-              background: 'hsl(var(--card))',
-              border: '1px solid hsl(var(--border))',
-              color: 'hsl(var(--foreground))',
+              background: 'hsl(240 5% 7%)',
+              border: '1px solid hsl(240 4% 13%)',
+              color: 'hsl(0 0% 98%)',
+              borderRadius: '0.875rem',
+              fontSize: '0.875rem',
             },
           }}
         />

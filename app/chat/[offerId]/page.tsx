@@ -189,12 +189,12 @@ export default function ChatPage() {
 
       {/* Offer summary */}
       {offer && (
-        <div className="px-4 py-3 bg-orange-50 border-b border-orange-100">
+        <div className="px-4 py-3 bg-accent/50 border-b border-primary/10">
           <div className="max-w-2xl mx-auto flex items-center gap-3">
-            <div className="h-8 w-8 bg-orange-100 rounded-xl flex items-center justify-center text-sm">📦</div>
+            <div className="h-8 w-8 bg-indigo-950/60 rounded-xl flex items-center justify-center text-sm">📦</div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold text-orange-800 truncate">{offer.request?.title}</p>
-              <p className="text-xs text-orange-600">Offre acceptée · <span className="font-bold">{offer.price} MAD</span></p>
+              <p className="text-xs font-semibold text-foreground truncate">{offer.request?.title}</p>
+              <p className="text-xs text-primary font-medium">Offre acceptée · <span className="font-bold">{offer.price} MAD</span></p>
             </div>
           </div>
         </div>

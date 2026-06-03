@@ -42,8 +42,8 @@ const STEPS_BUYER = [
   {
     n: '01',
     icon: <ShoppingBag className="h-6 w-6" />,
-    color: 'from-orange-500 to-orange-600',
-    bg: 'bg-orange-50 dark:bg-orange-950/30',
+    color: 'from-indigo-500 to-indigo-600',
+    bg: 'bg-indigo-950/40 text-indigo-300',
     title: 'Publiez votre besoin',
     desc: 'Décrivez ce que vous cherchez, votre budget et votre ville. En moins de 2 minutes, sans inscription obligatoire.',
     detail: 'Photos, vidéos, délai, livraison — tout est pris en charge.',
@@ -51,8 +51,8 @@ const STEPS_BUYER = [
   {
     n: '02',
     icon: <Bell className="h-6 w-6" />,
-    color: 'from-blue-500 to-blue-600',
-    bg: 'bg-blue-50 dark:bg-blue-950/30',
+    color: 'from-violet-500 to-violet-600',
+    bg: 'bg-violet-950/40 text-violet-300',
     title: 'Recevez des offres',
     desc: 'Notre algorithme alerte les commerçants vérifiés de votre région. Ils vous répondent en temps réel.',
     detail: 'En moyenne 8 offres reçues en moins d\'1h30.',
@@ -60,8 +60,8 @@ const STEPS_BUYER = [
   {
     n: '03',
     icon: <CheckCircle2 className="h-6 w-6" />,
-    color: 'from-green-500 to-green-600',
-    bg: 'bg-green-50 dark:bg-green-950/30',
+    color: 'from-emerald-500 to-emerald-600',
+    bg: 'bg-emerald-950/40 text-emerald-300',
     title: 'Choisissez la meilleure',
     desc: 'Comparez prix, délais, notes et avis. Échangez en direct et finalisez votre achat en toute sécurité.',
     detail: 'Économisez en moyenne 25% par rapport au prix marché.',
@@ -72,8 +72,8 @@ const STEPS_MERCHANT = [
   {
     n: '01',
     icon: <Bell className="h-6 w-6" />,
-    color: 'from-orange-500 to-orange-600',
-    bg: 'bg-orange-50 dark:bg-orange-950/30',
+    color: 'from-indigo-500 to-indigo-600',
+    bg: 'bg-indigo-950/40 text-indigo-300',
     title: 'Recevez les demandes',
     desc: 'Soyez alerté instantanément des demandes qui correspondent à votre secteur et votre zone géographique.',
     detail: 'Notifications en temps réel, filtrées pour vous.',
@@ -81,8 +81,8 @@ const STEPS_MERCHANT = [
   {
     n: '02',
     icon: <Package className="h-6 w-6" />,
-    color: 'from-purple-500 to-purple-600',
-    bg: 'bg-purple-50 dark:bg-purple-950/30',
+    color: 'from-violet-500 to-violet-600',
+    bg: 'bg-violet-950/40 text-violet-300',
     title: 'Proposez votre offre',
     desc: 'Prix, délai, livraison — formulaire ultra simple pour répondre en moins de 30 secondes.',
     detail: 'Interface mobile-first, conçue pour aller vite.',
@@ -90,8 +90,8 @@ const STEPS_MERCHANT = [
   {
     n: '03',
     icon: <Trophy className="h-6 w-6" />,
-    color: 'from-green-500 to-green-600',
-    bg: 'bg-green-50 dark:bg-green-950/30',
+    color: 'from-emerald-500 to-emerald-600',
+    bg: 'bg-emerald-950/40 text-emerald-300',
     title: 'Développez votre activité',
     desc: 'Acquérez de nouveaux clients sans budget pub. Construisez votre réputation grâce aux avis certifiés.',
     detail: 'En moyenne +35% de CA pour nos commerçants actifs.',
@@ -123,18 +123,18 @@ const TESTIMONIALS = [
     text: 'J\'ai trouvé un iPhone 15 Pro à 2 200 DH de moins que dans les magasins. En 1h30 j\'avais 11 offres. Je ne ferai plus jamais mes achats autrement.',
     stars: 5,
     badge: '2 200 DH économisés',
-    badgeColor: 'bg-green-50 text-green-700 border border-green-200/60',
+    badgeColor: 'bg-emerald-950/60 text-emerald-400 border border-emerald-800/40',
   },
   {
     name: 'Ahmed Bennani',
     role: 'Gérant de boutique',
     city: 'Marrakech',
     avatar: 'A',
-    avatarColor: 'from-blue-500 to-indigo-600',
+    avatarColor: 'from-indigo-500 to-violet-600',
     text: 'En un mois j\'ai reçu 43 demandes de clients qualifiés. Mon chiffre d\'affaires a augmenté de 35% sans dépenser un centime en publicité.',
     stars: 5,
     badge: '+35% de CA',
-    badgeColor: 'bg-blue-50 text-blue-700 border border-blue-200/60',
+    badgeColor: 'bg-indigo-950/60 text-indigo-300 border border-indigo-800/40',
   },
   {
     name: 'Karim Idrissi',
@@ -145,7 +145,7 @@ const TESTIMONIALS = [
     text: 'Machine à laver en urgence un samedi soir. En 2h j\'avais 8 offres avec livraison le lendemain. Le meilleur prix était 800 DH sous le tarif habituel.',
     stars: 5,
     badge: '800 DH économisés',
-    badgeColor: 'bg-violet-50 text-violet-700 border border-violet-200/60',
+    badgeColor: 'bg-violet-950/60 text-violet-300 border border-violet-800/40',
   },
 ]
 
@@ -168,7 +168,7 @@ const FAQS = [
   },
   {
     q: 'Comment Tabitus génère-t-il ses revenus ?',
-    a: 'Tabitus prend une petite commission uniquement sur les transactions finalisées. Les commerçants peuvent aussi booster leur visibilité avec des fonctionnalités premium. Les acheteurs, eux, ne paient jamais.',
+    a: 'Tabitus prend une commission de 5% uniquement sur les transactions finalisées. Les acheteurs ne paient jamais de frais supplémentaires.',
   },
   {
     q: 'Puis-je négocier avec les commerçants ?',
@@ -194,7 +194,7 @@ function NavBar() {
       <nav className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         scrolled
-          ? 'glass border-b border-white/30 dark:border-white/10 shadow-floating'
+          ? 'glass border-b border-white/[0.07] shadow-floating'
           : 'bg-transparent'
       )}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -202,7 +202,7 @@ function NavBar() {
             <div className="h-8 w-8 rounded-xl bg-brand-gradient flex items-center justify-center shadow-brand transition-transform group-hover:scale-105">
               <span className="font-display font-bold text-white text-sm">T</span>
             </div>
-            <span className="font-display font-bold text-xl tracking-tight">tabitus</span>
+            <span className="font-display font-bold text-xl tracking-tight text-foreground">tabitus</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-1 text-sm font-medium">
@@ -215,7 +215,7 @@ function NavBar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="px-3.5 py-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-all duration-150"
+                className="px-3.5 py-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-white/[0.05] transition-all duration-150"
               >
                 {link.label}
               </Link>
@@ -235,7 +235,7 @@ function NavBar() {
             </Link>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="md:hidden h-9 w-9 rounded-xl bg-muted/60 flex items-center justify-center"
+              className="md:hidden h-9 w-9 rounded-xl bg-white/[0.06] flex items-center justify-center"
             >
               <div className="space-y-1.5">
                 <div className={cn('h-0.5 w-5 bg-foreground transition-all', mobileOpen && 'rotate-45 translate-y-2')} />
@@ -247,14 +247,13 @@ function NavBar() {
         </div>
       </nav>
 
-      {/* Mobile menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            className="fixed top-16 left-0 right-0 z-40 bg-background/95 backdrop-blur-xl border-b border-border shadow-floating md:hidden"
+            className="fixed top-16 left-0 right-0 z-40 glass border-b border-white/[0.07] shadow-floating md:hidden"
           >
             <div className="p-4 space-y-1">
               {[
@@ -267,12 +266,12 @@ function NavBar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center px-4 py-3 rounded-xl text-sm font-medium hover:bg-muted/60 transition-colors"
+                  className="flex items-center px-4 py-3 rounded-xl text-sm font-medium hover:bg-white/[0.05] transition-colors"
                 >
                   {link.label}
                 </Link>
               ))}
-              <div className="pt-2 border-t border-border/60 grid grid-cols-2 gap-2">
+              <div className="pt-2 border-t border-white/[0.07] grid grid-cols-2 gap-2">
                 <Link href="/auth/login">
                   <Button variant="outline" size="sm" className="w-full">Connexion</Button>
                 </Link>
@@ -297,36 +296,33 @@ function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
-      {/* Mesh background */}
       <div className="absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-background" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[700px] rounded-full bg-orange-200/30 dark:bg-orange-900/15 blur-[120px]" />
-        <div className="absolute top-20 right-0 w-[500px] h-[500px] rounded-full bg-amber-100/40 dark:bg-amber-900/10 blur-[100px]" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-red-100/25 dark:bg-red-900/08 blur-[80px]" />
-        <div className="absolute inset-0 bg-dot opacity-[0.4] dark:opacity-[0.15]" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[600px] rounded-full bg-indigo-600/[0.10] blur-[120px]" />
+        <div className="absolute top-20 right-0 w-[500px] h-[500px] rounded-full bg-violet-600/[0.07] blur-[100px]" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-indigo-800/[0.06] blur-[80px]" />
+        <div className="absolute inset-0 bg-grid" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 sm:py-28 w-full">
         <motion.div style={{ y, opacity }} ref={containerRef}>
 
-          {/* Pill badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="flex justify-center mb-8"
           >
-            <div className="inline-flex items-center gap-2 bg-white/80 dark:bg-card/80 backdrop-blur-sm border border-border/60 rounded-full px-4 py-2 shadow-premium">
+            <div className="inline-flex items-center gap-2 glass border border-white/[0.10] rounded-full px-4 py-2 shadow-premium">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
               </span>
               <span className="text-sm font-medium text-foreground/80">Disponible au Maroc · 22 villes</span>
               <Sparkles className="h-3.5 w-3.5 text-primary" />
             </div>
           </motion.div>
 
-          {/* Headline */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -358,7 +354,6 @@ function HeroSection() {
             <span className="font-semibold text-foreground">économisez jusqu'à 25%</span>.
           </motion.p>
 
-          {/* CTA buttons */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -378,7 +373,6 @@ function HeroSection() {
             </Link>
           </motion.div>
 
-          {/* Stats row */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -409,11 +403,9 @@ function HeroSection() {
           transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="relative max-w-4xl mx-auto"
         >
-          {/* Glow behind card */}
-          <div className="absolute -inset-4 bg-brand-gradient opacity-[0.06] blur-2xl rounded-[2.5rem]" />
+          <div className="absolute -inset-4 bg-indigo-600/[0.06] blur-2xl rounded-[2.5rem]" />
 
           <div className="relative bg-card border border-border/60 rounded-3xl shadow-dramatic overflow-hidden">
-            {/* Card header */}
             <div className="flex items-center gap-2 px-5 py-3.5 border-b border-border/60 bg-muted/30">
               <div className="flex gap-1.5">
                 <div className="h-3 w-3 rounded-full bg-red-400/80" />
@@ -428,7 +420,6 @@ function HeroSection() {
             </div>
 
             <div className="p-6 md:p-8 grid md:grid-cols-2 gap-5">
-              {/* Request card */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="font-display font-bold text-sm text-muted-foreground uppercase tracking-wider">Votre demande</h3>
@@ -436,7 +427,7 @@ function HeroSection() {
                 </div>
                 <div className="bg-accent/40 border border-primary/15 rounded-2xl p-5">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="h-11 w-11 rounded-xl bg-orange-100 dark:bg-orange-950/50 flex items-center justify-center text-2xl">📱</div>
+                    <div className="h-11 w-11 rounded-xl bg-indigo-950/50 flex items-center justify-center text-2xl">📱</div>
                     <div>
                       <h4 className="font-display font-bold">iPhone 15 Pro 256GB</h4>
                       <p className="text-xs text-muted-foreground">Titanium Black · Neuf</p>
@@ -459,7 +450,6 @@ function HeroSection() {
                 </div>
               </div>
 
-              {/* Offers */}
               <div className="space-y-4">
                 <h3 className="font-display font-bold text-sm text-muted-foreground uppercase tracking-wider">
                   Offres reçues <span className="text-foreground">3</span>
@@ -478,21 +468,21 @@ function HeroSection() {
                       className={cn(
                         'flex items-center justify-between rounded-2xl p-3.5 border transition-all',
                         offer.best
-                          ? 'border-green-300/60 dark:border-green-700/40 bg-green-50/60 dark:bg-green-950/30 ring-1 ring-green-200/50 dark:ring-green-800/30'
+                          ? 'border-emerald-700/40 bg-emerald-950/30 ring-1 ring-emerald-800/30'
                           : 'border-border/60 bg-card hover:bg-muted/30'
                       )}
                     >
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5 mb-0.5">
                           <span className="text-sm font-bold truncate">{offer.name}</span>
-                          {offer.verified && <CheckCircle2 className="h-3.5 w-3.5 text-blue-500 shrink-0" />}
+                          {offer.verified && <CheckCircle2 className="h-3.5 w-3.5 text-indigo-400 shrink-0" />}
                           {offer.best && <Badge variant="success" size="sm">Meilleure</Badge>}
                         </div>
                         <p className="text-xs text-muted-foreground">⭐ {offer.rating} · {offer.delay} livraison</p>
                       </div>
                       <div className="text-right shrink-0">
                         <p className="font-bold text-sm">{offer.price}</p>
-                        {offer.savings && <p className="text-[10px] text-green-600 font-semibold">-{offer.savings}</p>}
+                        {offer.savings && <p className="text-[10px] text-emerald-400 font-semibold">-{offer.savings}</p>}
                       </div>
                     </motion.div>
                   ))}
@@ -501,16 +491,15 @@ function HeroSection() {
             </div>
           </div>
 
-          {/* Floating badges */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ delay: 1.0, duration: 0.5 }}
             className="absolute -top-5 -left-5 hidden sm:block"
           >
-            <div className="bg-card border border-border/60 rounded-2xl shadow-floating px-4 py-3 animate-float">
+            <div className="glass border border-white/[0.10] rounded-2xl shadow-floating px-4 py-3 animate-float">
               <div className="flex items-center gap-2 text-sm font-semibold">
-                <span className="h-7 w-7 rounded-xl bg-green-100 dark:bg-green-950/50 flex items-center justify-center text-base">💰</span>
+                <span className="h-7 w-7 rounded-xl bg-emerald-950/60 flex items-center justify-center text-base">💰</span>
                 <div>
                   <p className="text-xs text-muted-foreground leading-none mb-0.5">Économie</p>
                   <p className="font-bold leading-none">1 600 DH</p>
@@ -525,9 +514,9 @@ function HeroSection() {
             transition={{ delay: 1.2, duration: 0.5 }}
             className="absolute -bottom-5 -right-5 hidden sm:block"
           >
-            <div className="bg-card border border-border/60 rounded-2xl shadow-floating px-4 py-3 animate-float-slow">
+            <div className="glass border border-white/[0.10] rounded-2xl shadow-floating px-4 py-3 animate-float-slow">
               <div className="flex items-center gap-2 text-sm font-semibold">
-                <span className="h-7 w-7 rounded-xl bg-orange-100 dark:bg-orange-950/50 flex items-center justify-center text-base">⚡</span>
+                <span className="h-7 w-7 rounded-xl bg-indigo-950/60 flex items-center justify-center text-base">⚡</span>
                 <div>
                   <p className="text-xs text-muted-foreground leading-none mb-0.5">Réponse en</p>
                   <p className="font-bold leading-none">47 min</p>
@@ -545,7 +534,7 @@ function HeroSection() {
 function CityMarquee() {
   const cities = [...LOGOS, ...LOGOS]
   return (
-    <div className="py-10 border-y border-border/40 overflow-hidden bg-muted/20">
+    <div className="py-10 border-y border-border/40 overflow-hidden bg-muted/10">
       <p className="text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-6">
         Disponible dans 22 villes marocaines
       </p>
@@ -566,11 +555,10 @@ function HowItWorksSection() {
   const [tab, setTab] = useState<'buyer' | 'merchant'>('buyer')
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-80px' })
-
   const steps = tab === 'buyer' ? STEPS_BUYER : STEPS_MERCHANT
 
   return (
-    <section id="comment-ca-marche" className="py-28 bg-muted/20" ref={ref}>
+    <section id="comment-ca-marche" className="py-28 bg-muted/10" ref={ref}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -578,7 +566,7 @@ function HowItWorksSection() {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <Badge variant="orange" className="mb-4">Comment ça marche</Badge>
+          <Badge variant="default" className="mb-4">Comment ça marche</Badge>
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 tracking-tight">
             Simple comme bonjour
           </h2>
@@ -598,7 +586,7 @@ function HowItWorksSection() {
                   'px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200',
                   tab === key
                     ? 'bg-primary text-primary-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-white/[0.04]'
                 )}
               >
                 {label}
@@ -619,7 +607,6 @@ function HowItWorksSection() {
             {steps.map((step, i) => (
               <div key={i} className="relative">
                 <div className="bg-card border border-border/60 rounded-3xl p-8 shadow-premium h-full hover:shadow-elevated hover:-translate-y-0.5 transition-all duration-200">
-                  {/* Step number */}
                   <div className="flex items-start justify-between mb-6">
                     <div className={cn('h-12 w-12 rounded-2xl flex items-center justify-center text-white', `bg-gradient-to-br ${step.color}`)}>
                       {step.icon}
@@ -671,7 +658,7 @@ function CategoriesSection() {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <Badge variant="orange" className="mb-4">Tous les secteurs</Badge>
+          <Badge variant="default" className="mb-4">Tous les secteurs</Badge>
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 tracking-tight">
             Tout. Absolument tout.
           </h2>
@@ -718,12 +705,11 @@ function AdvantagesSection() {
   const isInView = useInView(ref, { once: true, margin: '-80px' })
 
   return (
-    <section id="pour-commercants" className="py-28 bg-foreground text-background relative overflow-hidden" ref={ref}>
-      {/* Background effects */}
+    <section id="pour-commercants" className="py-28 bg-card relative overflow-hidden" ref={ref}>
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-orange-600/10 blur-[80px]" />
-        <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-red-700/8 blur-[80px]" />
-        <div className="absolute inset-0 bg-dot opacity-[0.04]" />
+        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-indigo-600/[0.08] blur-[80px]" />
+        <div className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-violet-600/[0.06] blur-[80px]" />
+        <div className="absolute inset-0 bg-grid" />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
@@ -734,9 +720,9 @@ function AdvantagesSection() {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="inline-flex items-center gap-2 bg-orange-500/15 border border-orange-500/25 rounded-full px-3.5 py-1.5 mb-8">
-              <ShoppingBag className="h-3.5 w-3.5 text-orange-400" />
-              <span className="text-sm font-semibold text-orange-300">Pour les acheteurs</span>
+            <div className="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full px-3.5 py-1.5 mb-8">
+              <ShoppingBag className="h-3.5 w-3.5 text-indigo-400" />
+              <span className="text-sm font-semibold text-indigo-300">Pour les acheteurs</span>
             </div>
             <h2 className="font-display text-4xl md:text-5xl font-bold mb-10 leading-[1.1] tracking-tight">
               Arrêtez de chercher.<br />
@@ -756,12 +742,12 @@ function AdvantagesSection() {
                   transition={{ duration: 0.4, delay: 0.1 + i * 0.08 }}
                   className="flex gap-4"
                 >
-                  <div className="h-11 w-11 rounded-2xl bg-orange-500/15 border border-orange-500/20 flex items-center justify-center text-orange-400 shrink-0">
+                  <div className="h-11 w-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/15 flex items-center justify-center text-indigo-400 shrink-0">
                     {item.icon}
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1.5">{item.title}</h3>
-                    <p className="text-sm text-background/55 leading-relaxed">{item.desc}</p>
+                    <h3 className="font-semibold mb-1.5 text-foreground">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
                   </div>
                 </motion.div>
               ))}
@@ -774,9 +760,9 @@ function AdvantagesSection() {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 rounded-full px-3.5 py-1.5 mb-8">
-              <Store className="h-3.5 w-3.5 text-white/70" />
-              <span className="text-sm font-semibold text-white/80">Pour les commerçants</span>
+            <div className="inline-flex items-center gap-2 bg-white/[0.06] border border-white/[0.10] rounded-full px-3.5 py-1.5 mb-8">
+              <Store className="h-3.5 w-3.5 text-foreground/60" />
+              <span className="text-sm font-semibold text-foreground/70">Pour les commerçants</span>
             </div>
             <h2 className="font-display text-4xl md:text-5xl font-bold mb-10 leading-[1.1] tracking-tight">
               Des clients.<br />
@@ -796,12 +782,12 @@ function AdvantagesSection() {
                   transition={{ duration: 0.4, delay: 0.25 + i * 0.08 }}
                   className="flex gap-4"
                 >
-                  <div className="h-11 w-11 rounded-2xl bg-white/8 border border-white/12 flex items-center justify-center text-white/60 shrink-0">
+                  <div className="h-11 w-11 rounded-2xl bg-white/[0.05] border border-white/[0.08] flex items-center justify-center text-foreground/50 shrink-0">
                     {item.icon}
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-1.5">{item.title}</h3>
-                    <p className="text-sm text-background/55 leading-relaxed">{item.desc}</p>
+                    <h3 className="font-semibold mb-1.5 text-foreground">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
                   </div>
                 </motion.div>
               ))}
@@ -819,7 +805,7 @@ function TestimonialsSection() {
   const isInView = useInView(ref, { once: true, margin: '-80px' })
 
   return (
-    <section id="temoignages" className="py-28 bg-muted/20" ref={ref}>
+    <section id="temoignages" className="py-28 bg-muted/10" ref={ref}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -827,7 +813,7 @@ function TestimonialsSection() {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <Badge variant="orange" className="mb-4">Témoignages</Badge>
+          <Badge variant="default" className="mb-4">Témoignages</Badge>
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-4 tracking-tight">
             Ils nous font confiance
           </h2>
@@ -845,7 +831,6 @@ function TestimonialsSection() {
               transition={{ duration: 0.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="bg-card border border-border/60 rounded-3xl p-8 shadow-premium hover:shadow-elevated hover:-translate-y-0.5 transition-all duration-200"
             >
-              {/* Stars */}
               <div className="flex gap-1 mb-5">
                 {Array.from({ length: t.stars }).map((_, i) => (
                   <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
@@ -894,7 +879,7 @@ function FAQSection() {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <Badge variant="orange" className="mb-4">FAQ</Badge>
+          <Badge variant="default" className="mb-4">FAQ</Badge>
           <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight">
             Questions fréquentes
           </h2>
@@ -914,7 +899,7 @@ function FAQSection() {
             >
               <button
                 onClick={() => setOpen(open === i ? null : i)}
-                className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-muted/30 transition-colors gap-4"
+                className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-white/[0.03] transition-colors gap-4"
               >
                 <span className="font-semibold text-[15px] leading-snug">{faq.q}</span>
                 <div className={cn(
@@ -963,14 +948,13 @@ function CTASection() {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="relative max-w-4xl mx-auto rounded-[2rem] overflow-hidden"
       >
-        {/* Background */}
         <div className="absolute inset-0 bg-brand-gradient" />
-        <div className="absolute inset-0 noise" />
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-white/5 blur-[60px] -translate-y-1/2 translate-x-1/4" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-black/10 blur-[60px] translate-y-1/2 -translate-x-1/4" />
+        <div className="absolute inset-0 bg-grid opacity-[0.06]" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-white/[0.06] blur-[60px] -translate-y-1/2 translate-x-1/4" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-black/[0.15] blur-[60px] translate-y-1/2 -translate-x-1/4" />
 
         <div className="relative z-10 text-center text-white px-8 py-16 sm:py-20">
-          <div className="inline-flex items-center gap-2 bg-white/15 border border-white/20 rounded-full px-4 py-2 mb-8 text-sm font-medium">
+          <div className="inline-flex items-center gap-2 bg-white/[0.12] border border-white/20 rounded-full px-4 py-2 mb-8 text-sm font-medium">
             <Sparkles className="h-4 w-4" />
             Inscription gratuite · Sans carte bancaire
           </div>
@@ -978,7 +962,7 @@ function CTASection() {
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-[1.08] tracking-tight text-balance">
             Prêt à économiser sur vos prochains achats ?
           </h2>
-          <p className="text-xl text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-white/75 mb-12 max-w-2xl mx-auto leading-relaxed">
             Rejoignez 50 000+ utilisateurs qui laissent Tabitus faire le travail à leur place.
           </p>
 
@@ -986,7 +970,7 @@ function CTASection() {
             <Link href="/auth/register?role=buyer">
               <Button
                 size="xl"
-                className="bg-white text-orange-600 hover:bg-white/92 shadow-dramatic w-full sm:w-auto font-bold"
+                className="bg-white text-indigo-600 hover:bg-white/92 shadow-dramatic w-full sm:w-auto font-bold"
               >
                 Je publie ma demande
                 <ArrowRight className="h-5 w-5" />
@@ -996,15 +980,14 @@ function CTASection() {
               <Button
                 size="xl"
                 variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 hover:border-white/50 w-full sm:w-auto"
+                className="border-white/30 text-white hover:bg-white/[0.08] hover:border-white/50 w-full sm:w-auto"
               >
                 Je suis commerçant
               </Button>
             </Link>
           </div>
 
-          {/* Trust signals below CTA */}
-          <div className="flex flex-wrap justify-center gap-6 mt-12 text-sm text-white/60">
+          <div className="flex flex-wrap justify-center gap-6 mt-12 text-sm text-white/55">
             {[
               { icon: <Lock className="h-3.5 w-3.5" />, text: 'Données sécurisées' },
               { icon: <Check className="h-3.5 w-3.5" />, text: 'Sans engagement' },
@@ -1025,7 +1008,7 @@ function CTASection() {
 // ── Footer ────────────────────────────────────────────────────
 function Footer() {
   return (
-    <footer className="bg-foreground text-background">
+    <footer className="bg-card border-t border-border/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-10">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-14">
           <div className="col-span-2">
@@ -1035,12 +1018,12 @@ function Footer() {
               </div>
               <span className="font-display font-bold text-xl tracking-tight">tabitus</span>
             </Link>
-            <p className="text-sm text-background/50 leading-relaxed max-w-xs">
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
               La marketplace intelligente du Maroc. Publiez vos besoins, recevez les meilleures offres.
             </p>
             <div className="flex items-center gap-2 mt-5">
-              <span className="text-background/30 text-xs">🇲🇦</span>
-              <span className="text-xs text-background/40">Conçu avec ❤️ au Maroc</span>
+              <span className="text-xs">🇲🇦</span>
+              <span className="text-xs text-muted-foreground">Conçu avec ❤️ au Maroc</span>
             </div>
           </div>
 
@@ -1050,11 +1033,11 @@ function Footer() {
             { title: 'Légal', links: ['Mentions légales', 'Confidentialité', 'CGU', 'Cookies'] },
           ].map(col => (
             <div key={col.title}>
-              <h4 className="font-semibold text-sm mb-5 text-background/70">{col.title}</h4>
+              <h4 className="font-semibold text-sm mb-5 text-foreground/70">{col.title}</h4>
               <ul className="space-y-3">
                 {col.links.map(l => (
                   <li key={l}>
-                    <Link href="#" className="text-sm text-background/40 hover:text-background/70 transition-colors">
+                    <Link href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                       {l}
                     </Link>
                   </li>
@@ -1064,12 +1047,12 @@ function Footer() {
           ))}
         </div>
 
-        <div className="border-t border-white/8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-background/30">
+        <div className="border-t border-border/40 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
           <p>© 2025 Tabitus. Tous droits réservés.</p>
           <div className="flex items-center gap-4">
-            <Link href="#" className="hover:text-background/50 transition-colors">Confidentialité</Link>
-            <Link href="#" className="hover:text-background/50 transition-colors">CGU</Link>
-            <Link href="#" className="hover:text-background/50 transition-colors">Cookies</Link>
+            <Link href="#" className="hover:text-foreground transition-colors">Confidentialité</Link>
+            <Link href="#" className="hover:text-foreground transition-colors">CGU</Link>
+            <Link href="#" className="hover:text-foreground transition-colors">Cookies</Link>
           </div>
         </div>
       </div>
