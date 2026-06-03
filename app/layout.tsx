@@ -1,8 +1,21 @@
 import type { Metadata, Viewport } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
+import { Cinzel, Cormorant_Garamond } from 'next/font/google'
 import { Toaster } from 'sonner'
 import './globals.css'
+
+const cinzel = Cinzel({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-cinzel',
+})
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['300', '400'],
+  variable: '--font-cormorant',
+})
 
 export const metadata: Metadata = {
   title: {
@@ -51,7 +64,7 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`dark ${GeistSans.variable} ${GeistMono.variable}`}
+      className={`dark ${GeistSans.variable} ${GeistMono.variable} ${cinzel.variable} ${cormorant.variable}`}
       suppressHydrationWarning
     >
       <body>

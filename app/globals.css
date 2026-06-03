@@ -4,27 +4,37 @@
 
 @layer base {
   :root {
-    /* ── Tabitus Design System v3 — Dark First ── */
+    /* ── Tabitus Design System v4 — Gold/Noir ── */
+
+    /* Gold/Noir tokens */
+    --gold-light: #f0d080;
+    --gold-mid:   #c9922a;
+    --gold-dark:  #9a6c1a;
+    --noir:       #0a0a0f;
+    --noir-soft:  #12121a;
+    --cream:      #fdf8ec;
 
     /* Surfaces (light mode — fallback) */
-    --background: 0 0% 99%;
-    --foreground: 240 10% 4%;
+    --background: 40 30% 97%;
+    --foreground: 240 20% 8%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 4%;
+    --card-foreground: 240 20% 8%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 4%;
+    --popover-foreground: 240 20% 8%;
 
-    /* Brand: Indigo Électrique */
-    --primary: 239 84% 67%;
+    /* Brand: Gold */
+    --primary: 39 66% 47%;          /* gold-500 #c9922a */
     --primary-foreground: 0 0% 100%;
+    --primary-light: 42 77% 60%;    /* gold-300 */
+    --primary-dark: 36 72% 37%;     /* gold-700 */
 
     /* Neutrals */
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 240 6% 10%;
-    --muted: 240 5% 96%;
+    --secondary: 40 15% 94%;
+    --secondary-foreground: 240 10% 20%;
+    --muted: 40 12% 94%;
     --muted-foreground: 240 4% 46%;
-    --accent: 239 40% 94%;
-    --accent-foreground: 239 84% 50%;
+    --accent: 42 78% 92%;
+    --accent-foreground: 39 66% 40%;
 
     /* States */
     --destructive: 0 84% 60%;
@@ -35,9 +45,9 @@
     --warning-foreground: 0 0% 100%;
 
     /* Structure */
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 239 84% 67%;
+    --border: 40 15% 88%;
+    --input: 40 15% 88%;
+    --ring: 39 66% 47%;
     --radius: 0.75rem;
 
     /* Shadows light */
@@ -45,31 +55,33 @@
     --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
     --shadow-lg: 0 8px 24px rgba(0,0,0,0.10), 0 3px 8px rgba(0,0,0,0.05);
     --shadow-xl: 0 16px 48px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
-    --shadow-brand: 0 4px 16px rgba(99,102,241,0.25), 0 2px 6px rgba(99,102,241,0.12);
-    --shadow-brand-lg: 0 8px 32px rgba(99,102,241,0.35), 0 3px 10px rgba(99,102,241,0.18);
+    --shadow-brand: 0 4px 16px rgba(201,146,42,0.25), 0 2px 6px rgba(201,146,42,0.12);
+    --shadow-brand-lg: 0 8px 32px rgba(201,146,42,0.35), 0 3px 10px rgba(201,146,42,0.18);
     --shadow-emerald: 0 4px 16px rgba(16,185,129,0.25), 0 2px 6px rgba(16,185,129,0.12);
   }
 
   .dark {
-    /* ── Dark Mode (Primary) ── */
-    --background: 0 0% 3%;          /* #080808 */
-    --foreground: 0 0% 98%;         /* #FAFAFA */
-    --card: 240 5% 6%;              /* #0E0E10 */
-    --card-foreground: 0 0% 98%;
-    --popover: 240 5% 7%;
-    --popover-foreground: 0 0% 98%;
+    /* ── Dark Mode (Primary) — Noir ── */
+    --background: 240 20% 5%;       /* noir #0a0a0f */
+    --foreground: 0 0% 96%;
+    --card: 240 18% 9%;             /* noir-soft #12121a */
+    --card-foreground: 0 0% 96%;
+    --popover: 240 18% 10%;
+    --popover-foreground: 0 0% 96%;
 
-    /* Brand: Indigo (lighter in dark) */
-    --primary: 239 84% 71%;
-    --primary-foreground: 0 0% 100%;
+    /* Brand: Gold (brighter on dark) */
+    --primary: 42 77% 60%;          /* gold-300 #e8b84b */
+    --primary-foreground: 240 20% 8%;
+    --primary-light: 42 78% 72%;    /* gold-200 tint */
+    --primary-dark: 39 66% 47%;     /* gold-500 */
 
     /* Neutrals */
-    --secondary: 240 4% 10%;        /* #18181B */
+    --secondary: 240 17% 14%;       /* noir-muted #1e1e2a */
     --secondary-foreground: 240 5% 64%;
-    --muted: 240 4% 10%;
-    --muted-foreground: 240 5% 45%; /* #71717A */
-    --accent: 239 30% 14%;
-    --accent-foreground: 239 84% 76%;
+    --muted: 240 17% 14%;
+    --muted-foreground: 240 5% 45%;
+    --accent: 39 40% 14%;           /* dark gold tint surface */
+    --accent-foreground: 42 77% 68%;
 
     /* States */
     --destructive: 0 62% 52%;
@@ -78,17 +90,17 @@
     --success-foreground: 0 0% 100%;
 
     /* Structure */
-    --border: 240 4% 13%;           /* rgba white ~10% */
-    --input: 240 4% 13%;
-    --ring: 239 84% 71%;
+    --border: 240 15% 16%;
+    --input: 240 15% 16%;
+    --ring: 42 77% 60%;
 
     /* Shadows dark */
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.25);
     --shadow-md: 0 4px 12px rgba(0,0,0,0.50), 0 2px 4px rgba(0,0,0,0.30);
     --shadow-lg: 0 8px 24px rgba(0,0,0,0.60), 0 3px 8px rgba(0,0,0,0.35);
     --shadow-xl: 0 16px 48px rgba(0,0,0,0.70), 0 4px 12px rgba(0,0,0,0.40);
-    --shadow-brand: 0 4px 16px rgba(99,102,241,0.30), 0 2px 6px rgba(99,102,241,0.15);
-    --shadow-brand-lg: 0 8px 32px rgba(99,102,241,0.40), 0 3px 10px rgba(99,102,241,0.22);
+    --shadow-brand: 0 4px 16px rgba(201,146,42,0.30), 0 2px 6px rgba(201,146,42,0.15);
+    --shadow-brand-lg: 0 8px 32px rgba(201,146,42,0.40), 0 3px 10px rgba(201,146,42,0.22);
     --shadow-emerald: 0 4px 16px rgba(16,185,129,0.30), 0 2px 6px rgba(16,185,129,0.15);
   }
 }
@@ -115,15 +127,34 @@
   }
 
   ::selection {
-    background: hsl(239 84% 67% / 0.2);
-    color: hsl(239 84% 71%);
+    background: hsl(39 66% 47% / 0.2);
+    color: hsl(42 77% 60%);
+  }
+}
+
+@layer components {
+  .btn-gold {
+    background: linear-gradient(135deg, #c9922a, #e8b84b, #9a6c1a);
+    color: #0a0a0f;
+    font-family: var(--font-cinzel);
+    letter-spacing: 0.15em;
+    border: none;
+  }
+  .btn-gold:hover {
+    background: linear-gradient(135deg, #e8b84b, #f0d080, #c9922a);
   }
 }
 
 @layer utilities {
   /* ── Gradient text ── */
   .text-gradient {
-    background: linear-gradient(135deg, #818CF8 0%, #6366F1 50%, #4F46E5 100%);
+    background: linear-gradient(135deg, #e8b84b 0%, #d4a230 50%, #c9922a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-gold {
+    background: linear-gradient(90deg, #c9922a, #f0d080, #d4a230);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -143,16 +174,16 @@
 
   /* ── Brand gradients ── */
   .bg-brand-gradient {
-    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 60%, #4338CA 100%);
+    background: linear-gradient(135deg, #e8b84b 0%, #d4a230 50%, #c9922a 100%);
   }
   .bg-brand-gradient-subtle {
-    background: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(79,70,229,0.08) 100%);
+    background: linear-gradient(135deg, rgba(201,146,42,0.12) 0%, rgba(184,121,26,0.08) 100%);
   }
   .bg-mesh {
     background:
-      radial-gradient(at 40% 20%, hsla(239,84%,67%,0.12) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, hsla(217,91%,60%,0.08) 0px, transparent 50%),
-      radial-gradient(at 0% 60%, hsla(270,84%,67%,0.06) 0px, transparent 50%);
+      radial-gradient(at 40% 20%, hsla(42,78%,56%,0.12) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsla(39,66%,48%,0.08) 0px, transparent 50%),
+      radial-gradient(at 0% 60%, hsla(36,64%,42%,0.06) 0px, transparent 50%);
   }
   .bg-noise::after {
     content: '';
@@ -175,7 +206,7 @@
   /* ── Glassmorphism (dark-first) ── */
   .glass {
     backdrop-filter: blur(16px) saturate(180%);
-    background: rgba(14, 14, 16, 0.80);
+    background: rgba(18, 18, 26, 0.80);
     border: 1px solid rgba(255, 255, 255, 0.07);
   }
   .glass-light {
@@ -185,15 +216,15 @@
   }
   .glass-brand {
     backdrop-filter: blur(20px) saturate(200%);
-    background: rgba(99, 102, 241, 0.08);
-    border: 1px solid rgba(99, 102, 241, 0.15);
+    background: rgba(201, 146, 42, 0.08);
+    border: 1px solid rgba(201, 146, 42, 0.18);
   }
 
   /* ── Glow effects ── */
   .glow-brand {
-    box-shadow: 0 0 0 1px rgba(99,102,241,0.15),
-                0 4px 20px rgba(99,102,241,0.15),
-                0 12px 40px rgba(99,102,241,0.08);
+    box-shadow: 0 0 0 1px rgba(201,146,42,0.15),
+                0 4px 20px rgba(201,146,42,0.15),
+                0 12px 40px rgba(201,146,42,0.08);
   }
   .glow-emerald {
     box-shadow: 0 0 0 1px rgba(16,185,129,0.15),
@@ -231,7 +262,7 @@
   .border-gradient {
     border: 1px solid transparent;
     background: linear-gradient(hsl(var(--card)), hsl(var(--card))) padding-box,
-                linear-gradient(135deg, rgba(99,102,241,0.4), rgba(99,102,241,0.1)) border-box;
+                linear-gradient(135deg, rgba(201,146,42,0.45), rgba(201,146,42,0.12)) border-box;
   }
 
   /* ── Typography ── */
@@ -248,7 +279,7 @@
   /* ── Status chips ── */
   .status-open      { @apply bg-emerald-950/60 text-emerald-400 border border-emerald-800/40 dark:bg-emerald-950/40; }
   .status-pending   { @apply bg-amber-950/60 text-amber-400 border border-amber-800/40; }
-  .status-accepted  { @apply bg-indigo-950/60 text-indigo-300 border border-indigo-800/40; }
+  .status-accepted  { @apply bg-yellow-950/60 text-yellow-300 border border-yellow-800/40; }
   .status-completed { @apply bg-violet-950/60 text-violet-300 border border-violet-800/40; }
   .status-cancelled { @apply bg-red-950/60 text-red-400 border border-red-800/40; }
 }
@@ -297,8 +328,8 @@
   100% { background-position: 200% center; }
 }
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 20px rgba(99,102,241,0.20); }
-  50% { box-shadow: 0 0 40px rgba(99,102,241,0.40), 0 0 80px rgba(99,102,241,0.12); }
+  0%, 100% { box-shadow: 0 0 20px rgba(201,146,42,0.20); }
+  50% { box-shadow: 0 0 40px rgba(201,146,42,0.40), 0 0 80px rgba(201,146,42,0.12); }
 }
 @keyframes pulse-dot {
   0%, 100% { transform: scale(1); opacity: 1; }
@@ -343,7 +374,7 @@
   animation: shimmer 2s infinite;
 }
 .animate-shimmer-brand {
-  background: linear-gradient(90deg, transparent 0%, rgba(99,102,241,0.15) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(201,146,42,0.18) 50%, transparent 100%);
   background-size: 200% 100%;
   animation: shimmer 2.5s infinite;
 }
