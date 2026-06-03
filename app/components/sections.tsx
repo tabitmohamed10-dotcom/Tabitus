@@ -1,8 +1,6 @@
 import Link from 'next/link'
 import Logo from './Logo'
 
-const G = { gold500:'#C9922A', gold400:'#BFA06A', gold700:'#8B6914', cream:'#FAFAF7', noir:'#0C0B09', border:'#E8E0CC', muted:'#8A856E' }
-
 export function MarqueeBand() {
   const items = ['Électroménager','Informatique','Ameublement','Matériaux de construction','Automobile','Bijouterie','B2B','الإلكترونيات','الأثاث','مواد البناء','Électroménager','Informatique','Ameublement','Matériaux','Automobile','Bijouterie','B2B','الإلكترونيات','الأثاث']
   return (
@@ -90,7 +88,7 @@ export function Features() {
             <li key={f.r} style={{display:'flex',gap:16,padding:'20px 0',borderTop:i===0?'1px solid #E8E0CC':'none',borderBottom:'1px solid #E8E0CC'}}>
               <span style={{fontFamily:'var(--font-playfair)',fontSize:13,color:'#C9922A',marginTop:2,minWidth:20}}>{f.r}</span>
               <div>
-                <p style={{fontSize:14,fontWeight:500,color:'#0C0B09',marginBottom:6,letterSpacing:'0.02em'}}>{f.title}</p>
+                <p style={{fontSize:14,fontWeight:500,color:'#0C0B09',marginBottom:6}}>{f.title}</p>
                 <p style={{fontSize:13,color:'#8A856E',lineHeight:1.75,fontWeight:300}}>{f.desc}</p>
               </div>
             </li>
@@ -145,7 +143,7 @@ export function CTA() {
         ].map(c=>(
           <div key={c.title} className="card-hover" style={{border:'1px solid rgba(191,160,106,0.2)',padding:24}}>
             <div style={{fontSize:20,color:'#C9922A',marginBottom:12}}>{c.icon}</div>
-            <p style={{fontSize:13,color:'#F0E8D4',marginBottom:4,letterSpacing:'0.03em'}}>{c.title}</p>
+            <p style={{fontSize:13,color:'#F0E8D4',marginBottom:4}}>{c.title}</p>
             <p style={{fontFamily:'var(--font-arabic)',fontSize:12,color:'rgba(191,160,106,0.7)',textAlign:'right',marginBottom:10,lineHeight:1.6}}>{c.ar}</p>
             <p style={{fontSize:12,color:'rgba(255,255,255,0.35)',lineHeight:1.7,fontWeight:300}}>{c.desc}</p>
           </div>
@@ -157,7 +155,7 @@ export function CTA() {
 
 export function Footer() {
   return (
-    <footer style={{background:'#FAFAF7',padding:'56px',borderTop:'1px solid #E8E0CC'}}>
+    <footer style={{background:'#FAFAF7',padding:56,borderTop:'1px solid #E8E0CC'}}>
       <div style={{display:'flex',justifyContent:'space-between',marginBottom:48,flexWrap:'wrap',gap:40}}>
         <div>
           <Logo size="md"/>
@@ -175,7 +173,7 @@ export function Footer() {
               <ul style={{listStyle:'none',display:'flex',flexDirection:'column',gap:10}}>
                 {col.links.map(([href,label])=>(
                   <li key={label}>
-                    <Link href={href} style={{fontSize:13,color:'#0C0B09',textDecoration:'none',fontWeight:300,transition:'color 0.2s'}}
+                    <Link href={href} style={{fontSize:13,color:'#0C0B09',textDecoration:'none',fontWeight:300}}
                       onMouseEnter={e=>(e.currentTarget.style.color='#C9922A')}
                       onMouseLeave={e=>(e.currentTarget.style.color='#0C0B09')}>
                       {label}
@@ -189,9 +187,9 @@ export function Footer() {
       </div>
       <div className="h-divider" style={{marginBottom:24}}/>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:12}}>
-        <p style={{fontSize:11,color:'#8A856E',letterSpacing:'0.05em',fontFamily:'var(--font-inter)'}}>© 2025 TABIT · Tous droits réservés · Maroc</p>
+        <p style={{fontSize:11,color:'#8A856E',fontFamily:'var(--font-inter)'}}>© 2025 TABIT · Tous droits réservés · Maroc</p>
         <div style={{display:'flex',alignItems:'center',gap:12}}>
-          <span style={{fontSize:9,letterSpacing:'0.2em',textTransform:'uppercase',color:'#C9922A',border:'1px solid #C9922A',padding:'3px 10px',fontFamily:'var(--font-inter)'}}>5% commission</span>
+          <span style={{fontSize:9,letterSpacing:'0.2em',textTransform:'uppercase',color:'#C9922A',border:'1px solid #C9922A',padding:'3px 10px'}}>5% commission</span>
           <span style={{fontSize:11,color:'#8A856E',fontFamily:'var(--font-inter)'}}>Uniquement sur transaction confirmée</span>
         </div>
       </div>

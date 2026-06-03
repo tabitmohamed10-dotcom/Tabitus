@@ -9,7 +9,6 @@ const arabic = Noto_Naskh_Arabic({ subsets:['arabic'], weight:['400','500','600'
 export const metadata: Metadata = {
   title: 'TABIT — Le marché travaille pour vous',
   description: 'Publiez votre besoin. Les meilleurs commerçants du Maroc vous font leurs offres. Prix fixe, confiance garantie.',
-  keywords: ['marketplace maroc','prix fixe','tabit','ثابت'],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

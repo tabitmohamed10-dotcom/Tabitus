@@ -6,9 +6,9 @@ export default function Hero() {
 
       {/* LEFT */}
       <div style={{display:'flex',flexDirection:'column',justifyContent:'center',padding:'80px 56px',borderRight:'1px solid #E8E0CC',position:'relative',overflow:'hidden',background:'#FAFAF7'}}>
-        <span aria-hidden style={{position:'absolute',right:-40,top:'50%',transform:'translateY(-50%)',fontFamily:'var(--font-arabic)',fontSize:280,color:'rgba(191,160,106,0.06)',pointerEvents:'none',lineHeight:1}}>ث</span>
+        <span aria-hidden style={{position:'absolute',right:-40,top:'50%',transform:'translateY(-50%)',fontFamily:'var(--font-arabic)',fontSize:280,color:'rgba(191,160,106,0.06)',pointerEvents:'none',lineHeight:1,zIndex:0}}>ث</span>
 
-        <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:48}}>
+        <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:48,position:'relative',zIndex:1}}>
           <span style={{width:32,height:1,background:'#C9922A',display:'block'}}/>
           <span style={{fontSize:10,letterSpacing:'0.4em',textTransform:'uppercase',color:'#C9922A',fontFamily:'var(--font-inter)'}}>Marketplace n°1 au Maroc</span>
         </div>
@@ -62,15 +62,11 @@ export default function Hero() {
           <h3 style={{fontFamily:'var(--font-playfair)',fontSize:18,fontWeight:400,color:'#F0E8D4',marginBottom:4}}>Réfrigérateur Samsung 500L</h3>
           <p style={{fontFamily:'var(--font-arabic)',fontSize:13,color:'rgba(191,160,106,0.7)',textAlign:'right',marginBottom:12,lineHeight:1.6}}>ثلاجة سامسونغ ٥٠٠ لتر</p>
           <p style={{fontSize:13,color:'rgba(255,255,255,0.4)',lineHeight:1.6,marginBottom:16}}>Garantie 2 ans · Casablanca, Maârif · Livraison incluse</p>
-
           <div style={{display:'flex',gap:8,marginBottom:20}}>
             {['Casablanca','Livraison','Urgent'].map(t=>(
-              <span key={t} style={{fontSize:9,letterSpacing:'0.2em',textTransform:'uppercase',padding:'4px 10px',border:'1px solid rgba(255,255,255,0.1)',color:'rgba(255,255,255,0.35)'}}>
-                {t}
-              </span>
+              <span key={t} style={{fontSize:9,letterSpacing:'0.2em',textTransform:'uppercase',padding:'4px 10px',border:'1px solid rgba(255,255,255,0.1)',color:'rgba(255,255,255,0.35)'}}>{t}</span>
             ))}
           </div>
-
           <div style={{borderTop:'1px solid rgba(255,255,255,0.06)',paddingTop:16}}>
             <p style={{fontSize:9,letterSpacing:'0.3em',textTransform:'uppercase',color:'#C9922A',marginBottom:12}}>3 offres reçues</p>
             {[
@@ -78,16 +74,11 @@ export default function Hero() {
               {name:'Darcom Pro',rating:'5.0',price:'6 450',best:true},
               {name:'Marjane Pro',rating:'4.7',price:'7 100',best:false},
             ].map(o=>(
-              <div key={o.name} style={{
-                display:'flex',justifyContent:'space-between',alignItems:'center',
-                padding:'10px 14px',marginBottom:8,
-                background: o.best ? 'rgba(191,160,106,0.08)' : 'rgba(255,255,255,0.03)',
-                borderLeft: `2px solid ${o.best ? '#C9922A' : 'transparent'}`,
-              }}>
+              <div key={o.name} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'10px 14px',marginBottom:8,background:o.best?'rgba(191,160,106,0.08)':'rgba(255,255,255,0.03)',borderLeft:`2px solid ${o.best?'#C9922A':'transparent'}`}}>
                 <div style={{display:'flex',alignItems:'center',gap:10}}>
                   <span style={{fontSize:13,color:'rgba(255,255,255,0.7)',fontWeight:300}}>{o.name}</span>
                   <span style={{fontSize:10,color:'#C9922A'}}>★ {o.rating}</span>
-                  {o.best && <span style={{fontSize:8,letterSpacing:'0.2em',textTransform:'uppercase',background:'rgba(191,160,106,0.15)',color:'#BFA06A',padding:'2px 8px'}}>Meilleure offre</span>}
+                  {o.best&&<span style={{fontSize:8,letterSpacing:'0.2em',textTransform:'uppercase',background:'rgba(191,160,106,0.15)',color:'#BFA06A',padding:'2px 8px'}}>Meilleure offre</span>}
                 </div>
                 <div style={{fontFamily:'var(--font-playfair)',fontSize:17,color:'#F0E8D4'}}>
                   {o.price} <span style={{fontSize:10,color:'#8A856E',letterSpacing:'0.2em'}}>MAD</span>

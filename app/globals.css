@@ -1,59 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500&family=Noto+Naskh+Arabic:wght@400;500;600&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-:root {
-  --gold-500: #C9922A; --gold-400: #BFA06A; --gold-300: #D4B483;
-  --gold-700: #8B6914; --gold-200: #F0D080; --gold-800: #6B4F0F;
-  --noir: #0C0B09; --cream: #FAFAF7; --cream-dim: #F5F2EA;
-  --border: #E8E0CC; --muted: #8A856E;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
-body { background: var(--cream); color: var(--noir); font-family: 'Inter', sans-serif; font-weight: 300; }
-
-.gold-text {
-  background: linear-gradient(135deg, #6B4F0F, #BFA06A, #F0D080, #BFA06A, #8B6914);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.btn-primary {
-  display:inline-block; font-size:10px; letter-spacing:0.25em; text-transform:uppercase;
-  font-weight:500; padding:16px 40px; background:var(--noir); color:var(--cream);
-  border:1px solid var(--noir); text-decoration:none; transition:all 0.3s; cursor:pointer;
-}
-.btn-primary:hover { background:var(--gold-500); border-color:var(--gold-500); color:var(--noir); }
-.btn-gold {
-  display:inline-block; font-size:10px; letter-spacing:0.25em; text-transform:uppercase;
-  font-weight:500; padding:16px 40px; background:linear-gradient(135deg,#8B6914,#C9922A);
-  color:var(--noir); border:1px solid var(--gold-500); text-decoration:none; transition:all 0.3s; cursor:pointer;
-}
-.btn-gold:hover { background:linear-gradient(135deg,#C9922A,#D4B483); }
-.btn-outline {
-  display:inline-block; font-size:10px; letter-spacing:0.25em; text-transform:uppercase;
-  font-weight:400; padding:16px 32px; background:transparent; color:var(--noir);
-  border:1px solid var(--border); text-decoration:none; transition:all 0.3s; cursor:pointer;
-}
-.btn-outline:hover { border-color:var(--gold-500); color:var(--gold-500); }
-.btn-ghost-dark {
-  display:inline-block; font-size:10px; letter-spacing:0.25em; text-transform:uppercase;
-  font-weight:400; padding:16px 32px; background:transparent; color:rgba(255,255,255,0.5);
-  border:1px solid rgba(255,255,255,0.15); text-decoration:none; transition:all 0.3s; cursor:pointer;
-}
-.btn-ghost-dark:hover { border-color:var(--gold-500); color:#BFA06A; }
-.s-label {
-  display:flex; align-items:center; gap:12px; font-size:10px; letter-spacing:0.4em;
-  text-transform:uppercase; color:var(--gold-500); font-weight:400; margin-bottom:20px;
-}
-.s-label::before { content:''; width:24px; height:1px; background:var(--gold-500); display:block; flex-shrink:0; }
-.h-divider { height:1px; background:linear-gradient(to right, transparent, var(--border), transparent); }
-@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-.marquee-inner { display:inline-flex; animation:marquee 30s linear infinite; white-space:nowrap; }
-.marquee-inner:hover { animation-play-state:paused; }
-.card-hover { transition:border-color 0.3s; }
-.card-hover:hover { border-color:rgba(191,160,106,0.5) !important; }
-::selection { background:#F0D080; color:var(--noir); }
-::-webkit-scrollbar { width:4px; }
-::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
-::-webkit-scrollbar-thumb:hover { background:var(--gold-500); }
+:root{--gold-500:#C9922A;--gold-400:#BFA06A;--gold-300:#D4B483;--gold-700:#8B6914;--gold-200:#F0D080;--gold-800:#6B4F0F;--noir:#0C0B09;--cream:#FAFAF7;--border:#E8E0CC;--muted:#8A856E;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;}
+body{background:var(--cream);color:var(--noir);font-family:'Inter',sans-serif;font-weight:300;}
+.gold-text{background:linear-gradient(135deg,#6B4F0F,#BFA06A,#F0D080,#BFA06A,#8B6914);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.btn-primary{display:inline-block;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;font-weight:500;padding:16px 40px;background:var(--noir);color:var(--cream);border:1px solid var(--noir);text-decoration:none;transition:all 0.3s;cursor:pointer;}
+.btn-primary:hover{background:var(--gold-500);border-color:var(--gold-500);color:var(--noir);}
+.btn-gold{display:inline-block;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;font-weight:500;padding:16px 40px;background:linear-gradient(135deg,#8B6914,#C9922A);color:var(--noir);border:1px solid var(--gold-500);text-decoration:none;transition:all 0.3s;cursor:pointer;}
+.btn-outline{display:inline-block;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;font-weight:400;padding:16px 32px;background:transparent;color:var(--noir);border:1px solid var(--border);text-decoration:none;transition:all 0.3s;cursor:pointer;}
+.btn-outline:hover{border-color:var(--gold-500);color:var(--gold-500);}
+.btn-ghost-dark{display:inline-block;font-size:10px;letter-spacing:0.25em;text-transform:uppercase;font-weight:400;padding:16px 32px;background:transparent;color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.15);text-decoration:none;transition:all 0.3s;cursor:pointer;}
+.btn-ghost-dark:hover{border-color:var(--gold-500);color:#BFA06A;}
+.s-label{display:flex;align-items:center;gap:12px;font-size:10px;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold-500);font-weight:400;margin-bottom:20px;}
+.s-label::before{content:'';width:24px;height:1px;background:var(--gold-500);display:block;flex-shrink:0;}
+.h-divider{height:1px;background:linear-gradient(to right,transparent,var(--border),transparent);}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.marquee-inner{display:inline-flex;animation:marquee 30s linear infinite;white-space:nowrap;}
+.card-hover{transition:border-color 0.3s;}
+.card-hover:hover{border-color:rgba(191,160,106,0.5)!important;}
+::selection{background:#F0D080;color:var(--noir);}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+::-webkit-scrollbar-thumb:hover{background:var(--gold-500);}
