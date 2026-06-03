@@ -69,11 +69,8 @@ function RegisterForm() {
         </div>
 
         <div className="relative z-10">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-white/15 backdrop-blur-sm border border-white/25 flex items-center justify-center">
-              <span className="font-display font-bold text-white text-base">T</span>
-            </div>
-            <span className="font-display font-bold text-xl text-white tracking-tight">tabitus</span>
+          <Link href="/" className="flex items-center group">
+            <img src="/logo.svg" alt="Tabitus" className="h-9 w-auto brightness-200 transition-opacity group-hover:opacity-85" />
           </Link>
         </div>
 
@@ -117,12 +114,10 @@ function RegisterForm() {
       {/* ── Right panel (form) ── */}
       <div className="flex-1 flex items-center justify-center p-6 sm:p-10 bg-background">
         <div className="w-full max-w-[420px]">
-          {/* Mobile logo */}
-          <div className="lg:hidden flex items-center gap-2.5 mb-10">
-            <div className="h-9 w-9 rounded-xl bg-brand-gradient flex items-center justify-center">
-              <span className="font-display font-bold text-white text-base">T</span>
-            </div>
-            <span className="font-display font-bold text-xl tracking-tight">tabitus</span>
+          <div className="lg:hidden mb-10">
+            <Link href="/">
+              <img src="/logo.svg" alt="Tabitus" className="h-9 w-auto" />
+            </Link>
           </div>
 
           <div className="mb-8">

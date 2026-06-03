@@ -198,11 +198,8 @@ function NavBar() {
           : 'bg-transparent'
       )}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="h-8 w-8 rounded-xl bg-brand-gradient flex items-center justify-center shadow-brand transition-transform group-hover:scale-105">
-              <span className="font-display font-bold text-white text-sm">T</span>
-            </div>
-            <span className="font-display font-bold text-xl tracking-tight text-foreground">tabitus</span>
+          <Link href="/" className="flex items-center group">
+            <img src="/logo.svg" alt="Tabitus" className="h-9 w-auto transition-opacity group-hover:opacity-85" />
           </Link>
 
           <div className="hidden md:flex items-center gap-1 text-sm font-medium">
@@ -1012,11 +1009,8 @@ function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-10">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-14">
           <div className="col-span-2">
-            <Link href="/" className="flex items-center gap-2.5 mb-5 group">
-              <div className="h-9 w-9 rounded-xl bg-brand-gradient flex items-center justify-center shadow-brand">
-                <span className="font-display font-bold text-white text-base">T</span>
-              </div>
-              <span className="font-display font-bold text-xl tracking-tight">tabitus</span>
+            <Link href="/" className="flex items-center mb-5 group">
+              <img src="/logo.svg" alt="Tabitus" className="h-9 w-auto transition-opacity group-hover:opacity-85" />
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
               La marketplace intelligente du Maroc. Publiez vos besoins, recevez les meilleures offres.

@@ -62,11 +62,8 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="bg-card border border-border/60 rounded-3xl shadow-dramatic w-full max-w-md p-8 animate-scale-in">
-        <Link href="/" className="flex items-center gap-2.5 mb-8">
-          <div className="h-8 w-8 rounded-xl bg-brand-gradient flex items-center justify-center shadow-brand">
-            <span className="font-display font-bold text-white text-sm">T</span>
-          </div>
-          <span className="font-display font-bold text-xl tracking-tight">tabitus</span>
+        <Link href="/" className="flex items-center mb-8 group">
+          <img src="/logo.svg" alt="Tabitus" className="h-8 w-auto transition-opacity group-hover:opacity-85" />
         </Link>
 
         {step === 1 ? (

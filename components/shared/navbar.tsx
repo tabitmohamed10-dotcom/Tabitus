@@ -68,11 +68,12 @@ export function DashboardNavbar({ profile, links }: NavbarProps) {
 
           {/* Logo + nav */}
           <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="h-7 w-7 rounded-lg bg-brand-gradient flex items-center justify-center shadow-brand transition-transform group-hover:scale-105">
-                <span className="font-display font-bold text-white text-xs">T</span>
-              </div>
-              <span className="font-display font-bold text-base tracking-tight">tabitus</span>
+            <Link href="/" className="flex items-center group">
+              <img
+                src="/logo.svg"
+                alt="Tabitus"
+                className="h-8 w-auto transition-opacity group-hover:opacity-85"
+              />
             </Link>
 
             <div className="hidden md:flex items-center gap-0.5">
