@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 
-const NAV_LINKS = [
+const NAV_LINKS: { href: string; label: string; highlight?: boolean }[] = [
   { href: '#how-it-works', label: 'Comment ça marche' },
   { href: '#categories', label: 'Catégories' },
+  { href: '/marche-libre', label: 'Marché Libre', highlight: true },
   { href: '#confiance', label: 'Confiance' },
-  { href: '#temoignages', label: 'Témoignages' },
   { href: '#faq', label: 'FAQ' },
 ]
 
@@ -67,10 +67,15 @@ export default function Navbar() {
             <motion.a
               key={link.href}
               href={link.href}
-              style={{ color: '#C4BCA8', textDecoration: 'none', fontSize: 14, fontWeight: 400, letterSpacing: '0.01em' }}
+              style={{
+                color: link.highlight ? '#C9922A' : '#C4BCA8',
+                textDecoration: 'none', fontSize: 14, fontWeight: link.highlight ? 600 : 400, letterSpacing: '0.01em',
+                ...(link.highlight ? { padding: '4px 10px', border: '1px solid rgba(201,146,42,0.35)', borderRadius: 100, fontSize: 13 } : {}),
+              }}
               whileHover={{ color: '#C9922A', y: -1 }}
               transition={{ duration: 0.2 }}
             >
+              {link.highlight && <span style={{ marginRight: 4 }}>🏪</span>}
               {link.label}
             </motion.a>
           ))}
@@ -156,13 +161,16 @@ export default function Navbar() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.06, duration: 0.3 }}
                   style={{
-                    color: '#D4C5A9', textDecoration: 'none',
-                    padding: '15px 0', fontSize: 16, fontWeight: 400,
+                    color: link.highlight ? '#C9922A' : '#D4C5A9',
+                    textDecoration: 'none',
+                    padding: '15px 0', fontSize: 16, fontWeight: link.highlight ? 600 : 400,
                     borderBottom: '1px solid rgba(201,146,42,0.08)',
-                    display: 'block', minHeight: 52,
+                    display: 'flex', alignItems: 'center', gap: 8, minHeight: 52,
                   }}
                 >
+                  {link.highlight && <span>🏪</span>}
                   {link.label}
+                  {link.highlight && <span style={{ fontSize: 11, background: 'rgba(201,146,42,0.15)', color: '#C9922A', padding: '2px 8px', borderRadius: 100, fontWeight: 700 }}>Nouveau</span>}
                 </motion.a>
               ))}
               <motion.div

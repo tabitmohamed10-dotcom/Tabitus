@@ -19,11 +19,11 @@ const COLUMNS = [
   {
     title: 'Acheteurs',
     links: [
+      { label: '🏪 Marché Libre', href: '/marche-libre' },
       { label: 'Comment ça marche', href: '#how-it-works' },
       { label: 'Déposer une demande', href: '/auth/register' },
       { label: 'Catégories', href: '#categories' },
       { label: 'Protection acheteur', href: '#confiance' },
-      { label: 'Témoignages', href: '#temoignages' },
       { label: 'FAQ Acheteurs', href: '#faq' },
     ],
   },
