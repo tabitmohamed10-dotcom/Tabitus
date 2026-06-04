@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { DashboardNavbar } from '@/components/shared/navbar'
 import { BottomNav } from '@/components/ui/bottom-nav'
 import { LayoutDashboard, PlusCircle, Settings, ShoppingBag, User, Rss, Store } from 'lucide-react'
+import NotificationSystem from '@/app/components/NotificationSystem'
 
 export default async function BuyerLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -30,6 +31,7 @@ export default async function BuyerLayout({ children }: { children: React.ReactN
         </div>
       </main>
       <BottomNav role="buyer" />
+      <NotificationSystem userId={user.id} role={profile?.role || 'buyer'} />
     </div>
   )
 }

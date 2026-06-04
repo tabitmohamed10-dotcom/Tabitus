@@ -158,3 +158,21 @@ img, video { max-width: 100%; height: auto; }
 ::-webkit-scrollbar-thumb:hover { background: var(--gold-500); }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+/* ── 3D / Perspective ──────────────────────────────────────── */
+.perspective { perspective: 1000px; }
+.card-3d { transform-style: preserve-3d; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.card-3d:hover { transform: rotateY(-5deg) rotateX(3deg) translateZ(20px); }
+
+/* ── Floating ──────────────────────────────────────────────── */
+.floating { animation: float 3s ease-in-out infinite; }
+.floating-delayed { animation: float 3s ease-in-out infinite 1s; }
+@keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
+
+/* ── Glow ──────────────────────────────────────────────────── */
+.glow { box-shadow: 0 0 20px rgba(201,146,42,0.3), 0 0 40px rgba(201,146,42,0.1); transition: box-shadow 0.3s ease; }
+.glow:hover { box-shadow: 0 0 30px rgba(201,146,42,0.5), 0 0 60px rgba(201,146,42,0.2); }
+
+/* ── Notification toast animations ────────────────────────── */
+@keyframes tabToastIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes tabPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.8); } }

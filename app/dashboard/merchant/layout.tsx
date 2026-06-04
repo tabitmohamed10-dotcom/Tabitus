@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { DashboardNavbar } from '@/components/shared/navbar'
 import { BottomNav } from '@/components/ui/bottom-nav'
 import { LayoutDashboard, Settings, ShoppingBag, Package, User, Rss } from 'lucide-react'
+import NotificationSystem from '@/app/components/NotificationSystem'
 
 export default async function MerchantLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -29,6 +30,7 @@ export default async function MerchantLayout({ children }: { children: React.Rea
         </div>
       </main>
       <BottomNav role="merchant" />
+      <NotificationSystem userId={user.id} role="merchant" />
     </div>
   )
 }
