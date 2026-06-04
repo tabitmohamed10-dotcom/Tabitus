@@ -14,11 +14,16 @@ export function useProfile() {
 
   useEffect(() => {
     async function load() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { setLoading(false); return }
-      const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single()
-      setProfile(data)
-      setLoading(false)
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) { setLoading(false); return }
+        const { data } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle()
+        setProfile(data)
+      } catch {
+        // keep profile null
+      } finally {
+        setLoading(false)
+      }
     }
     load()
   }, [])
@@ -33,15 +38,20 @@ export function useMyRequests() {
   const supabase = createClient()
 
   const load = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { setLoading(false); return }
-    const { data } = await supabase
-      .from('requests')
-      .select('*, category:categories(name,icon,color,slug)')
-      .eq('buyer_id', user.id)
-      .order('created_at', { ascending: false })
-    setRequests(data || [])
-    setLoading(false)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { setLoading(false); return }
+      const { data } = await supabase
+        .from('requests')
+        .select('*, category:categories(name,icon,color,slug)')
+        .eq('buyer_id', user.id)
+        .order('created_at', { ascending: false })
+      setRequests(data || [])
+    } catch {
+      setRequests([])
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
   useEffect(() => { load() }, [load])
@@ -57,11 +67,12 @@ export function useRequest(id: string) {
 
   useEffect(() => {
     async function load() {
+      try {
       const { data: req } = await supabase
         .from('requests')
         .select('*, category:categories(name,icon,color), buyer:profiles(full_name,avatar_url)')
         .eq('id', id)
-        .single()
+        .maybeSingle()
       setRequest(req)
 
       // Try view first, fall back to direct table join
@@ -86,7 +97,11 @@ export function useRequest(id: string) {
       }
 
       setOffers(offs || [])
-      setLoading(false)
+      } catch {
+        setOffers([])
+      } finally {
+        setLoading(false)
+      }
     }
     load()
 
@@ -156,19 +171,24 @@ export function useMerchantOffers() {
 
   useEffect(() => {
     async function load() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { setLoading(false); return }
-      const { data: merchant } = await supabase
-        .from('merchants').select('id').eq('user_id', user.id).single()
-      if (!merchant) { setLoading(false); return }
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) { setLoading(false); return }
+        const { data: merchant } = await supabase
+          .from('merchants').select('id').eq('user_id', user.id).maybeSingle()
+        if (!merchant) { setLoading(false); return }
 
-      const { data } = await supabase
-        .from('offers')
-        .select('*, request:requests(title,budget_max,city,deadline,status,category:categories(name,icon))')
-        .eq('merchant_id', merchant.id)
-        .order('created_at', { ascending: false })
-      setOffers(data || [])
-      setLoading(false)
+        const { data } = await supabase
+          .from('offers')
+          .select('*, request:requests(title,budget_max,city,deadline,status,category:categories(name,icon))')
+          .eq('merchant_id', merchant.id)
+          .order('created_at', { ascending: false })
+        setOffers(data || [])
+      } catch {
+        setOffers([])
+      } finally {
+        setLoading(false)
+      }
     }
     load()
   }, [])
@@ -235,21 +255,26 @@ export function useBuyerStats(): { stats: BuyerStats; loading: boolean } {
 
   useEffect(() => {
     async function load() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { setLoading(false); return }
-      const { data: reqs } = await supabase
-        .from('requests')
-        .select('id, status, offers_count')
-        .eq('buyer_id', user.id)
-      if (reqs) {
-        setStats({
-          total_requests: reqs.length,
-          open_requests: reqs.filter(r => r.status === 'open').length,
-          total_offers_received: reqs.reduce((s, r) => s + (r.offers_count || 0), 0),
-          accepted_deals: reqs.filter(r => r.status === 'accepted' || r.status === 'completed').length,
-        })
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) { setLoading(false); return }
+        const { data: reqs } = await supabase
+          .from('requests')
+          .select('id, status, offers_count')
+          .eq('buyer_id', user.id)
+        if (reqs) {
+          setStats({
+            total_requests: reqs.length,
+            open_requests: reqs.filter(r => r.status === 'open').length,
+            total_offers_received: reqs.reduce((s, r) => s + (r.offers_count || 0), 0),
+            accepted_deals: reqs.filter(r => r.status === 'accepted' || r.status === 'completed').length,
+          })
+        }
+      } catch {
+        // keep default zero stats
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
     load()
   }, [])
@@ -268,23 +293,28 @@ export function useMerchantStats(): { stats: MerchantStats; loading: boolean } {
 
   useEffect(() => {
     async function load() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { setLoading(false); return }
-      const { data: m } = await supabase
-        .from('merchants')
-        .select('total_offers,accepted_offers,response_rate,rating,total_sales')
-        .eq('user_id', user.id)
-        .single()
-      if (m) {
-        setStats({
-          total_offers: m.total_offers,
-          accepted_offers: m.accepted_offers,
-          response_rate: m.response_rate,
-          estimated_revenue: m.accepted_offers * 450, // placeholder avg
-          rating: m.rating,
-        })
+      try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) { setLoading(false); return }
+        const { data: m } = await supabase
+          .from('merchants')
+          .select('total_offers,accepted_offers,response_rate,rating,total_sales')
+          .eq('user_id', user.id)
+          .maybeSingle()
+        if (m) {
+          setStats({
+            total_offers: m.total_offers ?? 0,
+            accepted_offers: m.accepted_offers ?? 0,
+            response_rate: m.response_rate ?? 0,
+            estimated_revenue: (m.accepted_offers ?? 0) * 450,
+            rating: m.rating ?? 0,
+          })
+        }
+      } catch {
+        // keep default zero stats
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
     load()
   }, [])

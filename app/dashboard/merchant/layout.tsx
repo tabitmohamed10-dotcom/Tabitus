@@ -10,7 +10,7 @@ export default async function MerchantLayout({ children }: { children: React.Rea
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+  const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle()
 
   const links = [
     { href: '/dashboard/merchant',          label: 'Tableau de bord', icon: <LayoutDashboard className="h-4 w-4" /> },

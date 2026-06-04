@@ -42,7 +42,6 @@ function CountUp({ to, suffix = '' }: { to: number; suffix?: string }) {
 
 export default function MerchantDashboard() {
   const router = useRouter()
-  const supabase = createClient()
   const { stats, loading: statsLoading } = useMerchantStats()
   const { offers, loading: offersLoading } = useMerchantOffers()
   const [matchingRequests, setMatchingRequests] = useState<any[]>([])
@@ -59,33 +58,39 @@ export default function MerchantDashboard() {
 
   useEffect(() => {
     async function loadMatchingRequests() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { setReqLoading(false); return }
+      try {
+        const supabase = createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) { router.push('/auth/login'); return }
 
-      const { data: merchant } = await supabase
-        .from('merchants')
-        .select('id, categories')
-        .eq('user_id', user.id)
-        .single()
+        const { data: merchant } = await supabase
+          .from('merchants')
+          .select('id, categories')
+          .eq('user_id', user.id)
+          .maybeSingle()
 
-      if (!merchant) { setReqLoading(false); return }
+        if (!merchant) { setReqLoading(false); return }
 
-      const alreadyOffered = offers.map((o: any) => (o.request_id || o.request?.id)).filter(Boolean)
+        const alreadyOffered = offers.map((o: any) => (o.request_id || o.request?.id)).filter(Boolean)
 
-      let query = supabase
-        .from('requests')
-        .select('id, title, city, budget_max, urgent, created_at, offers_count, category:categories(name, icon)')
-        .eq('status', 'open')
-        .order('created_at', { ascending: false })
-        .limit(6)
+        let query = supabase
+          .from('requests')
+          .select('id, title, city, budget_max, urgent, created_at, offers_count, category:categories(name, icon)')
+          .eq('status', 'open')
+          .order('created_at', { ascending: false })
+          .limit(6)
 
-      if (alreadyOffered.length > 0) {
-        query = query.not('id', 'in', `(${alreadyOffered.join(',')})`)
+        if (alreadyOffered.length > 0) {
+          query = query.not('id', 'in', `(${alreadyOffered.join(',')})`)
+        }
+
+        const { data } = await query
+        setMatchingRequests(data || [])
+      } catch {
+        setMatchingRequests([])
+      } finally {
+        setReqLoading(false)
       }
-
-      const { data } = await query
-      setMatchingRequests(data || [])
-      setReqLoading(false)
     }
     if (!offersLoading) loadMatchingRequests()
   }, [offersLoading])

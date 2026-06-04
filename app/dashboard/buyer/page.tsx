@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import {
@@ -11,6 +12,7 @@ import { formatTimeAgo, getStatusColor, getStatusLabel } from '@/lib/utils'
 import { Skeleton, EmptyState } from '@/components/ui/index'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { createClient } from '@/lib/supabase/client'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -41,9 +43,17 @@ function CountUp({ to, suffix = '' }: { to: number; suffix?: string }) {
 }
 
 export default function BuyerDashboard() {
+  const router = useRouter()
   const { stats, loading: statsLoading } = useBuyerStats()
   const { requests, loading: reqLoading } = useMyRequests()
   const loading = statsLoading || reqLoading
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) router.push('/auth/login')
+    }).catch(() => router.push('/auth/login'))
+  }, [])
 
   if (loading) {
     return (
