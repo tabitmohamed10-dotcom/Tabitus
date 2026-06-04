@@ -26,10 +26,17 @@ export default function LoginPage() {
     setLoading(true)
     setError('')
     const supabase = createClient()
-    const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
-    if (authError) { setError('Email ou mot de passe incorrect'); setLoading(false); return }
-    const { data: { user } } = await supabase.auth.getUser()
-    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user!.id).single()
+    const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password })
+    if (authError) {
+      if (authError.message?.includes('Email not confirmed')) {
+        setError('Veuillez confirmer votre email avant de vous connecter')
+      } else {
+        setError('Email ou mot de passe incorrect')
+      }
+      setLoading(false)
+      return
+    }
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', data.user!.id).single()
     window.location.href = profile?.role === 'merchant' ? '/dashboard/merchant' : '/dashboard/buyer'
   }
 
