@@ -23,7 +23,7 @@ const BENEFITS = {
 
 function RegisterForm() {
   const searchParams = useSearchParams()
-  const initialRole = (searchParams.get('role') as 'buyer' | 'merchant') || 'buyer'
+  const initialRole = ((searchParams.get('role') || searchParams.get('type')) as 'buyer' | 'merchant') || 'buyer'
   const router = useRouter()
   const [role, setRole] = useState<'buyer' | 'merchant'>(initialRole)
   const [fullName, setFullName] = useState('')

@@ -34,7 +34,7 @@ export function useMyRequests() {
 
   const load = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
+    if (!user) { setLoading(false); return }
     const { data } = await supabase
       .from('requests')
       .select('*, category:categories(name,icon,color,slug)')
@@ -157,10 +157,10 @@ export function useMerchantOffers() {
   useEffect(() => {
     async function load() {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
+      if (!user) { setLoading(false); return }
       const { data: merchant } = await supabase
         .from('merchants').select('id').eq('user_id', user.id).single()
-      if (!merchant) return
+      if (!merchant) { setLoading(false); return }
 
       const { data } = await supabase
         .from('offers')
@@ -236,7 +236,7 @@ export function useBuyerStats(): { stats: BuyerStats; loading: boolean } {
   useEffect(() => {
     async function load() {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
+      if (!user) { setLoading(false); return }
       const { data: reqs } = await supabase
         .from('requests')
         .select('id, status, offers_count')
@@ -269,7 +269,7 @@ export function useMerchantStats(): { stats: MerchantStats; loading: boolean } {
   useEffect(() => {
     async function load() {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
+      if (!user) { setLoading(false); return }
       const { data: m } = await supabase
         .from('merchants')
         .select('total_offers,accepted_offers,response_rate,rating,total_sales')

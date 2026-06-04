@@ -521,7 +521,7 @@ function MarcheLibreContent() {
 
       {/* Category pills */}
       <div style={{ background: '#111110', borderBottom: '1px solid rgba(201,146,42,0.1)', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 clamp(20px,5vw,56px)', display: 'flex', gap: 8, padding: '12px clamp(20px,5vw,56px)', minWidth: 'max-content' }}>
+        <div style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', gap: 8, padding: '12px clamp(20px,5vw,56px)', minWidth: 'max-content' }}>
           {CATEGORIES.map(cat => (
             <motion.button
               key={cat.slug}

@@ -23,6 +23,18 @@ export default async function MerchantOffersPage() {
   const { data: merchant } = await supabase
     .from('merchants').select('id').eq('user_id', user.id).single()
 
+  if (!merchant) {
+    return (
+      <div className="max-w-3xl mx-auto space-y-6">
+        <h1 className="font-display text-2xl font-bold tracking-tight">Mes offres</h1>
+        <div className="bg-card border border-border/60 rounded-2xl shadow-premium p-8 text-center text-muted-foreground">
+          <p className="text-2xl mb-2">🏪</p>
+          <p className="font-semibold">Configurez votre profil boutique d&apos;abord</p>
+        </div>
+      </div>
+    )
+  }
+
   const { data: offers } = await supabase
     .from('offers')
     .select(`
@@ -32,7 +44,7 @@ export default async function MerchantOffersPage() {
         category:categories(name, icon, color)
       )
     `)
-    .eq('merchant_id', merchant?.id)
+    .eq('merchant_id', merchant.id)
     .order('created_at', { ascending: false })
 
   const grouped = {
