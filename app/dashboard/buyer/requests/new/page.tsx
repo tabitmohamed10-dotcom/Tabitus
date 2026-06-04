@@ -33,6 +33,7 @@ export default function NewRequestPage() {
   const supabase = createClient()
   const [categories, setCategories] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const [step, setStep] = useState(1)
   const [form, setForm] = useState({
     title: '',
@@ -66,30 +67,49 @@ export default function NewRequestPage() {
 
   async function handleSubmit() {
     setLoading(true)
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { router.push('/auth/login'); return }
+    setError('')
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { router.push('/auth/login'); return }
 
-    const { data, error } = await supabase.from('requests').insert({
-      buyer_id: user.id,
-      title: form.title,
-      description: form.description || null,
-      category_id: form.category_id,
-      budget_min: form.budget_min ? Number(form.budget_min) : null,
-      budget_max: form.budget_max ? Number(form.budget_max) : null,
-      city: form.city,
-      urgent: form.urgent,
-      delivery_needed: form.delivery_needed,
-      payment_methods: form.payment_methods.length > 0 ? form.payment_methods : null,
-    }).select().single()
+      const insertData: any = {
+        buyer_id: user.id,
+        title: form.title,
+        description: form.description || '',
+        category_id: form.category_id,
+        city: form.city || 'Casablanca',
+        status: 'open',
+        urgent: form.urgent,
+        delivery_needed: form.delivery_needed,
+      }
 
-    if (error) {
-      toast.error('Erreur lors de la publication')
+      if (form.budget_min) insertData.budget_min = Number(form.budget_min)
+      if (form.budget_max) insertData.budget_max = Number(form.budget_max)
+      if (form.payment_methods?.length) insertData.payment_methods = form.payment_methods
+
+      console.log('Inserting:', insertData)
+
+      const { data, error: insertError } = await supabase
+        .from('requests')
+        .insert(insertData)
+        .select()
+        .maybeSingle()
+
+      if (insertError) {
+        console.error('Insert error:', insertError)
+        throw new Error(insertError.message)
+      }
+
+      toast.success('Demande publiée ! Les commerçants vont vous répondre.')
+      router.push(data?.id ? `/dashboard/buyer/requests/${data.id}` : '/dashboard/buyer/requests')
+    } catch (err: any) {
+      console.error('Submit error:', err)
+      const msg = err.message || 'Erreur lors de la publication'
+      setError(msg)
+      toast.error(msg)
+    } finally {
       setLoading(false)
-      return
     }
-
-    toast.success('Demande publiée ! Les commerçants vont vous répondre.')
-    router.push(`/dashboard/buyer/requests/${data.id}`)
   }
 
   const selectedCategory = categories.find(c => c.id === form.category_id)
@@ -391,6 +411,13 @@ export default function NewRequestPage() {
           </div>
         )}
       </motion.div>
+
+      {/* Error message */}
+      {error && (
+        <div className="mt-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40 text-red-600 dark:text-red-400 text-sm font-medium">
+          {error}
+        </div>
+      )}
 
       {/* Navigation */}
       <div className="flex gap-3 mt-6">
