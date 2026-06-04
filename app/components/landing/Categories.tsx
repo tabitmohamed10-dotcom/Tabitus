@@ -2,78 +2,19 @@
 
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+import Link from 'next/link'
 
 const CATEGORIES = [
-  {
-    icon: '⚡',
-    title: 'Électroménager',
-    arabic: 'الأجهزة الكهربائية',
-    merchants: 340,
-    subs: ['Réfrigérateurs', 'Machines à laver', 'Fours & Micro-ondes', 'Climatiseurs', 'Aspirateurs'],
-  },
-  {
-    icon: '💻',
-    title: 'Informatique & Téléphonie',
-    arabic: 'الإعلاميات والهواتف',
-    merchants: 280,
-    subs: ['PC portables & Desktops', 'Smartphones & Tablettes', 'Imprimantes', 'Accessoires', 'Réseaux'],
-  },
-  {
-    icon: '🛋️',
-    title: 'Ameublement & Décoration',
-    arabic: 'الأثاث والديكور',
-    merchants: 195,
-    subs: ['Salons & Canapés', 'Chambres à coucher', 'Cuisines équipées', 'Bureaux', 'Luminaires'],
-  },
-  {
-    icon: '🚗',
-    title: 'Automobile & Pièces',
-    arabic: 'السيارات والقطع',
-    merchants: 220,
-    subs: ['Pièces détachées', 'Pneus & Jantes', 'Batteries', 'Accessoires', 'Entretien & Service'],
-  },
-  {
-    icon: '🏗️',
-    title: 'BTP & Matériaux',
-    arabic: 'البناء والمواد',
-    merchants: 310,
-    subs: ['Ciment & Agrégats', 'Carrelage & Revêtement', 'Ferronnerie', 'Peinture & Finition', 'Sanitaire'],
-  },
-  {
-    icon: '💎',
-    title: 'Bijouterie & Montres',
-    arabic: 'المجوهرات والساعات',
-    merchants: 85,
-    subs: ['Or & Argent', 'Diamants & Pierres', 'Montres de luxe', 'Bijoux fantaisie', 'Gravure & Réparation'],
-  },
-  {
-    icon: '👔',
-    title: 'Mode & Textile',
-    arabic: 'الملابس والنسيج',
-    merchants: 175,
-    subs: ['Vêtements hommes/femmes', 'Tissus au mètre', 'Chaussures', 'Maroquinerie', 'Sport & Outdoor'],
-  },
-  {
-    icon: '🍽️',
-    title: 'Alimentaire & Traiteur',
-    arabic: 'الأغذية والتموين',
-    merchants: 145,
-    subs: ['Épicerie en gros', 'Fruits secs & Épices', 'Boissons', 'Traiteur & Événements', 'Bio & Naturel'],
-  },
-  {
-    icon: '🔧',
-    title: 'Services & Artisanat',
-    arabic: 'الخدمات والحرف',
-    merchants: 260,
-    subs: ['Plomberie & Électricité', 'Peinture & Revêtement', 'Menuiserie & Ferronnerie', 'Nettoyage', 'Déménagement'],
-  },
-  {
-    icon: '🏢',
-    title: 'B2B & Entreprises',
-    arabic: 'الشركات والمقاولات',
-    merchants: 190,
-    subs: ['Fournitures de bureau', 'Équipements industriels', 'Logistique & Transport', 'Consulting', "Appels d'offres"],
-  },
+  { icon: '⚡', title: 'Électroménager', arabic: 'الأجهزة الكهربائية', merchants: 340, slug: 'electromenager', subs: ['Réfrigérateurs', 'Machines à laver', 'Fours & Micro-ondes', 'Climatiseurs', 'Aspirateurs'] },
+  { icon: '💻', title: 'Informatique & Téléphonie', arabic: 'الإعلاميات والهواتف', merchants: 280, slug: 'informatique', subs: ['PC portables & Desktops', 'Smartphones & Tablettes', 'Imprimantes', 'Accessoires', 'Réseaux'] },
+  { icon: '🛋️', title: 'Ameublement & Décoration', arabic: 'الأثاث والديكور', merchants: 195, slug: 'ameublement', subs: ['Salons & Canapés', 'Chambres à coucher', 'Cuisines équipées', 'Bureaux', 'Luminaires'] },
+  { icon: '🚗', title: 'Automobile & Pièces', arabic: 'السيارات والقطع', merchants: 220, slug: 'automobile', subs: ['Pièces détachées', 'Pneus & Jantes', 'Batteries', 'Accessoires', 'Entretien & Service'] },
+  { icon: '🏗️', title: 'BTP & Matériaux', arabic: 'البناء والمواد', merchants: 310, slug: 'btp', subs: ['Ciment & Agrégats', 'Carrelage & Revêtement', 'Ferronnerie', 'Peinture & Finition', 'Sanitaire'] },
+  { icon: '💎', title: 'Bijouterie & Montres', arabic: 'المجوهرات والساعات', merchants: 85, slug: 'bijouterie', subs: ['Or & Argent', 'Diamants & Pierres', 'Montres de luxe', 'Bijoux fantaisie', 'Gravure & Réparation'] },
+  { icon: '👔', title: 'Mode & Textile', arabic: 'الملابس والنسيج', merchants: 175, slug: 'mode', subs: ['Vêtements hommes/femmes', 'Tissus au mètre', 'Chaussures', 'Maroquinerie', 'Sport & Outdoor'] },
+  { icon: '🍽️', title: 'Alimentaire & Traiteur', arabic: 'الأغذية والتموين', merchants: 145, slug: 'alimentaire', subs: ['Épicerie en gros', 'Fruits secs & Épices', 'Boissons', 'Traiteur & Événements', 'Bio & Naturel'] },
+  { icon: '🔧', title: 'Services & Artisanat', arabic: 'الخدمات والحرف', merchants: 260, slug: 'services', subs: ['Plomberie & Électricité', 'Peinture & Revêtement', 'Menuiserie & Ferronnerie', 'Nettoyage', 'Déménagement'] },
+  { icon: '🏢', title: 'B2B & Entreprises', arabic: 'الشركات والمقاولات', merchants: 190, slug: 'b2b', subs: ['Fournitures de bureau', 'Équipements industriels', 'Logistique & Transport', 'Consulting', "Appels d'offres"] },
 ]
 
 function CategoryCard({ cat, index }: { cat: typeof CATEGORIES[0]; index: number }) {
@@ -86,6 +27,7 @@ function CategoryCard({ cat, index }: { cat: typeof CATEGORIES[0]; index: number
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.55, delay: (index % 5) * 0.07, ease: [0.22, 1, 0.36, 1] }}
     >
+      <Link href={`/marche-libre?category=${cat.slug}`} style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
       <motion.div
         style={{
           height: '100%', padding: 'clamp(18px, 3vw, 24px)',
@@ -137,6 +79,7 @@ function CategoryCard({ cat, index }: { cat: typeof CATEGORIES[0]; index: number
           <span>→</span>
         </div>
       </motion.div>
+      </Link>
     </motion.div>
   )
 }

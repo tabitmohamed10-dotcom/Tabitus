@@ -13,9 +13,11 @@ const MOCK_DETAIL: Record<string, any> = {
 }
 
 const CONDITION_LABELS: Record<string, { label: string; bg: string; color: string }> = {
-  neuf:         { label: 'Neuf',          bg: '#dcfce7', color: '#15803d' },
-  occasion:     { label: 'Occasion',      bg: '#fef3c7', color: '#b45309' },
-  reconditionne:{ label: 'Reconditionné', bg: '#dbeafe', color: '#1d4ed8' },
+  neuf:           { label: 'Neuf',           bg: '#dcfce7', color: '#15803d' },
+  'tres-bon-etat':{ label: 'Très bon état',  bg: '#dbeafe', color: '#1d4ed8' },
+  'bon-etat':     { label: 'Bon état',       bg: '#e0f2fe', color: '#0369a1' },
+  occasion:       { label: 'Occasion',       bg: '#fef3c7', color: '#b45309' },
+  reconditionne:  { label: 'Reconditionné',  bg: '#f3e8ff', color: '#7e22ce' },
 }
 
 const SIMILAR_MOCK = [

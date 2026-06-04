@@ -6,17 +6,15 @@ import { createClient } from '@/lib/supabase/client'
 import { playMessageSound } from '@/lib/utils/sound'
 import { ArrowLeft, Send, Shield, Lock } from 'lucide-react'
 
+const maskData = (text: string) => text
+  .replace(/(\+212|00212|0)([\s.-]?\d{2}){4}/g, '🚫 Numéro masqué par TABIT')
+  .replace(/\b0[5-7]\d{8}\b/g, '🚫 Numéro masqué')
+  .replace(/[^\s]+@[^\s]+\.[^\s]+/g, '🚫 Email masqué par TABIT')
+  .replace(/(wa\.me|whatsapp|t\.me|telegram)[^\s]*/gi, '🚫 Lien masqué par TABIT')
+
 function maskSensitiveInfo(text: string): { masked: string; hasPhone: boolean } {
-  const phoneRegex = /(\+212|0)([ \-]?)([5-7]\d{8}|\d{9})/g
-  const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g
-  const whatsappRegex = /whatsapp|watsap|watsapp|واتساب/gi
-  const hasPhone = phoneRegex.test(text) || emailRegex.test(text) || whatsappRegex.test(text)
-  const masked = hasPhone
-    ? text
-        .replace(/(\+212|0)([ \-]?)([5-7]\d{8}|\d{9})/g, '🔒 [Numéro masqué]')
-        .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '🔒 [Email masqué]')
-        .replace(/whatsapp|watsap|watsapp|واتساب/gi, '🔒 [Contact masqué]')
-    : text
+  const masked = maskData(text)
+  const hasPhone = masked !== text
   return { masked, hasPhone }
 }
 
@@ -146,7 +144,7 @@ export default function ChatPage() {
     await supabase.from('messages').insert({
       offer_id: offerId,
       sender_id: user.id,
-      content: masked,
+      content: maskData(masked),
     })
     setIsSending(false)
     inputRef.current?.focus()
@@ -201,7 +199,14 @@ export default function ChatPage() {
       )}
 
       {/* Security notice */}
-      <div className="px-4 py-2 max-w-2xl mx-auto w-full mt-3">
+      <div className="px-4 py-2 max-w-2xl mx-auto w-full mt-3 space-y-2">
+        <div style={{ background: 'rgba(234,179,8,0.12)', border: '1px solid rgba(234,179,8,0.35)', borderRadius: 12, padding: '10px 14px', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+          <span style={{ fontSize: 15, flexShrink: 0 }}>⚠️</span>
+          <p style={{ fontSize: 12, color: '#92400E', lineHeight: 1.5 }}>
+            <strong>Coordonnées personnelles masquées automatiquement pour votre sécurité.</strong>{' '}
+            Numéros, emails et liens sont remplacés par TABIT.
+          </p>
+        </div>
         <div className="bg-card border border-border/60 rounded-2xl px-4 py-3 flex items-start gap-2.5">
           <Shield className="h-4 w-4 text-primary mt-0.5 shrink-0" />
           <p className="text-xs text-muted-foreground leading-relaxed">

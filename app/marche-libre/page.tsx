@@ -6,20 +6,28 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-// ─── Mock data (shown while Supabase table is being set up) ──────────────────
+// ─── Mock data ──────────────────────────────────────────────────────────────
 const MOCK_LISTINGS: Listing[] = [
-  { id: '1', title: 'iPhone 15 Pro 256GB — Titane naturel, parfait état', price: 12500, city: 'Casablanca', condition: 'occasion', category_slug: 'smartphones', thumbnail_url: null, images: [], views_count: 342, favorites_count: 28, price_negotiable: true, verified_seller: false, featured: true, created_at: new Date(Date.now() - 1000*60*30).toISOString(), seller: { full_name: 'Khalid A.', avatar_url: null, role: 'buyer' } },
-  { id: '2', title: 'MacBook Air M2 — 8Go/256Go, chargeur inclus', price: 11800, city: 'Rabat', condition: 'occasion', category_slug: 'informatique', thumbnail_url: null, images: [], views_count: 215, favorites_count: 19, price_negotiable: false, verified_seller: true, featured: false, created_at: new Date(Date.now() - 1000*60*90).toISOString(), seller: { full_name: 'Imane E.', avatar_url: null, role: 'merchant' } },
-  { id: '3', title: 'Samsung QLED 65" 4K — garantie 1 an, neuf déballé', price: 8400, city: 'Casablanca', condition: 'neuf', category_slug: 'tv-audio', thumbnail_url: null, images: [], views_count: 189, favorites_count: 14, price_negotiable: true, verified_seller: true, featured: false, created_at: new Date(Date.now() - 1000*60*120).toISOString(), seller: { full_name: 'ElectroShop Casa', avatar_url: null, role: 'merchant' } },
-  { id: '4', title: 'Dacia Logan 2020 — 45 000 km, climatisée, 1er main', price: 87000, city: 'Tanger', condition: 'occasion', category_slug: 'voitures', thumbnail_url: null, images: [], views_count: 528, favorites_count: 41, price_negotiable: true, verified_seller: false, featured: true, created_at: new Date(Date.now() - 1000*60*240).toISOString(), seller: { full_name: 'Samir B.', avatar_url: null, role: 'buyer' } },
-  { id: '5', title: 'Canapé d\'angle cuir véritable 5 places — gris anthracite', price: 4200, city: 'Marrakech', condition: 'occasion', category_slug: 'meubles', thumbnail_url: null, images: [], views_count: 147, favorites_count: 11, price_negotiable: true, verified_seller: false, featured: false, created_at: new Date(Date.now() - 1000*60*60*3).toISOString(), seller: { full_name: 'Nadia L.', avatar_url: null, role: 'buyer' } },
-  { id: '6', title: 'PS5 Slim + 4 jeux (FIFA 25, GTA 6...) — manette neuve', price: 5800, city: 'Fès', condition: 'occasion', category_slug: 'gaming', thumbnail_url: null, images: [], views_count: 303, favorites_count: 35, price_negotiable: false, verified_seller: false, featured: false, created_at: new Date(Date.now() - 1000*60*60*5).toISOString(), seller: { full_name: 'Yassine M.', avatar_url: null, role: 'buyer' } },
-  { id: '7', title: 'Vélo électrique Xiaomi Mi Qicycle — batterie 36V 8Ah', price: 4800, city: 'Agadir', condition: 'neuf', category_slug: 'equipements-sport', thumbnail_url: null, images: [], views_count: 96, favorites_count: 8, price_negotiable: true, verified_seller: false, featured: false, created_at: new Date(Date.now() - 1000*60*60*7).toISOString(), seller: { full_name: 'Fatima O.', avatar_url: null, role: 'buyer' } },
-  { id: '8', title: 'Lot 500 chemises homme premium — stock neuf, prix grossiste', price: 14500, city: 'Casablanca', condition: 'neuf', category_slug: 'mode-homme', thumbnail_url: null, images: [], views_count: 421, favorites_count: 52, price_negotiable: true, verified_seller: true, featured: true, created_at: new Date(Date.now() - 1000*60*60*10).toISOString(), seller: { full_name: 'TextileMaroc Pro', avatar_url: null, role: 'merchant' } },
-  { id: '9', title: 'Drone DJI Mini 3 Pro + 2 batteries + sac de transport', price: 3200, city: 'Rabat', condition: 'occasion', category_slug: 'iot', thumbnail_url: null, images: [], views_count: 178, favorites_count: 22, price_negotiable: true, verified_seller: false, featured: false, created_at: new Date(Date.now() - 1000*60*60*12).toISOString(), seller: { full_name: 'Mehdi R.', avatar_url: null, role: 'buyer' } },
-  { id: '10', title: 'Réfrigérateur Samsung 500L No Frost — livrable Casa/Rabat', price: 5200, city: 'Casablanca', condition: 'occasion', category_slug: 'electromenager', thumbnail_url: null, images: [], views_count: 204, favorites_count: 17, price_negotiable: false, verified_seller: true, featured: false, created_at: new Date(Date.now() - 1000*60*60*15).toISOString(), seller: { full_name: 'MaisonPlus', avatar_url: null, role: 'merchant' } },
-  { id: '11', title: 'Imprimante 3D Bambu Lab P1S — très peu utilisée', price: 7800, city: 'Casablanca', condition: 'occasion', category_slug: 'informatique', thumbnail_url: null, images: [], views_count: 89, favorites_count: 12, price_negotiable: true, verified_seller: false, featured: false, created_at: new Date(Date.now() - 1000*60*60*18).toISOString(), seller: { full_name: 'Hassan T.', avatar_url: null, role: 'buyer' } },
-  { id: '12', title: 'Bracelet or 18 carats 12g — certifié, facture incluse', price: 9600, city: 'Fès', condition: 'occasion', category_slug: 'bijoux', thumbnail_url: null, images: [], views_count: 265, favorites_count: 31, price_negotiable: true, verified_seller: true, featured: false, created_at: new Date(Date.now() - 1000*60*60*22).toISOString(), seller: { full_name: 'Bijouterie Al Fasi', avatar_url: null, role: 'merchant' } },
+  { id: '1',  title: 'iPhone 15 Pro Max 256GB Noir — parfait état, boîte originale', price: 12500, city: 'Casablanca', condition: 'neuf',         category_slug: 'smartphones',     thumbnail_url: null, images: [], views_count: 342, favorites_count: 28, price_negotiable: true,  verified_seller: false, featured: true,  created_at: new Date(Date.now() - 1000*60*30).toISOString(),       seller: { full_name: 'Khalid A.', avatar_url: null, role: 'buyer' } },
+  { id: '2',  title: 'Samsung 65" QLED 4K — Smart TV, garantie 6 mois restants',    price:  8900, city: 'Rabat',       condition: 'tres-bon-etat', category_slug: 'tv-audio',        thumbnail_url: null, images: [], views_count: 215, favorites_count: 19, price_negotiable: false, verified_seller: true,  featured: false, created_at: new Date(Date.now() - 1000*60*90).toISOString(),       seller: { full_name: 'ElectroShop Rabat', avatar_url: null, role: 'merchant' } },
+  { id: '3',  title: 'Canapé d\'angle en cuir — 5 places, couleur champagne',        price:  4500, city: 'Marrakech',  condition: 'bon-etat',      category_slug: 'meubles',         thumbnail_url: null, images: [], views_count: 147, favorites_count: 11, price_negotiable: true,  verified_seller: false, featured: false, created_at: new Date(Date.now() - 1000*60*180).toISOString(),      seller: { full_name: 'Nadia L.', avatar_url: null, role: 'buyer' } },
+  { id: '4',  title: 'Dacia Logan 2019 — 120 000 km, révisée, CT valide',           price: 65000, city: 'Casablanca', condition: 'occasion',      category_slug: 'voitures',        thumbnail_url: null, images: [], views_count: 528, favorites_count: 41, price_negotiable: true,  verified_seller: false, featured: true,  created_at: new Date(Date.now() - 1000*60*240).toISOString(),      seller: { full_name: 'Samir B.', avatar_url: null, role: 'buyer' } },
+  { id: '5',  title: 'MacBook Pro M2 13" — 8Go/256Go, sous garantie Apple',          price: 14800, city: 'Fès',        condition: 'neuf',          category_slug: 'informatique',    thumbnail_url: null, images: [], views_count: 203, favorites_count: 24, price_negotiable: false, verified_seller: true,  featured: false, created_at: new Date(Date.now() - 1000*60*300).toISOString(),      seller: { full_name: 'TechFès Pro', avatar_url: null, role: 'merchant' } },
+  { id: '6',  title: 'Appartement F3 à louer — résidence sécurisée, Maarif',        price:  4500, city: 'Casablanca', condition: 'neuf',          category_slug: 'immobilier',      thumbnail_url: null, images: [], views_count: 891, favorites_count: 67, price_negotiable: true,  verified_seller: false, featured: true,  created_at: new Date(Date.now() - 1000*60*60).toISOString(),       seller: { full_name: 'Hassan T.', avatar_url: null, role: 'buyer' }, rental: true },
+  { id: '7',  title: 'Réfrigérateur Samsung 500L — No Frost, livraison incluse',     price:  3200, city: 'Tanger',     condition: 'bon-etat',      category_slug: 'electromenager',  thumbnail_url: null, images: [], views_count: 189, favorites_count: 14, price_negotiable: true,  verified_seller: true,  featured: false, created_at: new Date(Date.now() - 1000*60*420).toISOString(),      seller: { full_name: 'Électro Casa Tanger', avatar_url: null, role: 'merchant' } },
+  { id: '8',  title: 'Vélo électrique Xiaomi — autonomie 50km, chargeur + casque',  price:  6500, city: 'Agadir',     condition: 'tres-bon-etat', category_slug: 'sport',           thumbnail_url: null, images: [], views_count: 96,  favorites_count:  8, price_negotiable: true,  verified_seller: false, featured: false, created_at: new Date(Date.now() - 1000*60*60*7).toISOString(),    seller: { full_name: 'Fatima O.', avatar_url: null, role: 'buyer' } },
+  { id: '9',  title: 'Table basse en bois massif — style scandinave, 120×60 cm',     price:  1800, city: 'Meknès',     condition: 'bon-etat',      category_slug: 'meubles',         thumbnail_url: null, images: [], views_count: 73,  favorites_count:  5, price_negotiable: true,  verified_seller: false, featured: false, created_at: new Date(Date.now() - 1000*60*60*9).toISOString(),    seller: { full_name: 'Mounia K.', avatar_url: null, role: 'buyer' } },
+  { id: '10', title: 'PS5 + 3 jeux (FIFA 25, Spider-Man, Hogwarts) — manette pro',  price:  5500, city: 'Casablanca', condition: 'tres-bon-etat', category_slug: 'gaming',          thumbnail_url: null, images: [], views_count: 303, favorites_count: 35, price_negotiable: false, verified_seller: false, featured: false, created_at: new Date(Date.now() - 1000*60*60*5).toISOString(),    seller: { full_name: 'Yassine M.', avatar_url: null, role: 'buyer' } },
+  { id: '11', title: 'Climatiseur Gree 18000 BTU — inverter, installation incluse',  price:  2800, city: 'Rabat',      condition: 'occasion',      category_slug: 'electromenager',  thumbnail_url: null, images: [], views_count: 204, favorites_count: 17, price_negotiable: false, verified_seller: true,  featured: false, created_at: new Date(Date.now() - 1000*60*60*11).toISOString(),   seller: { full_name: 'ClimaService Rabat', avatar_url: null, role: 'merchant' } },
+  { id: '12', title: 'Robe de mariée bohème — taille 38-40, dentelle française',    price:  3500, city: 'Marrakech',  condition: 'neuf',          category_slug: 'mode-femme',      thumbnail_url: null, images: [], views_count: 265, favorites_count: 31, price_negotiable: true,  verified_seller: false, featured: false, created_at: new Date(Date.now() - 1000*60*60*13).toISOString(),   seller: { full_name: 'Soukaina B.', avatar_url: null, role: 'buyer' } },
+  { id: '13', title: 'Télévision LG 55" 4K OLED — ThinQ AI, télécommande magic',    price:  5200, city: 'Fès',        condition: 'bon-etat',      category_slug: 'tv-audio',        thumbnail_url: null, images: [], views_count: 178, favorites_count: 22, price_negotiable: true,  verified_seller: false, featured: false, created_at: new Date(Date.now() - 1000*60*60*15).toISOString(),   seller: { full_name: 'Mehdi R.', avatar_url: null, role: 'buyer' } },
+  { id: '14', title: 'Machine à laver Bosch 8kg — programme vapeur, A+++',          price:  2900, city: 'Casablanca', condition: 'tres-bon-etat', category_slug: 'electromenager',  thumbnail_url: null, images: [], views_count: 241, favorites_count: 19, price_negotiable: false, verified_seller: true,  featured: false, created_at: new Date(Date.now() - 1000*60*60*17).toISOString(),   seller: { full_name: 'MaisonPlus', avatar_url: null, role: 'merchant' } },
+  { id: '15', title: 'Scooter Honda 125cc 2021 — 22 000 km, carnet entretien',      price: 18000, city: 'Tanger',     condition: 'occasion',      category_slug: 'voitures',        thumbnail_url: null, images: [], views_count: 412, favorites_count: 38, price_negotiable: true,  verified_seller: false, featured: true,  created_at: new Date(Date.now() - 1000*60*60*19).toISOString(),   seller: { full_name: 'Omar Z.', avatar_url: null, role: 'buyer' } },
+  { id: '16', title: 'Bureau en L avec caisson — chêne clair, quasi neuf',          price:  2200, city: 'Rabat',      condition: 'tres-bon-etat', category_slug: 'meubles',         thumbnail_url: null, images: [], views_count: 89,  favorites_count:  7, price_negotiable: true,  verified_seller: false, featured: false, created_at: new Date(Date.now() - 1000*60*60*21).toISOString(),   seller: { full_name: 'Ayoub M.', avatar_url: null, role: 'buyer' } },
+  { id: '17', title: 'Drone DJI Mini 3 — 4K, stabilisateur 3 axes, 2 batteries',   price:  4800, city: 'Casablanca', condition: 'neuf',          category_slug: 'iot',             thumbnail_url: null, images: [], views_count: 178, favorites_count: 26, price_negotiable: false, verified_seller: false, featured: false, created_at: new Date(Date.now() - 1000*60*60*23).toISOString(),   seller: { full_name: 'Imane E.', avatar_url: null, role: 'buyer' } },
+  { id: '18', title: 'Cuisine équipée complète — inox brossé, électroménager inclus', price: 18500, city: 'Marrakech', condition: 'bon-etat',    category_slug: 'meubles',         thumbnail_url: null, images: [], views_count: 356, favorites_count: 44, price_negotiable: true,  verified_seller: false, featured: true,  created_at: new Date(Date.now() - 1000*60*60*25).toISOString(),   seller: { full_name: 'Rachid S.', avatar_url: null, role: 'buyer' } },
+  { id: '19', title: 'Tablette iPad Pro 12.9" M2 — 256Go, Apple Pencil 2 inclus',   price:  9500, city: 'Agadir',     condition: 'neuf',          category_slug: 'informatique',    thumbnail_url: null, images: [], views_count: 134, favorites_count: 16, price_negotiable: false, verified_seller: true,  featured: false, created_at: new Date(Date.now() - 1000*60*60*27).toISOString(),   seller: { full_name: 'TechPlus Agadir', avatar_url: null, role: 'merchant' } },
+  { id: '20', title: 'Lot vêtements bébé 0-12 mois — 30 pièces, très bon état',     price:   450, city: 'Casablanca', condition: 'tres-bon-etat', category_slug: 'mode-enfants',    thumbnail_url: null, images: [], views_count: 67,  favorites_count:  9, price_negotiable: true,  verified_seller: false, featured: false, created_at: new Date(Date.now() - 1000*60*60*30).toISOString(),   seller: { full_name: 'Siham A.', avatar_url: null, role: 'buyer' } },
 ]
 
 const CATEGORIES = [
@@ -32,8 +40,11 @@ const CATEGORIES = [
   { slug: 'tv-audio', label: 'TV & Audio', icon: '📺' },
   { slug: 'gaming', label: 'Gaming', icon: '🎮' },
   { slug: 'bijoux', label: 'Bijouterie', icon: '💎' },
-  { slug: 'mode-homme', label: 'Mode', icon: '👔' },
-  { slug: 'equipements-sport', label: 'Sport', icon: '⚽' },
+  { slug: 'mode-homme', label: 'Mode homme', icon: '👔' },
+  { slug: 'mode-femme', label: 'Mode femme', icon: '👗' },
+  { slug: 'mode-enfants', label: 'Enfants', icon: '🎁' },
+  { slug: 'sport', label: 'Sport', icon: '⚽' },
+  { slug: 'immobilier', label: 'Immobilier', icon: '🏠' },
   { slug: 'iot', label: 'High-tech', icon: '🔌' },
 ]
 
@@ -41,23 +52,29 @@ const CITIES = ['Toutes les villes','Casablanca','Rabat','Marrakech','Fès','Tan
 const CONDITIONS = [
   { value: '', label: 'Tout état' },
   { value: 'neuf', label: '✨ Neuf' },
+  { value: 'tres-bon-etat', label: '⭐ Très bon état' },
+  { value: 'bon-etat', label: '👍 Bon état' },
   { value: 'occasion', label: '🔄 Occasion' },
   { value: 'reconditionne', label: '🔧 Reconditionné' },
 ]
 
-type Condition = 'neuf' | 'occasion' | 'reconditionne'
+type Condition = 'neuf' | 'tres-bon-etat' | 'bon-etat' | 'occasion' | 'reconditionne'
 interface Listing {
   id: string; title: string; price: number; city: string
-  condition: Condition; category_slug: string | null; thumbnail_url: string | null
+  condition: string; category_slug: string | null; thumbnail_url: string | null
   images: string[]; views_count: number; favorites_count: number
   price_negotiable: boolean; verified_seller: boolean; featured: boolean
-  created_at: string; seller: { full_name: string; avatar_url: string | null; role: string }
+  created_at: string
+  rental?: boolean
+  seller: { full_name: string; avatar_url: string | null; role: string }
 }
 
 const CONDITION_LABELS: Record<string, { label: string; bg: string; color: string }> = {
-  neuf:         { label: 'Neuf',          bg: '#dcfce7', color: '#15803d' },
-  occasion:     { label: 'Occasion',      bg: '#fef3c7', color: '#b45309' },
-  reconditionne:{ label: 'Reconditionné', bg: '#dbeafe', color: '#1d4ed8' },
+  neuf:           { label: 'Neuf',           bg: '#dcfce7', color: '#15803d' },
+  'tres-bon-etat':{ label: 'Très bon état',  bg: '#dbeafe', color: '#1d4ed8' },
+  'bon-etat':     { label: 'Bon état',       bg: '#e0f2fe', color: '#0369a1' },
+  occasion:       { label: 'Occasion',       bg: '#fef3c7', color: '#b45309' },
+  reconditionne:  { label: 'Reconditionné',  bg: '#f3e8ff', color: '#7e22ce' },
 }
 
 function timeAgo(iso: string) {
@@ -253,7 +270,7 @@ function PublishModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
               <div>
                 <label style={labelStyle}>État *</label>
                 <div style={{ display: 'flex', gap: 10 }}>
-                  {(['neuf','occasion','reconditionne'] as Condition[]).map(c => (
+                  {(['neuf','tres-bon-etat','bon-etat','occasion','reconditionne'] as Condition[]).map(c => (
                     <button key={c} onClick={() => set('condition', c)} style={{
                       flex: 1, padding: '10px 8px', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer', minHeight: 44,
                       border: `1.5px solid ${form.condition === c ? '#C9922A' : '#E8E0CC'}`,
