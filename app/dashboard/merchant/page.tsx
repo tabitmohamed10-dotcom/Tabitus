@@ -1,13 +1,14 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import { Package, TrendingUp, Star, ArrowRight, ChevronRight, Bell } from 'lucide-react'
+import { Package, TrendingUp, Star, ArrowRight, Bell, MessageCircle, Clock, DollarSign } from 'lucide-react'
 import { useMerchantStats, useMerchantOffers } from '@/lib/hooks'
 import { formatPrice, formatTimeAgo, getStatusColor, getStatusLabel } from '@/lib/utils'
 import { Skeleton, EmptyState } from '@/components/ui/index'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { createClient } from '@/lib/supabase/client'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -39,9 +40,53 @@ function CountUp({ to, suffix = '' }: { to: number; suffix?: string }) {
 }
 
 export default function MerchantDashboard() {
+  const supabase = createClient()
   const { stats, loading: statsLoading } = useMerchantStats()
   const { offers, loading: offersLoading } = useMerchantOffers()
+  const [matchingRequests, setMatchingRequests] = useState<any[]>([])
+  const [reqLoading, setReqLoading] = useState(true)
+
   const loading = statsLoading || offersLoading
+
+  const acceptedOffers = offers.filter(o => o.status === 'accepted')
+  const pendingOffers = offers.filter(o => o.status === 'pending')
+  const revenue = acceptedOffers.reduce((sum, o) => sum + (o.price || 0), 0)
+  const acceptRate = stats.total_offers > 0
+    ? Math.round((stats.accepted_offers / stats.total_offers) * 100)
+    : 0
+
+  useEffect(() => {
+    async function loadMatchingRequests() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { setReqLoading(false); return }
+
+      const { data: merchant } = await supabase
+        .from('merchants')
+        .select('id, categories')
+        .eq('user_id', user.id)
+        .single()
+
+      if (!merchant) { setReqLoading(false); return }
+
+      const alreadyOffered = offers.map((o: any) => (o.request_id || o.request?.id)).filter(Boolean)
+
+      let query = supabase
+        .from('requests')
+        .select('id, title, city, budget_max, urgent, created_at, offers_count, category:categories(name, icon)')
+        .eq('status', 'open')
+        .order('created_at', { ascending: false })
+        .limit(6)
+
+      if (alreadyOffered.length > 0) {
+        query = query.not('id', 'in', `(${alreadyOffered.join(',')})`)
+      }
+
+      const { data } = await query
+      setMatchingRequests(data || [])
+      setReqLoading(false)
+    }
+    if (!offersLoading) loadMatchingRequests()
+  }, [offersLoading])
 
   if (loading) {
     return (
@@ -50,8 +95,8 @@ export default function MerchantDashboard() {
           <Skeleton className="h-7 w-48" />
           <Skeleton className="h-4 w-40" />
         </div>
-        <div className="grid grid-cols-3 gap-3">
-          {[1,2,3].map(i => <Skeleton key={i} className="h-[110px] rounded-2xl" />)}
+        <div className="grid grid-cols-4 gap-3">
+          {[1,2,3,4].map(i => <Skeleton key={i} className="h-[110px] rounded-2xl" />)}
         </div>
         <Skeleton className="h-72 rounded-2xl" />
       </div>
@@ -68,7 +113,7 @@ export default function MerchantDashboard() {
       valueColor: 'text-gold-700',
     },
     {
-      label: 'Offres acceptées',
+      label: 'Acceptées',
       value: stats.accepted_offers,
       suffix: '',
       icon: <TrendingUp className="h-4 w-4" />,
@@ -83,12 +128,20 @@ export default function MerchantDashboard() {
       iconBg: 'bg-amber-100 text-amber-700',
       valueColor: 'text-amber-700',
     },
+    {
+      label: 'Taux acceptation',
+      value: acceptRate,
+      suffix: '%',
+      icon: <DollarSign className="h-4 w-4" />,
+      iconBg: 'bg-blue-100 text-blue-700',
+      valueColor: 'text-blue-700',
+    },
   ]
 
   return (
-    <motion.div variants={stagger} initial="hidden" animate="show" className="max-w-4xl mx-auto">
+    <motion.div variants={stagger} initial="hidden" animate="show" className="max-w-4xl mx-auto space-y-5">
       {/* Header */}
-      <motion.div variants={fadeUp} className="mb-7">
+      <motion.div variants={fadeUp}>
         <h1 className="font-display text-2xl sm:text-[1.75rem] font-bold tracking-tight" style={{fontFamily:'var(--font-playfair)'}}>
           Tableau de bord
         </h1>
@@ -96,7 +149,7 @@ export default function MerchantDashboard() {
       </motion.div>
 
       {/* Stats */}
-      <motion.div variants={fadeUp} className="grid grid-cols-3 gap-3 mb-5">
+      <motion.div variants={fadeUp} className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {statCards.map((s) => (
           <motion.div
             key={s.label}
@@ -114,8 +167,27 @@ export default function MerchantDashboard() {
         ))}
       </motion.div>
 
+      {/* Revenue banner */}
+      {revenue > 0 && (
+        <motion.div variants={fadeUp} className="bg-card border border-border rounded-2xl p-4 flex items-center justify-between shadow-premium">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl flex items-center justify-center" style={{background:'rgba(201,146,42,0.12)'}}>
+              <DollarSign className="h-5 w-5" style={{color:'#C9922A'}} />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground">Chiffre d'affaires généré</p>
+              <p className="text-xl font-bold" style={{color:'#C9922A',fontFamily:'var(--font-playfair)'}}>{formatPrice(revenue)}</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-muted-foreground">{acceptedOffers.length} vente{acceptedOffers.length > 1 ? 's' : ''} conclue{acceptedOffers.length > 1 ? 's' : ''}</p>
+            <p className="text-xs font-semibold" style={{color:'#22C55E'}}>✓ Commission Tabit : {formatPrice(revenue * 0.05)}</p>
+          </div>
+        </motion.div>
+      )}
+
       {/* CTA Banner */}
-      <motion.div variants={fadeUp} className="mb-5">
+      <motion.div variants={fadeUp}>
         <Link href="/dashboard/merchant/requests">
           <motion.div
             whileHover={{ scale: 1.008 }}
@@ -136,25 +208,149 @@ export default function MerchantDashboard() {
         </Link>
       </motion.div>
 
-      {/* Recent offers */}
+      {/* Accepted offers with Chat button */}
       <motion.div variants={fadeUp} className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-          <h2 className="font-display font-bold text-[15px]" style={{fontFamily:'var(--font-playfair)'}}>Mes offres récentes</h2>
+          <div className="flex items-center gap-2">
+            <div className="h-2.5 w-2.5 rounded-full bg-green-500" />
+            <h2 className="font-display font-bold text-[15px]" style={{fontFamily:'var(--font-playfair)'}}>
+              Offres acceptées ({acceptedOffers.length})
+            </h2>
+          </div>
           <Link href="/dashboard/merchant/offers" className="flex items-center gap-1 text-sm text-primary font-semibold hover:gap-1.5 transition-all">
             Voir tout <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
+        {acceptedOffers.length === 0 ? (
+          <div className="px-5 py-8 text-center text-muted-foreground text-sm">
+            <p className="text-2xl mb-2">🤝</p>
+            <p>Aucune offre acceptée pour le moment</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-border/40">
+            {acceptedOffers.slice(0, 5).map((offer, i) => {
+              const req = (offer as any).request
+              return (
+                <motion.div
+                  key={offer.id}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.04, duration: 0.25 }}
+                  className="flex items-center gap-3 px-5 py-3.5"
+                >
+                  <div className="h-10 w-10 rounded-xl bg-green-100 flex items-center justify-center text-lg shrink-0">
+                    {req?.category?.icon || '📦'}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm truncate">{req?.title}</p>
+                    <div className="flex items-center gap-1.5 mt-0.5 text-xs text-muted-foreground">
+                      <span className="shrink-0">📍 {req?.city}</span>
+                      <span>·</span>
+                      <span className="font-bold text-green-600">{formatPrice(offer.price)}</span>
+                    </div>
+                  </div>
+                  <Link
+                    href={`/chat/${offer.id}`}
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all shrink-0"
+                    style={{background:'rgba(201,146,42,0.1)',color:'#C9922A',border:'1px solid rgba(201,146,42,0.25)'}}
+                  >
+                    <MessageCircle className="h-3.5 w-3.5" />
+                    💬 Chat
+                  </Link>
+                </motion.div>
+              )
+            })}
+          </div>
+        )}
+      </motion.div>
 
-        {!offers.length ? (
+      {/* Pending offers */}
+      <motion.div variants={fadeUp} className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4 text-amber-500" />
+            <h2 className="font-display font-bold text-[15px]" style={{fontFamily:'var(--font-playfair)'}}>
+              Offres en attente ({pendingOffers.length})
+            </h2>
+          </div>
+        </div>
+        {pendingOffers.length === 0 ? (
+          <div className="px-5 py-8 text-center text-muted-foreground text-sm">
+            <p className="text-2xl mb-2">📤</p>
+            <p>Aucune offre en attente de réponse</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-border/40">
+            {pendingOffers.slice(0, 5).map((offer, i) => {
+              const req = (offer as any).request
+              return (
+                <motion.div
+                  key={offer.id}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.04, duration: 0.25 }}
+                  className="group flex items-center gap-3 px-5 py-3.5 hover:bg-muted/40 transition-colors"
+                >
+                  <div className="h-10 w-10 rounded-xl bg-amber-50 flex items-center justify-center text-lg shrink-0">
+                    {req?.category?.icon || '📦'}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm truncate">{req?.title}</p>
+                    <div className="flex items-center gap-1.5 mt-0.5 text-xs text-muted-foreground">
+                      <span className="shrink-0">📍 {req?.city}</span>
+                      <span>·</span>
+                      <span className="shrink-0">{formatTimeAgo(offer.created_at)}</span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end gap-1 shrink-0">
+                    <span className="text-sm font-bold text-primary">{formatPrice(offer.price)}</span>
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
+                      En attente
+                    </span>
+                  </div>
+                </motion.div>
+              )
+            })}
+          </div>
+        )}
+      </motion.div>
+
+      {/* New matching requests */}
+      <motion.div variants={fadeUp} className="bg-card rounded-2xl border border-border shadow-premium overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+            <h2 className="font-display font-bold text-[15px]" style={{fontFamily:'var(--font-playfair)'}}>
+              Nouvelles demandes pour vous
+            </h2>
+          </div>
+          <Link href="/dashboard/merchant/requests" className="flex items-center gap-1 text-sm text-primary font-semibold hover:gap-1.5 transition-all">
+            Voir tout <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+
+        {reqLoading ? (
+          <div className="divide-y divide-border/40">
+            {[1,2,3].map(i => (
+              <div key={i} className="flex items-center gap-3 px-5 py-3.5">
+                <Skeleton className="h-10 w-10 rounded-xl" />
+                <div className="flex-1 space-y-1.5">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-3 w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : matchingRequests.length === 0 ? (
           <EmptyState
-            icon="📭"
-            title="Aucune offre envoyée"
-            description="Consultez les demandes actives et envoyez vos premières offres pour développer votre activité"
+            icon="🔍"
+            title="Aucune nouvelle demande"
+            description="Revenez bientôt, de nouvelles demandes sont publiées chaque jour"
             action={
               <Link href="/dashboard/merchant/requests">
                 <Button variant="premium" size="sm">
                   <Bell className="h-4 w-4" />
-                  Voir les demandes
+                  Voir toutes les demandes
                 </Button>
               </Link>
             }
@@ -162,38 +358,35 @@ export default function MerchantDashboard() {
         ) : (
           <div className="divide-y divide-border/40">
             <AnimatePresence initial={false}>
-              {offers.slice(0, 6).map((offer, i) => {
-                const req = (offer as any).request
-                return (
-                  <motion.div
-                    key={offer.id}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.04, duration: 0.25 }}
-                  >
-                    <div className="group flex items-center gap-3 px-5 py-3.5 hover:bg-muted/40 transition-colors">
+              {matchingRequests.map((req, i) => (
+                <motion.div
+                  key={req.id}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.04, duration: 0.25 }}
+                >
+                  <Link href={`/dashboard/merchant/requests?highlight=${req.id}`}>
+                    <div className="group flex items-center gap-3 px-5 py-3.5 hover:bg-muted/40 transition-colors cursor-pointer">
                       <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center text-lg shrink-0">
-                        {req?.category?.icon || '📦'}
+                        {(req.category as any)?.icon || '📦'}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm truncate">{req?.title}</p>
+                        <div className="flex items-center gap-1.5">
+                          <p className="font-semibold text-sm truncate">{req.title}</p>
+                          {req.urgent && <span className="text-[10px] font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded-full shrink-0">URGENT</span>}
+                        </div>
                         <div className="flex items-center gap-1.5 mt-0.5 text-xs text-muted-foreground">
-                          <span className="shrink-0">📍 {req?.city}</span>
+                          <span className="shrink-0">📍 {req.city}</span>
                           <span>·</span>
-                          <span className="shrink-0">{formatTimeAgo(offer.created_at)}</span>
+                          <span className="shrink-0">{req.offers_count || 0} offre{(req.offers_count || 0) !== 1 ? 's' : ''}</span>
+                          {req.budget_max && <><span>·</span><span className="text-primary font-medium">≤{req.budget_max} MAD</span></>}
                         </div>
                       </div>
-                      <div className="flex flex-col items-end gap-1.5 shrink-0">
-                        <span className="text-sm font-bold text-primary">{formatPrice(offer.price)}</span>
-                        <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full', getStatusColor(offer.status))}>
-                          {getStatusLabel(offer.status)}
-                        </span>
-                      </div>
-                      <ChevronRight className="h-4 w-4 text-muted-foreground/40 shrink-0 group-hover:text-muted-foreground transition-colors" />
+                      <div className="text-xs text-muted-foreground shrink-0">{formatTimeAgo(req.created_at)}</div>
                     </div>
-                  </motion.div>
-                )
-              })}
+                  </Link>
+                </motion.div>
+              ))}
             </AnimatePresence>
           </div>
         )}

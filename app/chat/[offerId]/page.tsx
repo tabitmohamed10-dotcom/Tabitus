@@ -204,14 +204,26 @@ export default function ChatPage() {
         </div>
       )}
 
-      {/* Security notice */}
+      {/* Security notice — yellow warning banner */}
       <div className="px-4 py-2 max-w-2xl mx-auto w-full mt-3 space-y-2">
-        <div style={{ background: 'rgba(234,179,8,0.12)', border: '1px solid rgba(234,179,8,0.35)', borderRadius: 12, padding: '10px 14px', display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-          <span style={{ fontSize: 15, flexShrink: 0 }}>⚠️</span>
-          <p style={{ fontSize: 12, color: '#92400E', lineHeight: 1.5 }}>
-            <strong>Coordonnées personnelles masquées automatiquement pour votre sécurité.</strong>{' '}
-            Numéros, emails et liens sont remplacés par TABIT.
-          </p>
+        <div style={{
+          background: 'rgba(234,179,8,0.15)',
+          border: '1.5px solid rgba(234,179,8,0.45)',
+          borderRadius: 12,
+          padding: '12px 16px',
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: 10,
+        }}>
+          <span style={{ fontSize: 18, flexShrink: 0, lineHeight: 1.3 }}>⚠️</span>
+          <div>
+            <p style={{ fontSize: 12, fontWeight: 700, color: '#92400E', marginBottom: 2 }}>
+              Coordonnées masquées automatiquement
+            </p>
+            <p style={{ fontSize: 11, color: '#B45309', lineHeight: 1.5 }}>
+              Numéros de téléphone, emails et liens externes sont remplacés par TABIT pour protéger votre transaction. Ne tentez pas de partager ces informations en dehors de la plateforme.
+            </p>
+          </div>
         </div>
         <div className="bg-card border border-border/60 rounded-2xl px-4 py-3 flex items-start gap-2.5">
           <Shield className="h-4 w-4 text-primary mt-0.5 shrink-0" />

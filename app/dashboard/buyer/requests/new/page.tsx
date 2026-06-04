@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import {
   FileText, Tag, DollarSign, MapPin, Zap, Truck, ChevronRight,
-  ArrowLeft, Sparkles, CheckCircle2,
+  ArrowLeft, Sparkles, CheckCircle2, CreditCard,
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
@@ -18,6 +18,14 @@ const STEPS = [
   { id: 1, label: 'Besoin', icon: FileText },
   { id: 2, label: 'Budget & Ville', icon: DollarSign },
   { id: 3, label: 'Options', icon: Sparkles },
+]
+
+const PAYMENT_METHODS = [
+  { slug: 'especes', label: '💵 Espèces' },
+  { slug: 'virement', label: '🏦 Virement bancaire' },
+  { slug: 'cheque', label: '📝 Chèque' },
+  { slug: 'cmi', label: '💳 CMI / Carte bancaire' },
+  { slug: 'echelonne', label: '📅 Échelonné' },
 ]
 
 export default function NewRequestPage() {
@@ -35,6 +43,7 @@ export default function NewRequestPage() {
     city: '',
     urgent: false,
     delivery_needed: true,
+    payment_methods: [] as string[],
   })
 
   useEffect(() => {
@@ -70,6 +79,7 @@ export default function NewRequestPage() {
       city: form.city,
       urgent: form.urgent,
       delivery_needed: form.delivery_needed,
+      payment_methods: form.payment_methods.length > 0 ? form.payment_methods : null,
     }).select().single()
 
     if (error) {
@@ -323,6 +333,41 @@ export default function NewRequestPage() {
               </div>
             </div>
 
+            {/* Payment methods */}
+            <div className="bg-card border border-border/60 rounded-2xl p-6 shadow-premium">
+              <h2 className="font-display font-bold text-base mb-4 flex items-center gap-2">
+                <CreditCard className="h-4.5 w-4.5 text-primary" />
+                Modes de paiement acceptés
+              </h2>
+              <p className="text-xs text-muted-foreground mb-4">Indiquez comment vous souhaitez payer (optionnel)</p>
+              <div className="space-y-2">
+                {PAYMENT_METHODS.map(pm => {
+                  const active = form.payment_methods.includes(pm.slug)
+                  return (
+                    <button
+                      key={pm.slug}
+                      type="button"
+                      onClick={() => {
+                        const updated = active
+                          ? form.payment_methods.filter(x => x !== pm.slug)
+                          : [...form.payment_methods, pm.slug]
+                        set('payment_methods', updated)
+                      }}
+                      className={cn(
+                        'w-full flex items-center justify-between p-3 rounded-xl border text-left transition-all',
+                        active
+                          ? 'border-primary/40 bg-accent/60 text-accent-foreground'
+                          : 'border-border/60 bg-muted/20 hover:bg-muted/40 text-muted-foreground hover:text-foreground'
+                      )}
+                    >
+                      <span className="text-sm font-medium">{pm.label}</span>
+                      {active && <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
             {/* Summary */}
             <div className="bg-accent/40 border border-primary/15 rounded-2xl p-5">
               <h3 className="font-display font-bold text-sm mb-4 text-foreground/70 uppercase tracking-wide">
@@ -334,6 +379,7 @@ export default function NewRequestPage() {
                   { label: 'Catégorie', value: selectedCategory ? `${selectedCategory.icon} ${selectedCategory.name}` : '—' },
                   { label: 'Budget', value: form.budget_max ? `≤ ${Number(form.budget_max).toLocaleString('fr-MA')} DH` : 'Non précisé' },
                   { label: 'Ville', value: form.city },
+                  { label: 'Paiement', value: form.payment_methods.length > 0 ? form.payment_methods.map(s => PAYMENT_METHODS.find(p => p.slug === s)?.label.split(' ').slice(1).join(' ')).join(', ') : 'Non précisé' },
                 ].map(item => (
                   <div key={item.label} className="flex items-baseline justify-between gap-4 text-sm">
                     <span className="text-muted-foreground">{item.label}</span>

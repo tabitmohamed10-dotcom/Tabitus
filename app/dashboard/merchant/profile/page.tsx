@@ -53,6 +53,12 @@ const VERIFICATION_STEPS = [
 
 interface MerchantData {
   business_name: string
+  raison_sociale: string
+  numero_patente: string
+  numero_rc: string
+  numero_ice: string
+  cin: string
+  email_pro: string
   slogan: string
   description: string
   categories: string[]
@@ -88,7 +94,9 @@ export default function MerchantProfilePage() {
   const [activeTab, setActiveTab] = useState<'info' | 'hours' | 'preview' | 'verification'>('info')
 
   const [form, setForm] = useState<MerchantData>({
-    business_name: '', slogan: '', description: '', categories: [],
+    business_name: '', raison_sociale: '', numero_patente: '', numero_rc: '',
+    numero_ice: '', cin: '', email_pro: '',
+    slogan: '', description: '', categories: [],
     city: '', phone: '', whatsapp: '', website: '', address: '',
     payment_methods: [], delivery_options: [], return_policy: '',
     logo_url: null, cover_url: null,
@@ -114,6 +122,12 @@ export default function MerchantProfilePage() {
         setForm(prev => ({
           ...prev,
           business_name: m.business_name || '',
+          raison_sociale: m.raison_sociale || '',
+          numero_patente: m.numero_patente || '',
+          numero_rc: m.numero_rc || '',
+          numero_ice: m.numero_ice || '',
+          cin: m.cin || '',
+          email_pro: m.email_pro || '',
           slogan: m.slogan || '',
           description: m.description || '',
           categories: m.categories || [],
@@ -177,7 +191,14 @@ export default function MerchantProfilePage() {
     }
 
     const payload = {
+      user_id: user.id,
       business_name: form.business_name,
+      raison_sociale: form.raison_sociale,
+      numero_patente: form.numero_patente,
+      numero_rc: form.numero_rc,
+      numero_ice: form.numero_ice,
+      cin: form.cin,
+      email_pro: form.email_pro,
       slogan: form.slogan,
       description: form.description,
       categories: form.categories,
@@ -194,14 +215,9 @@ export default function MerchantProfilePage() {
       business_hours: form.business_hours,
     }
 
-    let saveError: any = null
-    if (merchant) {
-      const { error } = await supabase.from('merchants').update(payload).eq('id', merchant.id)
-      saveError = error
-    } else {
-      const { error } = await supabase.from('merchants').insert({ user_id: user.id, ...payload })
-      saveError = error
-    }
+    const { error: saveError } = await supabase
+      .from('merchants')
+      .upsert(payload, { onConflict: 'user_id' })
 
     setSaving(false)
     if (saveError) {
@@ -409,6 +425,40 @@ export default function MerchantProfilePage() {
             <div>
               <label style={{ fontSize: 12, fontWeight: 600, color: '#0C0B09', marginBottom: 6, display: 'block' }}>Site web</label>
               <input value={form.website} onChange={e => updateForm('website', e.target.value)} placeholder="https://moncommerce.ma" type="url" style={inputStyle} />
+            </div>
+            <div>
+              <label style={{ fontSize: 12, fontWeight: 600, color: '#0C0B09', marginBottom: 6, display: 'block' }}>Email professionnel</label>
+              <input value={form.email_pro} onChange={e => updateForm('email_pro', e.target.value)} placeholder="contact@moncommerce.ma" type="email" style={inputStyle} />
+            </div>
+          </div>
+
+          {/* Legal info */}
+          <div style={{ background: '#FFFFFF', borderRadius: 16, border: '1px solid #E8E0CC', padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <h2 style={{ fontSize: 15, fontWeight: 700, color: '#0C0B09' }}>Informations légales</h2>
+            <p style={{ fontSize: 12, color: '#8A856E', marginTop: -10 }}>Ces informations sont utilisées pour la vérification de votre compte.</p>
+            <div>
+              <label style={{ fontSize: 12, fontWeight: 600, color: '#0C0B09', marginBottom: 6, display: 'block' }}>Raison sociale</label>
+              <input value={form.raison_sociale} onChange={e => updateForm('raison_sociale', e.target.value)} placeholder="Ex: MON COMMERCE SARL" style={inputStyle} />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 600, color: '#0C0B09', marginBottom: 6, display: 'block' }}>N° Patente</label>
+                <input value={form.numero_patente} onChange={e => updateForm('numero_patente', e.target.value)} placeholder="00000000" style={inputStyle} />
+              </div>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 600, color: '#0C0B09', marginBottom: 6, display: 'block' }}>N° RC</label>
+                <input value={form.numero_rc} onChange={e => updateForm('numero_rc', e.target.value)} placeholder="00000/00" style={inputStyle} />
+              </div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 600, color: '#0C0B09', marginBottom: 6, display: 'block' }}>N° ICE</label>
+                <input value={form.numero_ice} onChange={e => updateForm('numero_ice', e.target.value)} placeholder="000000000000000" style={inputStyle} />
+              </div>
+              <div>
+                <label style={{ fontSize: 12, fontWeight: 600, color: '#0C0B09', marginBottom: 6, display: 'block' }}>CIN du gérant</label>
+                <input value={form.cin} onChange={e => updateForm('cin', e.target.value)} placeholder="AB123456" style={inputStyle} />
+              </div>
             </div>
           </div>
 

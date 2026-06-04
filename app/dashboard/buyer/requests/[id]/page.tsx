@@ -3,10 +3,11 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import { Bell, CheckCircle2, Star, Zap, Trophy, Truck, ChevronLeft } from 'lucide-react'
+import { Bell, CheckCircle2, Zap, Trophy, Truck, ChevronLeft } from 'lucide-react'
 import { useRequest } from '@/lib/hooks'
 import { playOfferNotification } from '@/lib/utils/sound'
 import { Skeleton } from '@/components/ui/index'
+import { StarRating } from '@/app/components/StarRating'
 
 // ── Animated "New offer" banner ─────────────────────────────────
 function NewOfferBanner({ show }: { show: boolean }) {
@@ -221,8 +222,7 @@ export default function RequestDetailPage() {
                   <div>
                     <p className="font-semibold text-sm">{offer.business_name || 'Commerçant'}</p>
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
-                      <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                      <span>{offer.merchant_rating > 0 ? offer.merchant_rating : 'Nouveau'}</span>
+                      <StarRating rating={offer.merchant_rating || 0} size={12} showLabel />
                       {offer.merchant_verified && (
                         <span className="text-primary font-medium">✓ Vérifié</span>
                       )}
@@ -251,7 +251,7 @@ export default function RequestDetailPage() {
                   href={`/chat/${offer.id}`}
                   className="mt-4 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl text-center block transition-colors"
                 >
-                  💬 Ouvrir le chat
+                  💬 Discuter avec le commerçant
                 </Link>
               ) : !isClosed && (
                 <motion.button
