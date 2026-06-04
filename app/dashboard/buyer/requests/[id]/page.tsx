@@ -18,7 +18,7 @@ function NewOfferBanner({ show }: { show: boolean }) {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -24, scale: 0.92 }}
           transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-          className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-primary text-primary-foreground rounded-2xl px-5 py-3 shadow-2xl shadow-indigo-500/30 flex items-center gap-3 whitespace-nowrap"
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-primary text-primary-foreground rounded-2xl px-5 py-3 shadow-2xl shadow-brand-500/30 flex items-center gap-3 whitespace-nowrap"
         >
           <motion.div animate={{ rotate: [0, -15, 15, -10, 10, 0] }} transition={{ duration: 0.6 }}>
             <Bell className="h-5 w-5" />
@@ -205,7 +205,7 @@ export default function RequestDetailPage() {
                   <motion.span
                     animate={{ opacity: [1, 0.5, 1] }}
                     transition={{ repeat: Infinity, duration: 1.5 }}
-                    className="flex items-center gap-1 text-[11px] font-bold text-blue-500 bg-blue-50 px-2.5 py-1 rounded-full"
+                    className="flex items-center gap-1 text-[11px] font-bold text-primary bg-brand-50 px-2.5 py-1 rounded-full"
                   >
                     <Zap className="h-3.5 w-3.5" /> NOUVEAU
                   </motion.span>
@@ -224,7 +224,7 @@ export default function RequestDetailPage() {
                       <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
                       <span>{offer.merchant_rating > 0 ? offer.merchant_rating : 'Nouveau'}</span>
                       {offer.merchant_verified && (
-                        <span className="text-blue-500 font-medium">✓ Vérifié</span>
+                        <span className="text-primary font-medium">✓ Vérifié</span>
                       )}
                     </div>
                   </div>
@@ -259,7 +259,7 @@ export default function RequestDetailPage() {
                   whileTap={{ scale: 0.97 }}
                   onClick={() => acceptOffer(offer.id)}
                   disabled={!!accepting}
-                  className="mt-4 w-full bg-brand-gradient text-white font-bold py-3.5 rounded-xl disabled:opacity-60 shadow-md shadow-indigo-500/20 text-sm"
+                  className="mt-4 w-full bg-brand-gradient text-noir font-bold py-3.5 rounded-xl disabled:opacity-60 shadow-md shadow-brand-500/20 text-sm"
                 >
                   {accepting === offer.id ? (
                     <span className="flex items-center justify-center gap-2">

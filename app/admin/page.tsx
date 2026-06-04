@@ -45,7 +45,7 @@ export default async function AdminDashboard() {
         <StatCard
           title="Utilisateurs totaux"
           value={totalUsers?.toLocaleString() || 0}
-          icon={<Users className="h-5 w-5 text-blue-500" />}
+          icon={<Users className="h-5 w-5 text-primary" />}
           trend={{ value: 12, label: 'ce mois' }}
         />
         <StatCard

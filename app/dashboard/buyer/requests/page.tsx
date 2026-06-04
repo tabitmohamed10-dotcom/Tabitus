@@ -11,9 +11,9 @@ import { cn } from '@/lib/utils'
 
 const STATUS_MAP: Record<string, { label: string; class: string }> = {
   open:      { label: 'Ouverte',    class: 'bg-green-50 text-green-700 dark:bg-green-950/50 dark:text-green-400 border border-green-200/60 dark:border-green-800/40' },
-  in_review: { label: 'En examen', class: 'bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/40' },
-  accepted:  { label: 'Acceptée',   class: 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800/40' },
-  completed: { label: 'Terminée',   class: 'bg-purple-50 text-purple-700 dark:bg-purple-950/50 dark:text-purple-400 border border-purple-200/60 dark:border-purple-800/40' },
+  in_review: { label: 'En examen', class: 'bg-brand-50 text-brand-700 border border-brand-200/60' },
+  accepted:  { label: 'Acceptée',   class: 'bg-brand-100 text-brand-800 border border-brand-300/60' },
+  completed: { label: 'Terminée',   class: 'bg-brand-50 text-brand-600 border border-brand-200/60' },
   cancelled: { label: 'Annulée',    class: 'bg-red-50 text-red-600 dark:bg-red-950/50 dark:text-red-400 border border-red-200/60 dark:border-red-800/40' },
 }
 

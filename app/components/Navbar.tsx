@@ -1,39 +1,206 @@
 'use client'
 
-import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import Logo from './Logo'
+import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
+
+const NAV_LINKS = [
+  { href: '#how-it-works', label: 'Comment ça marche' },
+  { href: '#categories', label: 'Catégories' },
+  { href: '#confiance', label: 'Confiance' },
+  { href: '#temoignages', label: 'Témoignages' },
+  { href: '#faq', label: 'FAQ' },
+]
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', fn)
-    return () => window.removeEventListener('scroll', fn)
+    const handleScroll = () => setScrolled(window.scrollY > 30)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const links = [
-    {href:'#how',label:'Comment ça marche'},
-    {href:'#merchants',label:'Commerçants'},
-    {href:'#b2b',label:'Entreprises B2B'},
-  ]
-
   return (
-    <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:50,height:68,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 56px',background:scrolled?'rgba(250,250,247,0.96)':'rgba(250,250,247,0.85)',backdropFilter:'blur(20px)',borderBottom:'1px solid #E8E0CC',transition:'all 0.3s'}}>
-      <Link href="/"><Logo /></Link>
-      <ul style={{display:'flex',gap:40,listStyle:'none',alignItems:'center'}}>
-        {links.map(l=>(
-          <li key={l.href}>
-            <Link href={l.href} className="nav-link">{l.label}</Link>
-          </li>
-        ))}
-      </ul>
-      <div style={{display:'flex',alignItems:'center',gap:24}}>
-        <Link href="/auth/login" className="nav-link">Connexion</Link>
-        <Link href="/auth/register" className="btn-primary" style={{padding:'10px 22px',fontSize:10}}>
-          Commencer
+    <nav
+      style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+        background: scrolled ? 'rgba(12,11,9,0.97)' : 'rgba(12,11,9,0.2)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        borderBottom: scrolled ? '1px solid rgba(201,146,42,0.2)' : '1px solid rgba(201,146,42,0)',
+        transition: 'all 0.4s cubic-bezier(0.22,1,0.36,1)',
+      }}
+    >
+      <div style={{
+        maxWidth: 1280, margin: '0 auto',
+        padding: '0 clamp(20px, 5vw, 56px)',
+        height: 'clamp(60px, 8vw, 68px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        {/* Logo */}
+        <Link href="/" style={{ textDecoration: 'none' }}>
+          <motion.div
+            style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}
+            whileHover={{ scale: 1.04 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div style={{
+              width: 36, height: 36, borderRadius: 8,
+              background: 'linear-gradient(135deg, #8B6914, #C9922A, #E8B84B)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontWeight: 900, color: '#0C0B09', fontSize: 17,
+              fontFamily: 'var(--font-playfair), Georgia, serif',
+              boxShadow: '0 2px 12px rgba(201,146,42,0.35)',
+            }}>T</div>
+            <span style={{
+              fontFamily: 'var(--font-playfair), Georgia, serif',
+              fontSize: 22, fontWeight: 700, color: '#C9922A', letterSpacing: '0.01em',
+            }}>TABIT</span>
+          </motion.div>
         </Link>
+
+        {/* Desktop Links */}
+        <div className="nav-desktop-links" style={{ display: 'flex', alignItems: 'center', gap: 28 }}>
+          {NAV_LINKS.map((link) => (
+            <motion.a
+              key={link.href}
+              href={link.href}
+              style={{ color: '#C4BCA8', textDecoration: 'none', fontSize: 14, fontWeight: 400, letterSpacing: '0.01em' }}
+              whileHover={{ color: '#C9922A', y: -1 }}
+              transition={{ duration: 0.2 }}
+            >
+              {link.label}
+            </motion.a>
+          ))}
+        </div>
+
+        {/* Desktop CTAs */}
+        <div className="nav-desktop-cta" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <motion.a
+            href="/auth/login"
+            style={{ color: '#C9922A', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}
+            whileHover={{ color: '#E8B84B' }}
+            transition={{ duration: 0.2 }}
+          >
+            Connexion
+          </motion.a>
+          <motion.a
+            href="/auth/register"
+            style={{
+              background: 'linear-gradient(135deg, #C9922A, #E8B84B)',
+              color: '#0C0B09', textDecoration: 'none',
+              padding: '10px 20px', borderRadius: 8,
+              fontSize: 13, fontWeight: 700, letterSpacing: '0.01em',
+              minHeight: 44, display: 'flex', alignItems: 'center',
+              whiteSpace: 'nowrap',
+              boxShadow: '0 2px 12px rgba(201,146,42,0.3)',
+            }}
+            whileHover={{ scale: 1.05, boxShadow: '0 4px 20px rgba(201,146,42,0.5)' }}
+            whileTap={{ scale: 0.97 }}
+          >
+            Commencer gratuitement
+          </motion.a>
+        </div>
+
+        {/* Hamburger */}
+        <motion.button
+          className="nav-hamburger"
+          onClick={() => setMenuOpen(!menuOpen)}
+          style={{
+            background: 'none', border: 'none', cursor: 'pointer',
+            padding: 8, minHeight: 44, minWidth: 44,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+          whileTap={{ scale: 0.9 }}
+          aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={menuOpen ? 'close' : 'open'}
+              initial={{ opacity: 0, rotate: -60 }}
+              animate={{ opacity: 1, rotate: 0 }}
+              exit={{ opacity: 0, rotate: 60 }}
+              transition={{ duration: 0.2 }}
+              style={{ color: '#C9922A', fontSize: 22, lineHeight: 1, display: 'block' }}
+            >
+              {menuOpen ? '✕' : '☰'}
+            </motion.span>
+          </AnimatePresence>
+        </motion.button>
       </div>
+
+      {/* Mobile slide-down menu */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            key="mobile-menu"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              background: 'rgba(12,11,9,0.99)',
+              borderTop: '1px solid rgba(201,146,42,0.2)',
+              overflow: 'hidden',
+            }}
+          >
+            <div style={{ padding: '12px clamp(20px,5vw,32px) 24px', display: 'flex', flexDirection: 'column' }}>
+              {NAV_LINKS.map((link, i) => (
+                <motion.a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  initial={{ opacity: 0, x: -16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.06, duration: 0.3 }}
+                  style={{
+                    color: '#D4C5A9', textDecoration: 'none',
+                    padding: '15px 0', fontSize: 16, fontWeight: 400,
+                    borderBottom: '1px solid rgba(201,146,42,0.08)',
+                    display: 'block', minHeight: 52,
+                  }}
+                >
+                  {link.label}
+                </motion.a>
+              ))}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.34, duration: 0.3 }}
+                style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 20 }}
+              >
+                <a href="/auth/login" style={{
+                  color: '#C9922A', textDecoration: 'none',
+                  padding: '14px 20px', border: '1px solid rgba(201,146,42,0.4)',
+                  borderRadius: 10, textAlign: 'center', fontWeight: 600,
+                  minHeight: 50, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 15,
+                }}>Connexion</a>
+                <a href="/auth/register" style={{
+                  background: 'linear-gradient(135deg, #C9922A, #E8B84B)',
+                  color: '#0C0B09', textDecoration: 'none',
+                  padding: '14px 20px', borderRadius: 10, textAlign: 'center',
+                  fontWeight: 700, minHeight: 50, fontSize: 15,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 4px 20px rgba(201,146,42,0.4)',
+                }}>Commencer gratuitement</a>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <style>{`
+        @media (min-width: 768px) {
+          .nav-hamburger { display: none !important; }
+        }
+        @media (max-width: 767px) {
+          .nav-desktop-links { display: none !important; }
+          .nav-desktop-cta { display: none !important; }
+        }
+      `}</style>
     </nav>
   )
 }

@@ -342,7 +342,7 @@ export default function MerchantRequestsPage() {
                     whileTap={{ scale: 0.97 }}
                     onClick={submitOffer}
                     disabled={submitting || !price}
-                    className="flex-1 bg-brand-gradient text-white font-bold py-3 rounded-xl text-sm disabled:opacity-50 shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2"
+                    className="flex-1 bg-brand-gradient text-noir font-bold py-3 rounded-xl text-sm disabled:opacity-50 shadow-md shadow-brand-500/20 flex items-center justify-center gap-2"
                   >
                     {submitting ? (
                       <>
