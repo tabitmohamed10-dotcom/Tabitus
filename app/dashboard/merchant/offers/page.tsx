@@ -21,7 +21,7 @@ export default async function MerchantOffersPage() {
   if (!user) redirect('/auth/login')
 
   const { data: merchant } = await supabase
-    .from('merchants').select('id').eq('user_id', user.id).single()
+    .from('merchants').select('id').eq('user_id', user.id).maybeSingle()
 
   if (!merchant) {
     return (

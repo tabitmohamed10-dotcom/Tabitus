@@ -9,18 +9,15 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
       .from('marche_libre_listings')
       .select(`
         *,
-        seller:seller_id (id, full_name, avatar_url, role, city, created_at),
-        merchant_profile:seller_id (
-          merchants (business_name, verified, rating, total_ratings, logo_url)
-        )
+        seller:user_id (id, full_name, avatar_url, role, city, created_at)
       `)
       .eq('id', id)
-      .single()
+      .maybeSingle()
 
     if (error || !data) return NextResponse.json({ error: 'Annonce introuvable' }, { status: 404 })
 
     // Increment view count (fire and forget)
-    supabase.from('marche_libre_listings').update({ views_count: (data.views_count || 0) + 1 }).eq('id', id)
+    supabase.from('marche_libre_listings').update({ views: (data.views || 0) + 1 }).eq('id', id)
 
     return NextResponse.json({ data })
   } catch {
@@ -40,9 +37,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       .from('marche_libre_listings')
       .update(body)
       .eq('id', id)
-      .eq('seller_id', user.id)
+      .eq('user_id', user.id)
       .select()
-      .single()
+      .maybeSingle()
 
     if (error) throw error
     return NextResponse.json({ data })
@@ -58,7 +55,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    await supabase.from('marche_libre_listings').delete().eq('id', id).eq('seller_id', user.id)
+    await supabase.from('marche_libre_listings').delete().eq('id', id).eq('user_id', user.id)
     return NextResponse.json({ success: true })
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 })

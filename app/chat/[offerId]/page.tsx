@@ -36,7 +36,7 @@ export default function ChatPage() {
         .from('offers')
         .select('*, requests(*), merchants(business_name, phone)')
         .eq('id', offerId)
-        .single()
+        .maybeSingle()
       setOffer(offerData)
 
       const { data: msgs } = await supabase
@@ -94,7 +94,6 @@ export default function ChatPage() {
       offer_id: offerId,
       sender_id: user.id,
       content: masked,
-      created_at: new Date().toISOString(),
     })
     setSending(false)
     inputRef.current?.focus()

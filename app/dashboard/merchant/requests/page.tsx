@@ -52,14 +52,14 @@ export default function MerchantRequestsPage() {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
-    const { data: merchant } = await supabase.from('merchants').select('id').eq('user_id', user.id).single()
+    const { data: merchant } = await supabase.from('merchants').select('id').eq('user_id', user.id).maybeSingle()
     if (!merchant) { alert('Configurez votre profil boutique d\'abord.'); setSubmitting(false); return }
     const { error } = await supabase.from('offers').insert({
       request_id: selectedRequest.id,
       merchant_id: merchant.id,
       price: Number(price),
       delivery_days: Number(deliveryDays),
-      note: note || null,
+      message: note || null,
     })
     if (error) { alert('Erreur: ' + error.message); setSubmitting(false); return }
     setSelectedRequest(null)

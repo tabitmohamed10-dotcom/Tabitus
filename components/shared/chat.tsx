@@ -53,7 +53,7 @@ export function OfferChat({ offerId, currentUser, merchantName, onClose }: ChatP
           .from('messages')
           .select('*, sender:profiles(full_name, avatar_url, role)')
           .eq('id', payload.new.id)
-          .single()
+          .maybeSingle()
         if (msg) setMessages(prev => [...prev, msg])
       })
       .subscribe()

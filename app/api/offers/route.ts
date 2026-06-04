@@ -8,24 +8,22 @@ export async function POST(request: NextRequest) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { data: merchant } = await supabase
-    .from('merchants').select('id').eq('user_id', user.id).single()
+    .from('merchants').select('id').eq('user_id', user.id).maybeSingle()
 
   if (!merchant) return NextResponse.json({ error: 'Merchant profile required' }, { status: 403 })
 
   const body = await request.json()
-  const { request_id, price, delivery_days, free_delivery, note, delivery_fee } = body
+  const { request_id, price, delivery_days, note, message } = body
 
   const { data, error } = await supabase
     .from('offers')
     .insert({
       request_id, merchant_id: merchant.id,
       price, delivery_days: delivery_days || 3,
-      free_delivery: free_delivery || false,
-      delivery_fee: delivery_fee || 0,
-      note: note || null,
+      message: message || note || null,
     })
     .select()
-    .single()
+    .maybeSingle()
 
   if (error) {
     if (error.code === '23505') {

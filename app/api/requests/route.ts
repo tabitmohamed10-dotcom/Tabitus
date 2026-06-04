@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     .from('requests')
     .insert({ ...body, buyer_id: user.id })
     .select()
-    .single()
+    .maybeSingle()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ data }, { status: 201 })
