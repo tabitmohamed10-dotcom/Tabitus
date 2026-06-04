@@ -34,7 +34,7 @@ function showInAppToast(title: string, body: string, url: string) {
 
   if (typeof window === 'undefined') return
 
-  if ((Notification as any).permission === 'granted') {
+  if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
     try {
       const n = new Notification(title, { body, icon: '/logo.svg', tag: 'tabit' })
       n.onclick = () => { window.location.href = url }
@@ -58,7 +58,7 @@ function showInAppToast(title: string, body: string, url: string) {
 
 export default function NotificationSystem({ userId, role }: { userId: string; role: string }) {
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined' || !('Notification' in window)) return
     Notification.requestPermission().catch(() => {})
   }, [])
 
@@ -78,7 +78,7 @@ export default function NotificationSystem({ userId, role }: { userId: string; r
             .from('requests')
             .select('buyer_id, title')
             .eq('id', payload.new.request_id)
-            .single()
+            .maybeSingle()
           if (req?.buyer_id === userId) {
             showInAppToast(
               '🎯 Nouvelle offre reçue !',
@@ -92,7 +92,7 @@ export default function NotificationSystem({ userId, role }: { userId: string; r
     }
 
     if (role === 'merchant') {
-      supabase.from('merchants').select('id').eq('user_id', userId).single().then(({ data: merchant }) => {
+      supabase.from('merchants').select('id').eq('user_id', userId).maybeSingle().then(({ data: merchant }) => {
         if (!merchant) return
         const channel = supabase.channel(`merchant-notifs-${userId}`)
           .on('postgres_changes', {
