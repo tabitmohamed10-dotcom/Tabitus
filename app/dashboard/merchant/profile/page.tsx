@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, Save as SaveIcon, CheckCircle2, Clock, Star, MapPin, Phone, Globe, Shield } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { MOROCCAN_CITIES } from '@/lib/utils'
+import { toast } from 'sonner'
 
 const ALL_CATEGORIES = [
   { slug: 'electromenager', name: '⚡ Électroménager' },
@@ -193,15 +194,23 @@ export default function MerchantProfilePage() {
       business_hours: form.business_hours,
     }
 
+    let saveError: any = null
     if (merchant) {
-      await supabase.from('merchants').update(payload).eq('id', merchant.id)
+      const { error } = await supabase.from('merchants').update(payload).eq('id', merchant.id)
+      saveError = error
     } else {
-      await supabase.from('merchants').insert({ user_id: user.id, ...payload })
+      const { error } = await supabase.from('merchants').insert({ user_id: user.id, ...payload })
+      saveError = error
     }
 
     setSaving(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
+    if (saveError) {
+      toast.error('Erreur lors de la sauvegarde : ' + saveError.message)
+    } else {
+      setSaved(true)
+      toast.success('Profil boutique enregistré avec succès !')
+      setTimeout(() => setSaved(false), 3000)
+    }
   }
 
   if (loading) return (

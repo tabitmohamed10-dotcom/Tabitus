@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
 
 const COLUMNS = [
   {
@@ -121,9 +122,14 @@ export default function Footer() {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
 
-  function handleSubscribe(e: React.FormEvent) {
+  async function handleSubscribe(e: React.FormEvent) {
     e.preventDefault()
-    if (email.includes('@')) setSubscribed(true)
+    if (!email.includes('@')) return
+    try {
+      const supabase = createClient()
+      await supabase.from('newsletter_subscribers').insert({ email, created_at: new Date().toISOString() })
+    } catch {}
+    setSubscribed(true)
   }
 
   return (
@@ -213,7 +219,7 @@ export default function Footer() {
             </div>
             {subscribed ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#C9922A', fontWeight: 600, fontSize: 14 }}>
-                <span>✓</span> Merci, vous êtes inscrit !
+                <span>✓</span> Merci ! Vous êtes abonné.
               </div>
             ) : (
               <form onSubmit={handleSubscribe} style={{

@@ -57,30 +57,55 @@ export function useRequest(id: string) {
 
   useEffect(() => {
     async function load() {
-      const [{ data: req }, { data: offs }] = await Promise.all([
-        supabase
-          .from('requests')
-          .select('*, category:categories(name,icon,color), buyer:profiles(full_name,avatar_url)')
-          .eq('id', id)
-          .single(),
-        supabase
-          .from('v_offer_detail')
-          .select('*')
-          .eq('request_id', id)
-          .order('sponsored', { ascending: false })
-          .order('price', { ascending: true }),
-      ])
+      const { data: req } = await supabase
+        .from('requests')
+        .select('*, category:categories(name,icon,color), buyer:profiles(full_name,avatar_url)')
+        .eq('id', id)
+        .single()
       setRequest(req)
+
+      // Try view first, fall back to direct table join
+      let { data: offs, error: viewErr } = await supabase
+        .from('v_offer_detail')
+        .select('*')
+        .eq('request_id', id)
+        .order('price', { ascending: true })
+
+      if (viewErr || !offs) {
+        const { data: directOffs } = await supabase
+          .from('offers')
+          .select('*, merchant:merchants(business_name, rating, verified, user_id)')
+          .eq('request_id', id)
+          .order('price', { ascending: true })
+        offs = (directOffs || []).map((o: any) => ({
+          ...o,
+          business_name: o.merchant?.business_name || 'Commerçant',
+          merchant_rating: o.merchant?.rating || 0,
+          merchant_verified: o.merchant?.verified || false,
+        }))
+      }
+
       setOffers(offs || [])
       setLoading(false)
     }
     load()
 
-    // Realtime offers
+    // Realtime: on INSERT add immediately + reload for full merchant details
     const channel = supabase
-      .channel(`request-${id}`)
+      .channel(`request-offers-${id}`)
       .on('postgres_changes', {
-        event: '*', schema: 'public', table: 'offers', filter: `request_id=eq.${id}`,
+        event: 'INSERT', schema: 'public', table: 'offers', filter: `request_id=eq.${id}`,
+      }, (payload) => {
+        const newOffer = payload.new as any
+        setOffers(prev => {
+          if (prev.find((o: any) => o.id === newOffer.id)) return prev
+          return [...prev, { ...newOffer, business_name: 'Commerçant', merchant_rating: 0, merchant_verified: false }]
+        })
+        // Reload to get merchant details
+        load()
+      })
+      .on('postgres_changes', {
+        event: 'UPDATE', schema: 'public', table: 'offers', filter: `request_id=eq.${id}`,
       }, () => load())
       .subscribe()
 

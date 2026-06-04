@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
 import { useState } from 'react'
 
@@ -55,69 +55,9 @@ const FAQS = [
   },
 ]
 
-function FAQItem({ faq, index }: { faq: typeof FAQS[0]; index: number }) {
-  const [open, setOpen] = useState(false)
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.05 })
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 16 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.4, delay: (index % 8) * 0.05 }}
-      style={{ borderBottom: '1px solid #E8E0CC' }}
-    >
-      <motion.button
-        onClick={() => setOpen(!open)}
-        style={{
-          width: '100%', display: 'flex', alignItems: 'center',
-          justifyContent: 'space-between', padding: 'clamp(16px, 3vw, 20px) 0',
-          background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', gap: 16,
-          minHeight: 60,
-        }}
-        whileTap={{ scale: 0.99 }}
-      >
-        <span style={{ fontSize: 'clamp(14px, 2vw, 16px)', fontWeight: 500, color: '#0C0B09', lineHeight: 1.4 }}>
-          {faq.q}
-        </span>
-        <motion.span
-          animate={{ rotate: open ? 45 : 0 }}
-          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          style={{
-            flexShrink: 0, fontSize: 22, fontWeight: 300,
-            color: '#C9922A', lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            width: 28, height: 28,
-          }}
-        >
-          +
-        </motion.span>
-      </motion.button>
-
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-            style={{ overflow: 'hidden' }}
-          >
-            <p style={{
-              paddingBottom: 'clamp(16px, 3vw, 20px)',
-              fontSize: 'clamp(13px, 2vw, 15px)',
-              lineHeight: 1.75, color: '#8A856E',
-            }}>
-              {faq.a}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  )
-}
-
 export default function FAQ() {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.05 })
+  const [open, setOpen] = useState<number | null>(null)
 
   return (
     <section
@@ -155,7 +95,45 @@ export default function FAQ() {
 
         <div style={{ borderTop: '1px solid #E8E0CC' }}>
           {FAQS.map((faq, i) => (
-            <FAQItem key={i} faq={faq} index={i} />
+            <div
+              key={i}
+              style={{ borderBottom: '1px solid #E8E0CC' }}
+            >
+              <button
+                type="button"
+                onClick={() => setOpen(open === i ? null : i)}
+                style={{
+                  width: '100%', display: 'flex', alignItems: 'center',
+                  justifyContent: 'space-between', padding: 'clamp(16px, 3vw, 20px) 0',
+                  background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', gap: 16,
+                  minHeight: 60,
+                }}
+              >
+                <span style={{ fontSize: 'clamp(14px, 2vw, 16px)', fontWeight: 500, color: '#0C0B09', lineHeight: 1.4 }}>
+                  {faq.q}
+                </span>
+                <span
+                  style={{
+                    flexShrink: 0, fontSize: 22, fontWeight: 300,
+                    color: '#C9922A', lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    width: 28, height: 28, transform: open === i ? 'rotate(45deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.3s ease',
+                  }}
+                >
+                  +
+                </span>
+              </button>
+
+              <div style={{ display: open === i ? 'block' : 'none' }}>
+                <p style={{
+                  paddingBottom: 'clamp(16px, 3vw, 20px)',
+                  fontSize: 'clamp(13px, 2vw, 15px)',
+                  lineHeight: 1.75, color: '#8A856E',
+                }}>
+                  {faq.a}
+                </p>
+              </div>
+            </div>
           ))}
         </div>
 

@@ -7,10 +7,16 @@ import { playMessageSound } from '@/lib/utils/sound'
 import { ArrowLeft, Send, Shield, Lock } from 'lucide-react'
 
 const maskData = (text: string) => text
-  .replace(/(\+212|00212|0)([\s.-]?\d{2}){4}/g, '🚫 Numéro masqué par TABIT')
+  // International format +212 or 00212
+  .replace(/(\+212|00212)[\s.-]?[5-7][\s.-]?\d{2}[\s.-]?\d{2}[\s.-]?\d{2}[\s.-]?\d{2}/g, '🚫 Numéro masqué par TABIT')
+  // Local 10-digit format with or without separators: 06x, 07x, 05x
+  .replace(/\b0[5-7][\s.-]?\d{2}[\s.-]?\d{2}[\s.-]?\d{2}[\s.-]?\d{2}\b/g, '🚫 Numéro masqué')
+  // Compact 10-digit: 0XXXXXXXXX
   .replace(/\b0[5-7]\d{8}\b/g, '🚫 Numéro masqué')
-  .replace(/[^\s]+@[^\s]+\.[^\s]+/g, '🚫 Email masqué par TABIT')
-  .replace(/(wa\.me|whatsapp|t\.me|telegram)[^\s]*/gi, '🚫 Lien masqué par TABIT')
+  // Email addresses
+  .replace(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g, '🚫 Email masqué par TABIT')
+  // WhatsApp / Telegram links
+  .replace(/(wa\.me|whatsapp\.com|t\.me|telegram\.me|telegram\.org)[^\s]*/gi, '🚫 Lien masqué par TABIT')
 
 function maskSensitiveInfo(text: string): { masked: string; hasPhone: boolean } {
   const masked = maskData(text)

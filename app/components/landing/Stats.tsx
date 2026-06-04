@@ -106,19 +106,17 @@ function StatCard({ stat, index }: { stat: typeof STATS[0]; index: number }) {
             fontSize: 'clamp(32px, 5vw, 48px)',
             fontWeight: 700, lineHeight: 1, color: '#C9922A', marginBottom: 6,
           }}>
-            {inView ? (
-              <CountUp
-                start={0}
-                end={stat.number}
-                duration={2.5}
-                separator=" "
-                prefix={stat.prefix}
-                suffix={stat.suffix}
-                useEasing
-              />
-            ) : (
-              <span>{stat.prefix}0{stat.suffix}</span>
-            )}
+            <CountUp
+              start={0}
+              end={stat.number}
+              duration={2.5}
+              separator=" "
+              prefix={stat.prefix}
+              suffix={stat.suffix}
+              enableScrollSpy
+              scrollSpyOnce
+              scrollSpyDelay={300}
+            />
           </div>
           <div style={{ fontSize: 15, fontWeight: 600, color: '#FAFAF7' }}>{stat.title}</div>
         </div>
