@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Package, TrendingUp, Star, ArrowRight, Bell, MessageCircle, Clock, DollarSign } from 'lucide-react'
 import { useMerchantStats, useMerchantOffers } from '@/lib/hooks'
 import { formatPrice, formatTimeAgo, getStatusColor, getStatusLabel } from '@/lib/utils'
@@ -40,6 +41,7 @@ function CountUp({ to, suffix = '' }: { to: number; suffix?: string }) {
 }
 
 export default function MerchantDashboard() {
+  const router = useRouter()
   const supabase = createClient()
   const { stats, loading: statsLoading } = useMerchantStats()
   const { offers, loading: offersLoading } = useMerchantOffers()
@@ -249,14 +251,12 @@ export default function MerchantDashboard() {
                       <span className="font-bold text-green-600">{formatPrice(offer.price)}</span>
                     </div>
                   </div>
-                  <Link
-                    href={`/chat/${offer.id}`}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all shrink-0"
-                    style={{background:'rgba(201,146,42,0.1)',color:'#C9922A',border:'1px solid rgba(201,146,42,0.25)'}}
+                  <button
+                    onClick={() => router.push(`/chat/${offer.id}`)}
+                    style={{background:'linear-gradient(135deg,#8B6914,#C9922A)',color:'#0C0B09',border:'none',padding:'8px 16px',borderRadius:8,cursor:'pointer',fontSize:12,fontWeight:700,display:'flex',alignItems:'center',gap:5,flexShrink:0,whiteSpace:'nowrap'}}
                   >
-                    <MessageCircle className="h-3.5 w-3.5" />
-                    💬 Chat
-                  </Link>
+                    💬 Ouvrir le chat
+                  </button>
                 </motion.div>
               )
             })}

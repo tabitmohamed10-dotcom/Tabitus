@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
 // ─── Mock data ──────────────────────────────────────────────────────────────
@@ -404,17 +404,24 @@ function PublishModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: 
   )
 }
 
-// ─── Main page ────────────────────────────────────────────────────────────────
-export default function MarcheLiberePage() {
+// ─── Main page inner (needs Suspense for useSearchParams) ─────────────────────
+function MarcheLibreContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const categoryParam = searchParams.get('category') || ''
+
   const [listings, setListings] = useState<Listing[]>(MOCK_LISTINGS)
   const [loading, setLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
 
-  // Filters
-  const [category, setCategory] = useState('')
+  // Filters — pre-select from URL param
+  const [category, setCategory] = useState(categoryParam)
+
+  useEffect(() => {
+    if (categoryParam) setCategory(categoryParam)
+  }, [categoryParam])
   const [city, setCity] = useState('')
   const [condition, setCondition] = useState('')
   const [sort, setSort] = useState('recent')
@@ -656,5 +663,13 @@ export default function MarcheLiberePage() {
         }
       `}</style>
     </div>
+  )
+}
+
+export default function MarcheLiberePage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: '100vh', background: '#FAFAF7' }} />}>
+      <MarcheLibreContent />
+    </Suspense>
   )
 }

@@ -9,6 +9,23 @@ import { playOfferNotification } from '@/lib/utils/sound'
 import { Skeleton } from '@/components/ui/index'
 import { StarRating } from '@/app/components/StarRating'
 
+function playNotificationSound() {
+  try {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)()
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    osc.connect(gain)
+    gain.connect(ctx.destination)
+    osc.frequency.setValueAtTime(523, ctx.currentTime)
+    osc.frequency.setValueAtTime(659, ctx.currentTime + 0.15)
+    osc.frequency.setValueAtTime(784, ctx.currentTime + 0.3)
+    gain.gain.setValueAtTime(0.4, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6)
+    osc.start(ctx.currentTime)
+    osc.stop(ctx.currentTime + 0.65)
+  } catch { /* noop */ }
+}
+
 // ── Animated "New offer" banner ─────────────────────────────────
 function NewOfferBanner({ show }: { show: boolean }) {
   return (
@@ -60,6 +77,7 @@ export default function RequestDetailPage() {
     if (loading) return
     if (offers.length > prevCount.current && prevCount.current > 0) {
       playOfferNotification()
+      playNotificationSound()
       setShowBanner(true)
       if (bannerRef.current) clearTimeout(bannerRef.current)
       bannerRef.current = setTimeout(() => setShowBanner(false), 4000)
@@ -89,6 +107,7 @@ export default function RequestDetailPage() {
   }
 
   const isClosed = ['closed','accepted','cancelled','completed'].includes(request?.status || '')
+  const acceptedOffer = offers.find(o => o.status === 'accepted')
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -139,6 +158,25 @@ export default function RequestDetailPage() {
           </div>
         </div>
       </motion.div>
+
+      {/* Prominent accepted offer chat banner */}
+      {acceptedOffer && (
+        <motion.div
+          initial={{ opacity: 0, y: -12 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{ background: '#0C0B09', border: '1px solid #C9922A', padding: 20, borderRadius: 14, marginBottom: 20 }}
+        >
+          <p style={{ color: '#F0E8D4', fontSize: 14, marginBottom: 12, fontWeight: 600 }}>
+            ✅ Offre acceptée — Discutez avec le commerçant pour finaliser
+          </p>
+          <button
+            onClick={() => router.push(`/chat/${acceptedOffer.id}`)}
+            style={{ background: 'linear-gradient(135deg, #8B6914, #C9922A)', color: '#0C0B09', border: 'none', padding: '12px 24px', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: 8 }}
+          >
+            💬 OUVRIR LE CHAT
+          </button>
+        </motion.div>
+      )}
 
       {/* Offers header */}
       <motion.div
