@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { LayoutDashboard, ShoppingBag, PlusCircle, User, Package, Bell } from 'lucide-react'
+import { LayoutDashboard, ShoppingBag, PlusCircle, User, Package, Bell, Store } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 type Role = 'buyer' | 'merchant'
@@ -18,7 +18,8 @@ interface NavLink {
 const BUYER_LINKS: NavLink[] = [
   { href: '/dashboard/buyer',              icon: LayoutDashboard, label: 'Accueil',  exact: true },
   { href: '/dashboard/buyer/requests',     icon: ShoppingBag,     label: 'Demandes' },
-  { href: '/dashboard/buyer/requests/new', icon: PlusCircle,      label: 'Publier',  exact: true, primary: true },
+  { href: '/dashboard/buyer/requests/new', icon: PlusCircle,      label: 'Nouvelle', exact: true, primary: true },
+  { href: '/marche-libre',                 icon: Store,           label: 'Marché',   exact: true },
   { href: '/dashboard/buyer/profile',      icon: User,            label: 'Profil',   exact: true },
 ]
 
@@ -60,7 +61,7 @@ export function BottomNav({ role }: { role: Role }) {
                 <motion.div
                   whileTap={{ scale: 0.80 }}
                   transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                  className="relative flex flex-col items-center justify-center gap-0.5 py-1.5 min-w-[52px]"
+                  className="relative flex flex-col items-center justify-center gap-0.5 py-1.5 min-w-[44px]"
                 >
                   {link.primary ? (
                     <motion.div

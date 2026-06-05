@@ -124,22 +124,40 @@ export default function BuyerDashboard() {
         ))}
       </motion.div>
 
-      {/* CTA Banner */}
-      <motion.div variants={fadeUp} className="mb-5">
-        <Link href="/dashboard/buyer/requests/new">
+      {/* Dual CTA */}
+      <motion.div variants={fadeUp} className="mb-5 flex flex-col sm:flex-row gap-3">
+        {/* Nouvelle demande — marketplace inversée */}
+        <Link href="/dashboard/buyer/requests/new" className="flex-1">
           <motion.div
             whileHover={{ scale: 1.008 }}
             whileTap={{ scale: 0.995 }}
-            className="group relative bg-brand-gradient rounded-2xl p-5 sm:p-6 flex items-center justify-between text-white shadow-brand cursor-pointer overflow-hidden"
+            className="group relative bg-brand-gradient rounded-2xl p-4 sm:p-5 flex items-center justify-between shadow-brand cursor-pointer overflow-hidden h-full"
           >
-            <div className="absolute -right-6 -top-6 h-28 w-28 rounded-full bg-white/10 pointer-events-none" />
-            <div className="absolute -right-2 bottom-0 h-16 w-16 rounded-full bg-white/5 pointer-events-none" />
+            <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10 pointer-events-none" />
             <div className="relative z-10">
-              <p className="font-display font-bold text-base sm:text-lg leading-tight" style={{fontFamily:'var(--font-playfair)'}}>Nouvelle demande</p>
-              <p className="text-white/75 text-sm mt-0.5">Recevez des offres en quelques minutes</p>
+              <p className="font-bold text-sm sm:text-base leading-tight text-noir">📋 Nouvelle demande</p>
+              <p className="text-xs mt-0.5" style={{color:'rgba(12,11,9,0.65)'}}>Les commerçants vous répondent</p>
             </div>
-            <div className="h-11 w-11 bg-white/20 rounded-2xl flex items-center justify-center shrink-0 relative z-10 transition-transform group-hover:scale-105">
-              <Plus className="h-5 w-5 text-white" />
+            <div className="h-10 w-10 bg-white/20 rounded-xl flex items-center justify-center shrink-0 relative z-10 transition-transform group-hover:scale-105">
+              <Plus className="h-4 w-4" style={{color:'#0C0B09'}} />
+            </div>
+          </motion.div>
+        </Link>
+
+        {/* Marché libre — annonce directe */}
+        <Link href="/marche-libre" className="flex-1">
+          <motion.div
+            whileHover={{ scale: 1.008, borderColor: '#C9922A' }}
+            whileTap={{ scale: 0.995 }}
+            className="group relative rounded-2xl p-4 sm:p-5 flex items-center justify-between cursor-pointer overflow-hidden h-full"
+            style={{background:'#FFFFFF',border:'2px solid #C9922A'}}
+          >
+            <div className="relative z-10">
+              <p className="font-bold text-sm sm:text-base leading-tight" style={{color:'#C9922A'}}>🏪 Publier une annonce</p>
+              <p className="text-xs mt-0.5" style={{color:'#8A856E'}}>Marché libre — vente directe</p>
+            </div>
+            <div className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0 relative z-10 transition-transform group-hover:scale-105" style={{background:'rgba(201,146,42,0.1)'}}>
+              <ArrowRight className="h-4 w-4" style={{color:'#C9922A'}} />
             </div>
           </motion.div>
         </Link>
