@@ -72,30 +72,33 @@ export default function NewRequestPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/auth/login'); return }
 
-      const insertData: any = {
+      const insertData = {
         buyer_id: user.id,
         title: form.title,
         description: form.description || '',
         category_id: form.category_id,
         city: form.city || 'Casablanca',
-        status: 'open',
+        budget_min: form.budget_min ? Number(form.budget_min) : null,
+        budget_max: form.budget_max ? Number(form.budget_max) : null,
+        currency: 'MAD',
         urgent: form.urgent,
+        is_urgent: form.urgent,
         delivery_needed: form.delivery_needed,
+        payment_methods: form.payment_methods.length ? form.payment_methods : [],
+        deadline: null,
+        status: 'open',
       }
-
-      if (form.budget_min) insertData.budget_min = Number(form.budget_min)
-      if (form.budget_max) insertData.budget_max = Number(form.budget_max)
-      if (form.payment_methods?.length) insertData.payment_methods = form.payment_methods
 
       const { data, error: insertError } = await supabase
         .from('requests')
         .insert(insertData)
         .select()
-        .maybeSingle()
+        .single()
 
       if (insertError) {
-        console.error('Insert error:', insertError)
-        throw new Error(insertError.message)
+        console.error('FULL ERROR:', JSON.stringify(insertError))
+        setError(`Erreur: ${insertError.message} (${insertError.code})`)
+        return
       }
 
       toast.success('Demande publiée ! Les commerçants vont vous répondre.')
