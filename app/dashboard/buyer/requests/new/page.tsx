@@ -80,12 +80,8 @@ export default function NewRequestPage() {
         city: form.city || 'Casablanca',
         budget_min: form.budget_min ? Number(form.budget_min) : null,
         budget_max: form.budget_max ? Number(form.budget_max) : null,
-        currency: 'MAD',
         urgent: form.urgent,
-        is_urgent: form.urgent,
         delivery_needed: form.delivery_needed,
-        payment_methods: form.payment_methods.length ? form.payment_methods : [],
-        deadline: null,
         status: 'open',
       }
 
