@@ -1,75 +1,77 @@
 'use client'
 import { useState, Suspense } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { Eye, EyeOff, ArrowRight, Mail, Lock, User } from 'lucide-react'
-import Logo from '@/app/components/Logo'
-
-const BENEFITS = {
-  buyer: [
-    { text: 'Économisez en moyenne 25%' },
-    { text: 'Réponses en moins de 5 min' },
-    { text: 'Commerçants certifiés' },
-    { text: '100% gratuit pour les acheteurs' },
-  ],
-  merchant: [
-    { text: 'Clients qualifiés & prêts à acheter' },
-    { text: 'Aucune dépense publicitaire' },
-    { text: 'Construisez votre réputation' },
-    { text: '5% uniquement sur transaction confirmée' },
-  ],
-}
 
 function RegisterForm() {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const initialRole = ((searchParams.get('role') || searchParams.get('type')) as 'buyer' | 'merchant') || 'buyer'
-  const router = useRouter()
+
   const [role, setRole] = useState<'buyer' | 'merchant'>(initialRole)
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [showPwd, setShowPwd] = useState(false)
+  const [show, setShow] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [emailSent, setEmailSent] = useState(false)
 
-  async function handleRegister(e?: React.FormEvent) {
-    e?.preventDefault()
-    if (!fullName || !email || !password) { setError('Remplissez tous les champs'); return }
-    if (password.length < 8) { setError('Le mot de passe doit contenir au moins 8 caractères'); return }
-    setLoading(true)
+  const handleRegister = async () => {
     setError('')
-    const supabase = createClient()
-    const { data: signUpData, error: authError } = await supabase.auth.signUp({
-      email, password,
-      options: { data: { full_name: fullName, role } }
-    })
-    if (authError) { setError(authError.message); setLoading(false); return }
-    if (signUpData.session) {
-      router.push(role === 'merchant' ? '/dashboard/merchant' : '/dashboard/buyer')
-    } else {
-      setEmailSent(true)
-      setLoading(false)
-    }
+    if (!fullName.trim()) { setError('Entrez votre nom complet'); return }
+    if (!email.trim()) { setError('Entrez votre email'); return }
+    if (!password || password.length < 8) { setError('Le mot de passe doit contenir au moins 8 caractères'); return }
+    setLoading(true)
+    try {
+      const supabase = createClient()
+      const { data, error: err } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: { data: { full_name: fullName.trim(), role } },
+      })
+      if (err) throw err
+      if (data.session) {
+        router.push(role === 'merchant' ? '/dashboard/merchant' : '/dashboard/buyer')
+        router.refresh()
+      } else {
+        setEmailSent(true)
+      }
+    } catch (err: any) {
+      const msg = err.message || ''
+      if (msg.includes('already registered') || msg.includes('User already registered')) setError('Cet email est déjà utilisé. Connectez-vous.')
+      else setError(msg || 'Une erreur est survenue. Réessayez.')
+    } finally { setLoading(false) }
   }
 
-  const inputCls = 'flex h-11 w-full border border-border/70 bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 hover:border-border rounded-none'
+  const inp: React.CSSProperties = {
+    width: '100%', padding: '14px 14px 14px 42px',
+    border: '1px solid #E8E0CC', borderRadius: 10,
+    fontSize: 14, color: '#0C0B09', outline: 'none',
+    background: '#FAFAF7', fontFamily: 'inherit', boxSizing: 'border-box',
+  }
 
+  /* ── Email sent screen ── */
   if (emailSent) {
     return (
-      <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#FAFAF7',padding:'40px 24px'}}>
-        <div style={{maxWidth:400,width:'100%',textAlign:'center'}}>
-          <div style={{fontSize:64,marginBottom:24}}>📧</div>
-          <h1 style={{fontFamily:'var(--font-playfair)',fontSize:28,fontWeight:400,color:'#0C0B09',marginBottom:12}}>Vérifiez votre email</h1>
-          <p style={{fontSize:14,color:'#8A856E',lineHeight:1.6,marginBottom:24}}>
-            Un email de confirmation a été envoyé à <strong>{email}</strong>.<br/>
-            Cliquez sur le lien pour activer votre compte et accéder à votre tableau de bord.
+      <div style={{
+        position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+        background: '#FAFAF7',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 20, zIndex: 9999, fontFamily: 'var(--font-inter)',
+      }}>
+        <div style={{ width: '100%', maxWidth: 420, textAlign: 'center', background: '#fff', borderRadius: 16, padding: 'clamp(28px,6vw,40px) clamp(24px,6vw,32px)', boxShadow: '0 8px 40px rgba(0,0,0,0.08)' }}>
+          <div style={{ fontSize: 56, marginBottom: 20 }}>📧</div>
+          <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: 26, fontWeight: 400, color: '#0C0B09', marginBottom: 12 }}>Vérifiez votre email</h1>
+          <p style={{ fontSize: 14, color: '#8A856E', lineHeight: 1.6, marginBottom: 20 }}>
+            Un email de confirmation a été envoyé à<br />
+            <strong style={{ color: '#0C0B09' }}>{email}</strong>
           </p>
-          <div style={{background:'#FFF8E7',border:'1px solid rgba(201,146,42,0.3)',borderRadius:12,padding:'16px 20px',marginBottom:24,fontSize:13,color:'#8B6914',lineHeight:1.5}}>
-            💡 Si vous ne voyez pas l'email, vérifiez vos spams ou courrier indésirable.
+          <div style={{ background: '#FFF8E7', border: '1px solid rgba(201,146,42,0.3)', borderRadius: 10, padding: '14px 16px', marginBottom: 24, fontSize: 13, color: '#8B6914', lineHeight: 1.5, textAlign: 'left' }}>
+            💡 Si vous ne voyez pas l'email, vérifiez vos spams.
           </div>
-          <Link href="/auth/login" style={{color:'#C9922A',textDecoration:'none',fontSize:13,fontWeight:600}}>
+          <Link href="/auth/login" style={{ color: '#C9922A', textDecoration: 'none', fontSize: 13, fontWeight: 600 }}>
             ← Retour à la connexion
           </Link>
         </div>
@@ -77,117 +79,146 @@ function RegisterForm() {
     )
   }
 
+  /* ── Main form ── */
   return (
-    <div style={{minHeight:'100vh',display:'flex'}}>
-      {/* Left panel */}
-      <div style={{width:'42%',background:'#0C0B09',display:'flex',flexDirection:'column',justifyContent:'space-between',padding:48,position:'relative',overflow:'hidden'}} className="hidden lg:flex">
-        <div style={{position:'absolute',bottom:-20,right:-20,fontFamily:'var(--font-arabic)',fontSize:200,color:'rgba(191,160,106,0.04)',pointerEvents:'none',lineHeight:1}}>ثابت</div>
-
-        <div style={{position:'relative',zIndex:1}}>
-          <Link href="/"><Logo dark size="md" /></Link>
+    <div style={{
+      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+      background: '#FAFAF7',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: 20, zIndex: 9999,
+      fontFamily: 'var(--font-inter)',
+      overflowY: 'auto',
+    }}>
+      <div style={{
+        width: '100%', maxWidth: 440,
+        background: '#ffffff', borderRadius: 16,
+        padding: 'clamp(28px,6vw,40px) clamp(24px,6vw,32px)',
+        boxShadow: '0 8px 40px rgba(0,0,0,0.08)',
+        margin: 'auto',
+      }}>
+        {/* Logo */}
+        <div style={{ textAlign: 'center', marginBottom: 28 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+            <div style={{ width: 40, height: 40, background: 'linear-gradient(135deg,#8B6914,#C9922A)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'var(--font-playfair)', fontSize: 20, fontWeight: 400 }}>T</div>
+            <span style={{ fontFamily: 'var(--font-playfair)', fontSize: 22, letterSpacing: '0.2em', color: '#0C0B09' }}>TABIT</span>
+          </div>
+          <div style={{ width: 40, height: 1, background: '#C9922A', margin: '0 auto 12px' }} />
+          <p style={{ fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#C9922A' }}>INSCRIPTION</p>
+          <h1 style={{ fontFamily: 'var(--font-playfair)', fontSize: 26, fontWeight: 400, color: '#0C0B09', margin: '8px 0 4px' }}>Créer un compte</h1>
+          <p style={{ fontSize: 13, color: '#8A856E' }}>
+            Déjà inscrit ?{' '}
+            <Link href="/auth/login" style={{ color: '#C9922A', textDecoration: 'none', fontWeight: 500 }}>Se connecter →</Link>
+          </p>
         </div>
 
-        <div style={{position:'relative',zIndex:1}}>
-          <div style={{fontSize:10,letterSpacing:'0.4em',textTransform:'uppercase',color:'#C9922A',marginBottom:8,fontFamily:'var(--font-inter)'}}>
-            {role === 'buyer' ? 'Pour les acheteurs' : 'Pour les commerçants'}
-          </div>
-          <h2 style={{fontFamily:'var(--font-playfair)',fontSize:40,fontWeight:400,color:'#F0E8D4',lineHeight:1.1,marginBottom:24}}>
-            {role === 'buyer' ? <>Arrêtez de<br/>chercher.<br/><em style={{color:'#C9922A'}}>Laissez-les</em><br/>venir à vous.</> : <>Des clients.<br/>Sans<br/><em style={{color:'#C9922A'}}>publicité.</em></>}
-          </h2>
-          <div style={{display:'flex',flexDirection:'column',gap:12}}>
-            {BENEFITS[role].map((item, i) => (
-              <div key={i} style={{display:'flex',alignItems:'center',gap:12}}>
-                <span style={{width:4,height:4,borderRadius:'50%',background:'#C9922A',flexShrink:0}} />
-                <span style={{fontSize:13,color:'rgba(255,255,255,0.7)',fontWeight:300}}>{item.text}</span>
+        {/* Role selector */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20 }}>
+          {(['buyer', 'merchant'] as const).map(r => (
+            <button
+              key={r}
+              type="button"
+              onClick={() => setRole(r)}
+              style={{
+                padding: '14px 12px', borderRadius: 10, cursor: 'pointer',
+                textAlign: 'left', border: `2px solid ${role === r ? '#C9922A' : '#E8E0CC'}`,
+                background: role === r ? 'rgba(201,146,42,0.06)' : '#FAFAF7',
+                transition: 'all 0.2s',
+              }}
+            >
+              <div style={{ fontSize: 16, marginBottom: 4 }}>{r === 'buyer' ? '🛍️' : '🏪'}</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: role === r ? '#C9922A' : '#0C0B09', marginBottom: 2 }}>
+                {r === 'buyer' ? 'Acheteur' : 'Commerçant'}
               </div>
-            ))}
-          </div>
-        </div>
-
-        <div style={{position:'relative',zIndex:1}}>
-          <p style={{fontSize:11,color:'rgba(255,255,255,0.25)',letterSpacing:'0.2em',fontFamily:'var(--font-inter)'}}>© 2025 TABIT · Maroc</p>
-        </div>
-      </div>
-
-      {/* Right panel */}
-      <div style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',padding:'40px 24px',background:'#FAFAF7'}}>
-        <div style={{width:'100%',maxWidth:420}}>
-          <div className="lg:hidden mb-10">
-            <Link href="/"><Logo size="md" /></Link>
-          </div>
-
-          <div style={{marginBottom:28}}>
-            <div className="s-label" style={{marginBottom:16}}>Inscription</div>
-            <h1 style={{fontFamily:'var(--font-playfair)',fontSize:32,fontWeight:400,color:'#0C0B09',marginBottom:8}}>Créer un compte</h1>
-            <p style={{fontSize:14,color:'#8A856E',fontWeight:300}}>
-              Déjà inscrit ?{' '}
-              <Link href="/auth/login" style={{color:'#C9922A',textDecoration:'none',fontWeight:400}}>Se connecter →</Link>
-            </p>
-          </div>
-
-          {/* Role selector */}
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:20}}>
-            {(['buyer', 'merchant'] as const).map(r => (
-              <button
-                key={r}
-                type="button"
-                onClick={() => setRole(r)}
-                style={{
-                  padding:'16px 12px',
-                  border: role === r ? '2px solid #C9922A' : '2px solid #E8E0CC',
-                  background: role === r ? 'rgba(201,146,42,0.06)' : '#FFFFFF',
-                  cursor:'pointer',
-                  textAlign:'left',
-                  transition:'all 0.2s',
-                }}
-              >
-                <div style={{fontSize:10,letterSpacing:'0.3em',textTransform:'uppercase',color: role === r ? '#C9922A' : '#8A856E',marginBottom:6,fontFamily:'var(--font-inter)'}}>
-                  {r === 'buyer' ? 'Acheteur' : 'Commerçant'}
-                </div>
-                <div style={{fontSize:12,color:'#0C0B09',fontWeight:300}}>
-                  {r === 'buyer' ? 'Publier des demandes' : 'Répondre aux demandes'}
-                </div>
-              </button>
-            ))}
-          </div>
-
-          {error && (
-            <div style={{marginBottom:16,background:'#FEF2F2',border:'1px solid #FECACA',color:'#DC2626',padding:'12px 16px',fontSize:13}}>
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleRegister} style={{display:'flex',flexDirection:'column',gap:14}}>
-            <div>
-              <label style={{display:'block',fontSize:10,letterSpacing:'0.3em',textTransform:'uppercase',color:'#8A856E',marginBottom:8,fontFamily:'var(--font-inter)'}}>Nom complet</label>
-              <div style={{position:'relative'}}>
-                <User style={{position:'absolute',left:14,top:'50%',transform:'translateY(-50%)',width:16,height:16,color:'#8A856E',pointerEvents:'none'}} />
-                <input type="text" placeholder="Votre nom complet" value={fullName} onChange={e => setFullName(e.target.value)} autoComplete="name" autoFocus className={inputCls} style={{paddingLeft:44}} />
+              <div style={{ fontSize: 11, color: '#8A856E' }}>
+                {r === 'buyer' ? 'Publier mes besoins' : 'Répondre aux demandes'}
               </div>
-            </div>
-            <div>
-              <label style={{display:'block',fontSize:10,letterSpacing:'0.3em',textTransform:'uppercase',color:'#8A856E',marginBottom:8,fontFamily:'var(--font-inter)'}}>Email</label>
-              <div style={{position:'relative'}}>
-                <Mail style={{position:'absolute',left:14,top:'50%',transform:'translateY(-50%)',width:16,height:16,color:'#8A856E',pointerEvents:'none'}} />
-                <input type="email" placeholder="votre@email.com" value={email} onChange={e => setEmail(e.target.value)} autoComplete="email" className={inputCls} style={{paddingLeft:44}} />
-              </div>
-            </div>
-            <div>
-              <label style={{display:'block',fontSize:10,letterSpacing:'0.3em',textTransform:'uppercase',color:'#8A856E',marginBottom:8,fontFamily:'var(--font-inter)'}}>Mot de passe</label>
-              <div style={{position:'relative'}}>
-                <Lock style={{position:'absolute',left:14,top:'50%',transform:'translateY(-50%)',width:16,height:16,color:'#8A856E',pointerEvents:'none'}} />
-                <input type={showPwd ? 'text' : 'password'} placeholder="8 caractères minimum" value={password} onChange={e => setPassword(e.target.value)} autoComplete="new-password" className={inputCls} style={{paddingLeft:44,paddingRight:44}} />
-                <button type="button" onClick={() => setShowPwd(!showPwd)} style={{position:'absolute',right:14,top:'50%',transform:'translateY(-50%)',background:'none',border:'none',cursor:'pointer',color:'#8A856E',padding:0}}>
-                  {showPwd ? <EyeOff style={{width:16,height:16}} /> : <Eye style={{width:16,height:16}} />}
-                </button>
-              </div>
-            </div>
-
-            <button type="submit" disabled={loading} className="btn-gold" style={{display:'flex',alignItems:'center',justifyContent:'center',gap:8,padding:'14px 32px',marginTop:4,opacity:loading?0.7:1,cursor:loading?'not-allowed':'pointer',fontSize:11,letterSpacing:'0.25em'}}>
-              {loading ? 'Création...' : <>Créer mon compte {role === 'buyer' ? 'acheteur' : 'commerçant'} <ArrowRight style={{width:16,height:16}} /></>}
             </button>
-          </form>
+          ))}
         </div>
+
+        {error && (
+          <div style={{ background: '#FEE2E2', border: '1px solid #FECACA', padding: '12px 16px', marginBottom: 16, color: '#991B1B', fontSize: 13, borderRadius: 8 }}>
+            ⚠️ {error}
+          </div>
+        )}
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {/* Name */}
+          <div>
+            <label style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#8A856E', display: 'block', marginBottom: 8, fontWeight: 500 }}>Nom complet</label>
+            <div style={{ position: 'relative' }}>
+              <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', fontSize: 15, color: '#C4BCA8', pointerEvents: 'none' }}>👤</span>
+              <input
+                type="text" value={fullName}
+                onChange={e => setFullName(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleRegister()}
+                placeholder="Votre nom complet"
+                autoComplete="name" autoFocus
+                style={inp}
+              />
+            </div>
+          </div>
+
+          {/* Email */}
+          <div>
+            <label style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#8A856E', display: 'block', marginBottom: 8, fontWeight: 500 }}>Email</label>
+            <div style={{ position: 'relative' }}>
+              <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', fontSize: 15, color: '#C4BCA8', pointerEvents: 'none' }}>✉</span>
+              <input
+                type="email" value={email}
+                onChange={e => setEmail(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleRegister()}
+                placeholder="votre@email.com"
+                autoComplete="email"
+                style={inp}
+              />
+            </div>
+          </div>
+
+          {/* Password */}
+          <div>
+            <label style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#8A856E', display: 'block', marginBottom: 8, fontWeight: 500 }}>Mot de passe</label>
+            <div style={{ position: 'relative' }}>
+              <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', fontSize: 15, color: '#C4BCA8', pointerEvents: 'none' }}>🔒</span>
+              <input
+                type={show ? 'text' : 'password'} value={password}
+                onChange={e => setPassword(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleRegister()}
+                placeholder="8 caractères minimum"
+                autoComplete="new-password"
+                style={{ ...inp, paddingRight: 44 }}
+              />
+              <button
+                onClick={() => setShow(!show)}
+                style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 15, color: '#C4BCA8', padding: 0 }}
+              >
+                {show ? '🙈' : '👁'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <button
+          onClick={handleRegister}
+          disabled={loading}
+          style={{
+            width: '100%', marginTop: 24, padding: '16px',
+            background: loading ? '#E8E0CC' : 'linear-gradient(135deg,#8B6914,#C9922A)',
+            color: loading ? '#8A856E' : '#0C0B09',
+            border: 'none', borderRadius: 10,
+            fontSize: 13, letterSpacing: '0.2em', textTransform: 'uppercase', fontWeight: 600,
+            cursor: loading ? 'not-allowed' : 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            fontFamily: 'inherit', transition: 'all 0.3s',
+          }}
+        >
+          {loading ? 'Création du compte...' : `CRÉER MON COMPTE ${role === 'buyer' ? 'ACHETEUR' : 'COMMERÇANT'} →`}
+        </button>
+
+        <p style={{ textAlign: 'center', marginTop: 14, fontSize: 11, color: '#C4BCA8', lineHeight: 1.5 }}>
+          En créant un compte, vous acceptez nos{' '}
+          <Link href="/tarifs" style={{ color: '#C9922A', textDecoration: 'none' }}>CGU</Link>
+        </p>
       </div>
     </div>
   )
@@ -195,7 +226,12 @@ function RegisterForm() {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#FAFAF7'}}><div style={{width:32,height:32,borderRadius:'50%',border:'2px solid #C9922A',borderTopColor:'transparent',animation:'spin 1s linear infinite'}} /></div>}>
+    <Suspense fallback={
+      <div style={{ position: 'fixed', inset: 0, background: '#FAFAF7', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+        <div style={{ width: 32, height: 32, borderRadius: '50%', border: '2px solid #C9922A', borderTopColor: 'transparent', animation: 'spin 1s linear infinite' }} />
+        <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+      </div>
+    }>
       <RegisterForm />
     </Suspense>
   )
