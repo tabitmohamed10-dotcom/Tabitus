@@ -106,7 +106,7 @@ export default function BuyerDashboard() {
       </motion.div>
 
       {/* Stats */}
-      <motion.div variants={fadeUp} className="grid grid-cols-3 gap-3 mb-5">
+      <motion.div variants={fadeUp} className="grid grid-cols-3 gap-2 sm:gap-3 mb-5">
         {statCards.map((s) => (
           <motion.div
             key={s.label}

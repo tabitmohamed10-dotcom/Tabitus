@@ -87,8 +87,6 @@ export default function NewRequestPage() {
       if (form.budget_max) insertData.budget_max = Number(form.budget_max)
       if (form.payment_methods?.length) insertData.payment_methods = form.payment_methods
 
-      console.log('Inserting:', insertData)
-
       const { data, error: insertError } = await supabase
         .from('requests')
         .insert(insertData)

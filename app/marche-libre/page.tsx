@@ -71,8 +71,8 @@ interface Listing {
 
 const CONDITION_LABELS: Record<string, { label: string; bg: string; color: string }> = {
   neuf:           { label: 'Neuf',           bg: '#dcfce7', color: '#15803d' },
-  'tres-bon-etat':{ label: 'Très bon état',  bg: '#dbeafe', color: '#1d4ed8' },
-  'bon-etat':     { label: 'Bon état',       bg: '#e0f2fe', color: '#0369a1' },
+  'tres-bon-etat':{ label: 'Très bon état',  bg: '#FDF3DC', color: '#8B6914' },
+  'bon-etat':     { label: 'Bon état',       bg: '#F5F2EA', color: '#6B4F0F' },
   occasion:       { label: 'Occasion',       bg: '#fef3c7', color: '#b45309' },
   reconditionne:  { label: 'Reconditionné',  bg: '#f3e8ff', color: '#7e22ce' },
 }
@@ -416,6 +416,14 @@ function MarcheLibreContent() {
   const [showSuccess, setShowSuccess] = useState(false)
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
 
+  async function openPublishModal() {
+    const { createClient } = await import('@/lib/supabase/client')
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { router.push('/auth/register'); return }
+    setShowModal(true)
+  }
+
   // Filters — pre-select from URL param
   const [category, setCategory] = useState(categoryParam)
 
@@ -497,7 +505,7 @@ function MarcheLibreContent() {
               </p>
             </div>
             <motion.button
-              onClick={() => setShowModal(true)}
+              onClick={() => openPublishModal()}
               style={{ padding: 'clamp(12px,3vw,16px) clamp(20px,5vw,32px)', borderRadius: 12, background: 'linear-gradient(135deg, #C9922A, #E8B84B)', color: '#0C0B09', fontWeight: 700, fontSize: 'clamp(13px,2vw,15px)', border: 'none', cursor: 'pointer', minHeight: 50, boxShadow: '0 4px 20px rgba(201,146,42,0.4)', whiteSpace: 'nowrap' }}
               whileHover={{ scale: 1.04, boxShadow: '0 8px 32px rgba(201,146,42,0.55)' }}
               whileTap={{ scale: 0.97 }}
@@ -589,7 +597,7 @@ function MarcheLibreContent() {
             <div style={{ fontSize: 56, marginBottom: 16 }}>🔍</div>
             <h3 style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontSize: 24, color: '#0C0B09', marginBottom: 8 }}>Aucune annonce trouvée</h3>
             <p style={{ color: '#8A856E', marginBottom: 24 }}>Essayez de modifier vos filtres ou publiez la première annonce dans cette catégorie.</p>
-            <motion.button onClick={() => setShowModal(true)} style={{ padding: '14px 28px', borderRadius: 12, background: 'linear-gradient(135deg, #C9922A, #E8B84B)', color: '#0C0B09', fontWeight: 700, fontSize: 15, border: 'none', cursor: 'pointer', minHeight: 50 }} whileHover={{ scale: 1.04 }}>
+            <motion.button onClick={() => openPublishModal()} style={{ padding: '14px 28px', borderRadius: 12, background: 'linear-gradient(135deg, #C9922A, #E8B84B)', color: '#0C0B09', fontWeight: 700, fontSize: 15, border: 'none', cursor: 'pointer', minHeight: 50 }} whileHover={{ scale: 1.04 }}>
               + Publier une annonce
             </motion.button>
           </div>
@@ -623,7 +631,7 @@ function MarcheLibreContent() {
           </h3>
           <p style={{ fontFamily: 'var(--font-arabic), serif', fontSize: 15, color: '#C9922A', direction: 'rtl', marginBottom: 12 }}>هل تريد البيع؟</p>
           <p style={{ fontSize: 14, color: '#8A856E', marginBottom: 24 }}>Publiez votre annonce gratuitement. Acheteurs vérifiés, paiement sécurisé.</p>
-          <motion.button onClick={() => setShowModal(true)} style={{ padding: 'clamp(12px,3vw,16px) clamp(24px,5vw,40px)', borderRadius: 12, background: 'linear-gradient(135deg, #C9922A, #E8B84B)', color: '#0C0B09', fontWeight: 700, fontSize: 15, border: 'none', cursor: 'pointer', minHeight: 50, boxShadow: '0 4px 20px rgba(201,146,42,0.4)' }} whileHover={{ scale: 1.04 }}>
+          <motion.button onClick={() => openPublishModal()} style={{ padding: 'clamp(12px,3vw,16px) clamp(24px,5vw,40px)', borderRadius: 12, background: 'linear-gradient(135deg, #C9922A, #E8B84B)', color: '#0C0B09', fontWeight: 700, fontSize: 15, border: 'none', cursor: 'pointer', minHeight: 50, boxShadow: '0 4px 20px rgba(201,146,42,0.4)' }} whileHover={{ scale: 1.04 }}>
             + Publier une annonce — Gratuit
           </motion.button>
         </motion.div>

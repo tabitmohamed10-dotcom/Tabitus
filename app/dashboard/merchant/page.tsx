@@ -140,8 +140,8 @@ export default function MerchantDashboard() {
       value: acceptRate,
       suffix: '%',
       icon: <DollarSign className="h-4 w-4" />,
-      iconBg: 'bg-blue-100 text-blue-700',
-      valueColor: 'text-blue-700',
+      iconBg: 'bg-gold-100 text-gold-700',
+      valueColor: 'text-gold-700',
     },
   ]
 

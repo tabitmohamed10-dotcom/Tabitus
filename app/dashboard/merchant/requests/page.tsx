@@ -59,7 +59,8 @@ export default function MerchantRequestsPage() {
       merchant_id: merchant.id,
       price: Number(price),
       delivery_days: Number(deliveryDays),
-      message: note || null,
+      note: note || null,
+      free_delivery: false,
     })
     if (error) { alert('Erreur: ' + error.message); setSubmitting(false); return }
     setSelectedRequest(null)

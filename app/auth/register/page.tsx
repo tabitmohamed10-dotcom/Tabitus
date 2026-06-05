@@ -32,6 +32,7 @@ function RegisterForm() {
   const [showPwd, setShowPwd] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [emailSent, setEmailSent] = useState(false)
 
   async function handleRegister(e?: React.FormEvent) {
     e?.preventDefault()
@@ -40,12 +41,41 @@ function RegisterForm() {
     setLoading(true)
     setError('')
     const supabase = createClient()
-    const { error: authError } = await supabase.auth.signUp({ email, password, options: { data: { full_name: fullName, role } } })
+    const { data: signUpData, error: authError } = await supabase.auth.signUp({
+      email, password,
+      options: { data: { full_name: fullName, role } }
+    })
     if (authError) { setError(authError.message); setLoading(false); return }
-    router.push(role === 'merchant' ? '/dashboard/merchant' : '/dashboard/buyer')
+    if (signUpData.session) {
+      router.push(role === 'merchant' ? '/dashboard/merchant' : '/dashboard/buyer')
+    } else {
+      setEmailSent(true)
+      setLoading(false)
+    }
   }
 
   const inputCls = 'flex h-11 w-full border border-border/70 bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 hover:border-border rounded-none'
+
+  if (emailSent) {
+    return (
+      <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'#FAFAF7',padding:'40px 24px'}}>
+        <div style={{maxWidth:400,width:'100%',textAlign:'center'}}>
+          <div style={{fontSize:64,marginBottom:24}}>📧</div>
+          <h1 style={{fontFamily:'var(--font-playfair)',fontSize:28,fontWeight:400,color:'#0C0B09',marginBottom:12}}>Vérifiez votre email</h1>
+          <p style={{fontSize:14,color:'#8A856E',lineHeight:1.6,marginBottom:24}}>
+            Un email de confirmation a été envoyé à <strong>{email}</strong>.<br/>
+            Cliquez sur le lien pour activer votre compte et accéder à votre tableau de bord.
+          </p>
+          <div style={{background:'#FFF8E7',border:'1px solid rgba(201,146,42,0.3)',borderRadius:12,padding:'16px 20px',marginBottom:24,fontSize:13,color:'#8B6914',lineHeight:1.5}}>
+            💡 Si vous ne voyez pas l'email, vérifiez vos spams ou courrier indésirable.
+          </div>
+          <Link href="/auth/login" style={{color:'#C9922A',textDecoration:'none',fontSize:13,fontWeight:600}}>
+            ← Retour à la connexion
+          </Link>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div style={{minHeight:'100vh',display:'flex'}}>

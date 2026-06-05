@@ -16,7 +16,7 @@ const badgeVariants = cva(
         outline: 'text-foreground border-border/60',
         success: 'border-transparent bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-400',
         warning: 'border-transparent bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-400',
-        info: 'border-transparent bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-400',
+        info: 'border-transparent bg-gold-100 text-gold-800 dark:bg-gold-900/40 dark:text-gold-300',
         orange: 'border-transparent bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-400',
         urgent: 'border-transparent bg-red-500 text-white animate-pulse shadow-sm',
         purple: 'border-transparent bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-400',
@@ -359,7 +359,7 @@ interface ProgressProps {
   value: number
   max?: number
   className?: string
-  color?: 'brand' | 'green' | 'blue' | 'amber'
+  color?: 'brand' | 'green' | 'gold' | 'amber'
 }
 
 function Progress({ value, max = 100, className, color = 'brand' }: ProgressProps) {
@@ -367,7 +367,7 @@ function Progress({ value, max = 100, className, color = 'brand' }: ProgressProp
   const colors = {
     brand: 'bg-brand-gradient',
     green: 'bg-green-500',
-    blue: 'bg-blue-500',
+    gold: 'bg-gold-500',
     amber: 'bg-amber-500',
   }
 

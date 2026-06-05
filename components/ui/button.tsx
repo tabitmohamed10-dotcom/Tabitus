@@ -18,14 +18,14 @@ const buttonVariants = cva(
       variant: {
         default: [
           'bg-primary text-primary-foreground',
-          'shadow-[0_1px_3px_rgba(99,102,241,0.25),0_4px_12px_rgba(99,102,241,0.18),inset_0_1px_0_rgba(255,255,255,0.12)]',
-          'hover:bg-primary/92 hover:shadow-[0_2px_8px_rgba(99,102,241,0.32),0_8px_24px_rgba(99,102,241,0.22),inset_0_1px_0_rgba(255,255,255,0.12)]',
+          'shadow-[0_1px_3px_rgba(201,146,42,0.25),0_4px_12px_rgba(201,146,42,0.18),inset_0_1px_0_rgba(255,255,255,0.12)]',
+          'hover:bg-primary/92 hover:shadow-[0_2px_8px_rgba(201,146,42,0.32),0_8px_24px_rgba(201,146,42,0.22),inset_0_1px_0_rgba(255,255,255,0.12)]',
           'hover:-translate-y-px',
         ].join(' '),
         gradient: [
-          'bg-brand-gradient text-white',
-          'shadow-[0_2px_8px_rgba(99,102,241,0.28),0_8px_24px_rgba(99,102,241,0.18),inset_0_1px_0_rgba(255,255,255,0.12)]',
-          'hover:shadow-[0_4px_16px_rgba(99,102,241,0.38),0_12px_36px_rgba(99,102,241,0.26),inset_0_1px_0_rgba(255,255,255,0.12)]',
+          'bg-brand-gradient text-noir',
+          'shadow-[0_2px_8px_rgba(201,146,42,0.28),0_8px_24px_rgba(201,146,42,0.18),inset_0_1px_0_rgba(255,255,255,0.12)]',
+          'hover:shadow-[0_4px_16px_rgba(201,146,42,0.38),0_12px_36px_rgba(201,146,42,0.26),inset_0_1px_0_rgba(255,255,255,0.12)]',
           'hover:-translate-y-0.5 hover:opacity-95',
         ].join(' '),
         premium: [
